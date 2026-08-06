@@ -13,7 +13,7 @@ const gradients = [
 ];
 
 const DEFAULT_CROP_IMAGES: Record<string, string> = {
-  papaya: 'https://montanaweb-bucket.s3.amazonaws.com/web/blog/83/cultivo-de-papaya.png',
+  papaya: '/images/papaya.png',
 };
 
 function hashString(s: string): number {

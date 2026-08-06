@@ -45,7 +45,7 @@ export default function Gallery() {
           id: 'papaya-crop',
           crop_name: 'Papaya',
           scientific_name: 'Carica papaya',
-          image_url: 'https://montanaweb-bucket.s3.amazonaws.com/web/blog/83/cultivo-de-papaya.png',
+          image_url: '/images/papaya.png',
           suitable_season: 'All',
         },
       ];
