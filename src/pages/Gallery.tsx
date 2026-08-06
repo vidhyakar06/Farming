@@ -39,7 +39,24 @@ export default function Gallery() {
         supabase.from('crops').select('id, crop_name, scientific_name, image_url, suitable_season').order('crop_name'),
         supabase.from('diseases').select('id, disease_name, crop_name, image_url, symptoms').order('crop_name'),
       ]);
-      setCrops(cropRes.data || []);
+      
+      const defaultCrops: Crop[] = [
+        {
+          id: 'papaya-crop',
+          crop_name: 'Papaya',
+          scientific_name: 'Carica papaya',
+          image_url: 'https://montanaweb-bucket.s3.amazonaws.com/web/blog/83/cultivo-de-papaya.png',
+          suitable_season: 'All',
+        },
+      ];
+
+      const loadedCrops = cropRes.data && cropRes.data.length > 0 ? cropRes.data : defaultCrops;
+      const hasPapaya = loadedCrops.some(c => c.crop_name.toLowerCase() === 'papaya');
+      if (!hasPapaya) {
+        loadedCrops.unshift(defaultCrops[0]);
+      }
+
+      setCrops(loadedCrops);
       setDiseases(diseaseRes.data || []);
       setLoading(false);
     }

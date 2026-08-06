@@ -12,6 +12,10 @@ const gradients = [
   'from-green-500 to-lime-600',
 ];
 
+const DEFAULT_CROP_IMAGES: Record<string, string> = {
+  papaya: 'https://montanaweb-bucket.s3.amazonaws.com/web/blog/83/cultivo-de-papaya.png',
+};
+
 function hashString(s: string): number {
   let h = 0;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
@@ -26,7 +30,11 @@ type CropImageProps = {
 
 export default function CropImage({ src, alt, className = '' }: CropImageProps) {
   const [failed, setFailed] = useState(false);
-  const showFallback = !src || failed;
+
+  const defaultImg = DEFAULT_CROP_IMAGES[alt.toLowerCase().trim()];
+  const effectiveSrc = src || defaultImg;
+
+  const showFallback = !effectiveSrc || failed;
   const gradient = gradients[hashString(alt) % gradients.length];
 
   if (showFallback) {
@@ -42,7 +50,7 @@ export default function CropImage({ src, alt, className = '' }: CropImageProps) 
 
   return (
     <img
-      src={src!}
+      src={effectiveSrc}
       alt={alt}
       loading="lazy"
       onError={() => setFailed(true)}
