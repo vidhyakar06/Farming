@@ -192,8 +192,8 @@ export default function FarmDetails() {
 
       <div className="mb-6 rounded-2xl overflow-hidden shadow-lg relative h-48 sm:h-64">
         <img
-          src="https://images.pexels.com/photos/4407999/pexels-photo-4407999.jpeg?auto=compress&cs=tinysrgb&w=1200"
-          alt="Farm field"
+          src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=1200&auto=format&fit=crop&q=80"
+          alt="Farm and Soil Details"
           className="w-full h-full object-cover"
           onError={(e) => {
             const img = e.currentTarget;
