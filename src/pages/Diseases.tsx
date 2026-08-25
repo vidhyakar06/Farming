@@ -176,7 +176,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Plant resistant varieties, ensure proper pruning for air circulation, avoid dense canopy.',
     treatment: 'Spray Carbendazim 50 WP @ 1g/litre or Wettable Sulphur 80 WP @ 2g/litre at bud burst.',
     organic_solution: 'Spray 5% Neem seed kernel extract (NSKE) or dilute neem oil (3ml/litre) before bud break.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Mango%20plant%20with%20Powdery%20Mildew%20Oidium%20mangiferae.%20Show%20white%20powdery%20fungal%20coating%20covering%20young%20mango%20leaves%2C%20tender%20shoots%2C%20flower%20panicles%20and%20small%20fruitlets.%20Flower%20drop%20visible.%20Natural%20daylight%2C%20mango%20orchard%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/mango_powdery_mildew.jpg',
     season: 'Rabi',
     created_at: new Date().toISOString(),
   },
@@ -189,7 +189,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Prune dense shoots before season, avoid excess nitrogen which promotes tender growth.',
     treatment: 'Spray Imidacloprid 17.8 SL @ 0.3ml/litre or Thiamethoxam 25 WG @ 0.3g/litre.',
     organic_solution: 'Spray Neem oil 5ml/litre + liquid soap 2ml/litre. Release natural predators like Chrysoperla larvae.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Mango%20plant%20with%20Mango%20Hopper%20pest%20Idioscopus%20clypealis.%20Show%20tiny%20hopper%20insects%20on%20mango%20flower%20panicle%2C%20withered%20curled%20dried%20flowers%2C%20sticky%20honeydew%20deposits%20causing%20blackish%20sooty%20mold%20on%20leaves%20and%20shoots.%20Natural%20daylight%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/mango_hopper.jpg',
     season: 'Rabi',
     created_at: new Date().toISOString(),
   },
@@ -202,7 +202,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Grow resistant varieties, maintain tree nutrition, manage vector insects.',
     treatment: 'No complete cure. Inject Oxytetracycline HCl (25g/tree) into the trunk every 6 months.',
     organic_solution: 'Apply 50 kg well-decomposed FYM per palm + irrigation during summer; spray Neem oil on crown.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Coconut%20palm%20tree%20with%20Root%20Wilt%20Disease.%20Show%20yellowing%20and%20drooping%20of%20lower%20fronds%2C%20spindle%20leaves%20bunched%20together%20at%20top%2C%20button%20shedding%20with%20fallen%20immature%20nuts%20on%20ground%2C%20premature%20nut%20fall.%20Natural%20farm%20daylight%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/coconut_root_wilt.jpg',
     season: 'All Season',
     created_at: new Date().toISOString(),
   },
@@ -215,7 +215,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Install pheromone traps (5/acre), collect and destroy infested shoots and fruits.',
     treatment: 'Spray Spinosad 45 SC @ 0.3ml/litre or Chlorantraniliprole 18.5 SC @ 0.3ml/litre.',
     organic_solution: 'Release egg parasitoid Trichogramma chilonis @ 50,000/acre; spray Bt (Bacillus thuringiensis) @ 2g/litre.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Brinjal%20eggplant%20with%20Shoot%20and%20Fruit%20Borer%20Leucinodes%20orbonalis.%20Show%20wilted%20dead%20young%20shoot%2C%20and%20purple%20brinjal%20fruit%20with%20pin%20holes%20where%20larvae%20bored%20in%2C%20fruit%20cut%20open%20to%20show%20larva%20boring%20inside%20causing%20rotting.%20Natural%20farm%20daylight%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/brinjal_borer.jpg',
     season: 'All Season',
     created_at: new Date().toISOString(),
   },
@@ -228,7 +228,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Use certified seed tubers, avoid overhead irrigation, maintain proper plant spacing.',
     treatment: 'Spray Metalaxyl + Mancozeb 72 WP @ 2.5g/litre or Cymoxanil 8% + Mancozeb 64% WP @ 3g/litre.',
     organic_solution: 'Spray Copper Oxychloride 50 WP @ 3g/litre or Bordeaux mixture 1% as preventive spray.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Potato%20plant%20with%20Late%20Blight%20Phytophthora%20infestans.%20Close-up%20of%20leaves%20showing%20water-soaked%20irregular%20grey-green%20patches%20turning%20dark%20brown-black%20necrotic%20lesions%20on%20upper%20leaf%20surface%2C%20white%20fluffy%20sporulation%20on%20lower%20underside%20of%20leaf.%20Natural%20daylight%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/potato_late_blight.jpg',
     season: 'Rabi',
     created_at: new Date().toISOString(),
   },
@@ -241,7 +241,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Use resistant varieties (MACS 450, Phule Agrani), install yellow sticky traps.',
     treatment: 'No direct cure. Control the whitefly vector: Spray Thiamethoxam 25 WG @ 0.3g/litre.',
     organic_solution: 'Remove and destroy infected plants immediately; spray Neem oil 5ml/litre to control whitefly.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Soybean%20plant%20with%20Yellow%20Mosaic%20Disease%20MYMV%20virus.%20Close-up%20of%20trifoliate%20leaves%20showing%20bright%20yellow-green%20mosaic%20irregular%20patches%20interspersed%20with%20normal%20green%20tissue%2C%20stunted%20growth%2C%20pods%20failing%20to%20develop%20on%20plant.%20Natural%20farm%20daylight%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/soybean_yellow_mosaic.jpg',
     season: 'Kharif',
     created_at: new Date().toISOString(),
   },
@@ -254,7 +254,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Use resistant varieties, drip irrigation instead of overhead, remove infected leaves.',
     treatment: 'Spray Metalaxyl + Mancozeb 72 WP @ 2.5g/litre or Dimethomorph 50 WP @ 1g/litre.',
     organic_solution: 'Spray Copper Oxychloride 3g/litre or diluted milk solution (1:9 milk to water) as a preventive.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Cucumber%20plant%20with%20Downy%20Mildew%20Pseudoperonospora%20cubensis.%20Close-up%20of%20cucumber%20leaf%20upper%20surface%20showing%20angular%20yellow%20water-soaked%20patches%20bounded%20by%20leaf%20veins%2C%20lower%20surface%20showing%20grey-purple%20sporulation%20mold%20growth.%20Natural%20farm%20daylight%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/cucumber_downy_mildew.jpg',
     season: 'All Season',
     created_at: new Date().toISOString(),
   },
@@ -267,7 +267,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Crop rotation, use certified seeds, remove crop debris, stake plants for airflow.',
     treatment: 'Spray Chlorothalonil 75 WP @ 2g/litre or Azoxystrobin 23 SC @ 1ml/litre.',
     organic_solution: 'Spray Trichoderma viride @ 5g/litre or Copper Oxychloride 3g/litre every 10-14 days.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Tomato%20plant%20with%20Early%20Blight%20Alternaria%20solani.%20Macro%20view%20of%20infected%20tomato%20leaf%20showing%20dark%20brown%20circular%20spots%20with%20prominent%20concentric%20rings%20resembling%20a%20target%20board%2C%20spots%20on%20older%20lower%20leaves%2C%20yellowing%20around%20lesions.%20Natural%20farm%20daylight%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/tomato_early_blight.jpg',
     season: 'All Season',
     created_at: new Date().toISOString(),
   },
@@ -280,7 +280,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Crop rotation, seed treatment, remove infected debris promptly.',
     treatment: 'Spray Mancozeb 75 WP @ 2.5g/litre or Iprodione 50 WP @ 1.5g/litre.',
     organic_solution: 'Spray Neem leaf extract (5%) or Pseudomonas fluorescens @ 2.5g/litre.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Cotton%20plant%20with%20Alternaria%20Leaf%20Spot%20disease.%20Close-up%20of%20cotton%20leaves%20showing%20circular%20brown%20spots%20with%20concentric%20rings%2C%20spots%20drying%20up%20and%20falling%20leaving%20shot-hole%20appearance%20in%20leaves.%20Natural%20farm%20daylight%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/cotton_alternaria.jpg',
     season: 'Kharif',
     created_at: new Date().toISOString(),
   },
@@ -293,7 +293,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Plant resistant varieties (IR 36, IR 64), reduce nitrogen application, drain field water.',
     treatment: 'Spray Buprofezin 25 SC @ 1ml/litre or Pymetrozine 50 WG @ 0.3g/litre.',
     organic_solution: 'Spray Neem oil 5ml/litre near plant base; install light traps to monitor pest pressure.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Paddy%20rice%20field%20with%20Brown%20Planthopper%20Nilaparvata%20lugens%20infestation.%20Show%20circular%20scorched%20hopper%20burn%20patches%20where%20plants%20have%20dried%20up%20and%20collapsed%2C%20brown%20planthopper%20insects%20clustered%20at%20stem%20base%2C%20surrounding%20healthy%20green%20rice%20for%20contrast.%20Natural%20daylight%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/paddy_bph.jpg',
     season: 'Kharif',
     created_at: new Date().toISOString(),
   },
@@ -538,7 +538,7 @@ export default function Diseases() {
             >
               <Card className="overflow-hidden cursor-pointer hover:shadow-xl transition-all hover:-translate-y-1 group">
                 <div className="relative h-44">
-                  <CropImage src={disease.image_url} alt={disease.disease_name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <CropImage src={disease.image_url} alt={`${disease.crop_name} ${disease.disease_name}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
                   <div className="absolute bottom-3 left-3 right-3">
                     <div className="flex items-center gap-2 mb-1.5">
@@ -584,7 +584,7 @@ export default function Diseases() {
               className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800"
             >
               <div className="relative h-56">
-                <CropImage src={selected.image_url} alt={selected.disease_name} className="w-full h-full object-cover" />
+                <CropImage src={selected.image_url} alt={`${selected.crop_name} ${selected.disease_name}`} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
                 <button
                   onClick={() => setSelected(null)}
