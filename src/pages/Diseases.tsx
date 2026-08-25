@@ -20,7 +20,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Avoid excess nitrogen fertilizer, use blast-resistant varieties (IR 64, CO 51), seed treatment with Carbendazim.',
     treatment: 'Spray Tricyclazole 75 WP @ 120g/acre or Isoprothiolane 40 EC @ 300ml/acre.',
     organic_solution: 'Spray Pseudomonas fluorescens @ 1 kg/acre or 5% Neem seed kernel extract (NSKE).',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Rice%20paddy%20plant%20with%20Blast%20Disease%20Magnaporthe%20oryzae.%20Macro%20view%20of%20infected%20rice%20leaves%20showing%20spindle-shaped%20diamond%20spots%20with%20grey-white%20necrotic%20center%20and%20dark%20brown%20margins.%20Natural%20daylight%2C%20paddy%20field%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/paddy_blast.jpg',
     season: 'Kharif',
     created_at: new Date().toISOString(),
   },
