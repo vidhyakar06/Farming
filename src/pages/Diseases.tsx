@@ -163,7 +163,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Remove and destroy infected leaves, maintain proper spacing for airflow.',
     treatment: 'Spray Propiconazole 25 EC @ 1ml/litre or Mancozeb 75 WP @ 2.5g/litre at 3-week intervals.',
     organic_solution: 'Spray Bordeaux mixture (1%) or Neem oil 5ml/litre every 15 days.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Banana%20plant%20with%20Sigatoka%20Leaf%20Spot%20Mycosphaerella%20musicola.%20Show%20pale%20yellow%20narrow%20streaks%20on%20young%20banana%20leaves%20progressing%20to%20brown-black%20oval%20elliptical%20spots%20with%20yellow%20halo%2C%20premature%20leaf%20death%20and%20drying%20of%20entire%20leaf.%20Natural%20farm%20daylight%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/banana_sigatoka.jpg',
     season: 'All Season',
     created_at: new Date().toISOString(),
   },
