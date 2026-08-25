@@ -21,7 +21,7 @@ interface GalleryItem {
 }
 
 const BUILTIN_CROPS: GalleryItem[] = [
-  { id: 'g-paddy', name: 'Paddy (Rice)', subtitle: 'Oryza sativa', tag: 'Cereal', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1536617621572-1d5f1e6269a0?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-paddy', name: 'Paddy (Rice)', subtitle: 'Oryza sativa', tag: 'Cereal', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&auto=format&fit=crop&q=80' },
   { id: 'g-wheat', name: 'Wheat', subtitle: 'Triticum aestivum', tag: 'Cereal', season: 'Rabi', type: 'crop', image_url: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80' },
   { id: 'g-tomato', name: 'Tomato', subtitle: 'Solanum lycopersicum', tag: 'Vegetable', season: 'All Season', type: 'crop', image_url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80' },
   { id: 'g-cotton', name: 'Cotton', subtitle: 'Gossypium hirsutum', tag: 'Cash Crop', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1594488555776-8809ff44f24b?w=600&auto=format&fit=crop&q=80' },
