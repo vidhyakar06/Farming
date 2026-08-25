@@ -13,7 +13,6 @@ import { Input } from '../components/ui/Input';
 
 export default function Settings() {
   const { theme, toggleTheme } = useTheme();
-  const { session } = useAuth();
   const { showToast } = useToast();
   const { language, setLanguage, t } = useLanguage();
 
@@ -194,7 +193,7 @@ export default function Settings() {
               />
               <Button
                 onClick={handleChangePassword}
-                isLoading={savingPassword}
+                disabled={savingPassword}
                 icon={<Save className="w-4 h-4" />}
                 className="w-full"
               >

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  LayoutDashboard, Sprout, Cloud, TrendingUp, Users, Bell,
-  MapPin, Calendar, ArrowRight, Sun, Droplets, Wind,
+  LayoutDashboard, Sprout, TrendingUp, Users,
+  Calendar, ArrowRight, Sun, Droplets, Wind,
 } from 'lucide-react';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, PointElement,

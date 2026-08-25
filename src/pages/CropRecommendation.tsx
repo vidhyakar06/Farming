@@ -179,9 +179,9 @@ export default function CropRecommendation() {
         <Card className="p-6 mb-6">
           <EmptyState
             icon={<Sprout className="w-10 h-10" />}
-            title="No Farm Details Added Yet"
-            message="Please add your farm details first to get personalized crop suggestions."
-            action={<Button onClick={() => navigate('/farm-details')}>Add Farm Details</Button>}
+            title={t('farm.title')}
+            message={t('farm.subtitle')}
+            action={<Button onClick={() => navigate('/farm-details')}>{t('farm.title')}</Button>}
           />
         </Card>
       )}
@@ -224,7 +224,7 @@ export default function CropRecommendation() {
           <div className="mb-6">
             <input
               type="text"
-              placeholder="Search crops..."
+              placeholder={t('common.search')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="input-field max-w-md"
@@ -242,7 +242,7 @@ export default function CropRecommendation() {
                   <div className="relative h-40">
                     <CropImage src={rec.image_url} alt={rec.crop_name} className="w-full h-full object-cover" />
                     <div className="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur text-xs font-bold text-primary-600">
-                      {rec.confidence}% match
+                      {rec.confidence}% {t('dash.match')}
                     </div>
                   </div>
                   <div className="p-5">
@@ -269,13 +269,13 @@ export default function CropRecommendation() {
                       </div>
                       <div className="flex items-start gap-1.5 text-xs text-slate-600 dark:text-slate-300 mt-2">
                         <FileText className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
-                        <span>Yield: {rec.expected_yield}</span>
+                        <span>{t('crop.yield')}: {rec.expected_yield}</span>
                       </div>
                     </div>
                     {/* Confidence bar */}
                     <div className="mt-4">
                       <div className="flex justify-between text-xs mb-1">
-                        <span className="text-slate-500">Match Score</span>
+                        <span className="text-slate-500">{t('crop.confidence')}</span>
                         <span className="font-semibold text-primary-600">{rec.confidence}%</span>
                       </div>
                       <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">

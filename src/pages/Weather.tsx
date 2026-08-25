@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Cloud, Sun, CloudRain, Wind, Droplets, Thermometer,
+  Cloud, Sun, CloudRain, Wind, Droplets,
   MapPin, Search, Eye, Gauge, Sunrise, Sunset, Navigation, X, Loader2, AlertTriangle,
 } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
@@ -14,10 +14,6 @@ import {
   fetchWeather, searchLocation, getCurrentPosition, reverseGeocode, isRainCode, locationLabel,
   type WeatherData, type GeoLocation, type LocationSource,
 } from '../lib/weather';
-
-const weatherIcons: Record<string, typeof Sun> = {
-  '01d': Sun, '02d': Cloud, '03d': Cloud, '09d': CloudRain, '10d': CloudRain, '11d': CloudRain, '13d': Cloud, '50d': Cloud,
-};
 
 function WeatherIcon({ code, className }: { code: number; className?: string }) {
   const iconMap: Record<number, typeof Sun> = {
@@ -275,7 +271,9 @@ export default function Weather() {
               )}
             </div>
             <Button onClick={() => suggestions[0] && handleSelectSuggestion(suggestions[0])} icon={<Search className="w-4 h-4" />}>Search</Button>
-            <Button variant="outline" onClick={loadDetectedLocation} icon={<Navigation className="w-4 h-4" />} title="Find my location">Find Me</Button>
+            <div title="Find my location">
+              <Button variant="outline" onClick={loadDetectedLocation} icon={<Navigation className="w-4 h-4" />}>Find Me</Button>
+            </div>
 
             <AnimatePresence>
               {showSuggestions && suggestions.length > 0 && (

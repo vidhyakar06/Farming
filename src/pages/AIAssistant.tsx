@@ -53,12 +53,12 @@ export default function AIAssistant() {
 
   // Quick topics pills
   const topicPills: TopicPill[] = [
-    { label: language === 'ta' ? '🌾 நெல் சாகுபடி' : language === 'hi' ? '🌾 धान की खेती' : '🌾 Paddy Guide', query: language === 'ta' ? 'நெல் சாகுபடி மற்றும் உர மேலாண்மை' : language === 'hi' ? 'धान की खेती और खाद' : 'Paddy cultivation and fertilizer guide', icon: Wheat },
-    { label: language === 'ta' ? '🍅 தக்காளி நோய்' : language === 'hi' ? '🍅 टमाटर रोग' : '🍅 Tomato Care', query: language === 'ta' ? 'தக்காளி இலைச்சுருள் மற்றும் கருகல் நோய் கட்டுப்பாடு' : language === 'hi' ? 'टमाटर की पत्ती मरोड़ बीमारी' : 'Tomato leaf curl and blight disease remedies', icon: Sprout },
-    { label: language === 'ta' ? '🧪 உர அளவு (NPK)' : language === 'hi' ? '🧪 उर्वरक (NPK)' : '🧪 NPK Fertilizer', query: language === 'ta' ? 'யுரியா, டிஏபி மற்றும் பொட்டாஷ் உரம் எப்படி பயன்படுத்த வேண்டும்' : language === 'hi' ? 'यूरिया और डीएपी खाद की सही मात्रा' : 'How to balance Urea, DAP, and MOP fertilizers', icon: FlaskConical },
-    { label: language === 'ta' ? '🌿 இயற்கை பூச்சி மருந்து' : language === 'hi' ? '🌿 जैविक कीटनाशक' : '🌿 Organic Pest', query: language === 'ta' ? 'வேப்பெண்ணெய் மற்றும் அக்னி அஸ்திரம் தயாரிக்கும் முறை' : language === 'hi' ? 'नीम तेल और अग्निअस्त्र बनाने की विधि' : 'Natural pest control and neem oil spray method', icon: Bug },
-    { label: language === 'ta' ? '🏛️ அரசு மானியங்கள்' : language === 'hi' ? '🏛️ सरकारी योजना' : '🏛️ Govt Schemes', query: language === 'ta' ? 'PM KISAN மற்றும் சொட்டு நீர் பாசன அரசு மானியங்கள்' : language === 'hi' ? 'पीएम किसान और ड्रिप सब्सिडी' : 'PM KISAN and drip irrigation government subsidies', icon: Landmark },
-    { label: language === 'ta' ? '📈 சந்தை விலை உத்திகள்' : language === 'hi' ? '📈 मंडी भाव' : '📈 Mandi Advice', query: language === 'ta' ? 'விவசாய விளைபொருட்களை அதிக விலைக்கு விற்பது எப்படி' : language === 'hi' ? 'मंडी में फसल का अच्छा भाव कैसे पाएं' : 'How to get best mandi prices and e-NAM trading', icon: TrendingUp },
+    { label: t('ai.pillPaddy'), query: language === 'ta' ? 'நெல் சாகுபடி மற்றும் உர மேலாண்மை' : language === 'hi' ? 'धान की खेती और खाद' : language === 'te' ? 'వరి సాగు మరియు ఎరువులు' : language === 'es' ? 'Cultivo y fertilización de arroz' : 'Paddy cultivation and fertilizer guide', icon: Wheat },
+    { label: t('ai.pillTomato'), query: language === 'ta' ? 'தக்காளி இலைச்சுருள் மற்றும் கருகல் நோய் கட்டுப்பாடு' : language === 'hi' ? 'टमाटर की पत्ती मरोड़ बीमारी' : language === 'te' ? 'టమోటా తెగుళ్ల నివారణ' : language === 'es' ? 'Plagas y enfermedades del tomate' : 'Tomato leaf curl and blight disease remedies', icon: Sprout },
+    { label: t('ai.pillFertilizer'), query: language === 'ta' ? 'யுரியா, டிஏபி மற்றும் பொட்டாஷ் உரம் எப்படி பயன்படுத்த வேண்டும்' : language === 'hi' ? 'यूरिया और डीएपी खाद की सही मात्रा' : language === 'te' ? 'యూరియా, డీఏపీ మోతాదు' : language === 'es' ? 'Balance de fertilizantes NPK' : 'How to balance Urea, DAP, and MOP fertilizers', icon: FlaskConical },
+    { label: t('ai.pillPest'), query: language === 'ta' ? 'வேப்பெண்ணெய் மற்றும் அக்னி அஸ்திரம் தயாரிக்கும் முறை' : language === 'hi' ? 'नीम तेल और अग्निअस्त्र बनाने की विधि' : language === 'te' ? 'వేప నూనె మరియు అగ్నిఅస్త్రం' : language === 'es' ? 'Insecticidas y biofungicidas orgánicos' : 'Natural pest control and neem oil spray method', icon: Bug },
+    { label: t('ai.pillSchemes'), query: language === 'ta' ? 'PM KISAN மற்றும் சொட்டு நீர் பாசன அரசு மானியங்கள்' : language === 'hi' ? 'पीएम किसान और ड्रिप सब्सिडी' : language === 'te' ? 'పీఎం కిసాన్ మరియు సబ్సిడీలు' : language === 'es' ? 'Subsidios y créditos agrícolas' : 'PM KISAN and drip irrigation government subsidies', icon: Landmark },
+    { label: t('ai.pillMandi'), query: language === 'ta' ? 'விவசாய விளைபொருட்களை அதிக விலைக்கு விற்பது எப்படி' : language === 'hi' ? 'मंडी में फसल का अच्छा भाव कैसे पाएं' : language === 'te' ? 'మార్కెట్ ధరలు మరియు లాభాలు' : language === 'es' ? 'Mejores precios de venta en mercado' : 'How to get best mandi prices and e-NAM trading', icon: TrendingUp },
   ];
 
   // Initialize Speech Recognition
@@ -109,7 +109,7 @@ export default function AIAssistant() {
 
   const toggleVoiceInput = () => {
     if (!recognitionRef.current) {
-      showToast('Voice input is not supported in this browser', 'error');
+      showToast(t('ai.voiceError'), 'error');
       return;
     }
     if (isListening) {
@@ -119,7 +119,7 @@ export default function AIAssistant() {
       try {
         recognitionRef.current.start();
         setIsListening(true);
-        showToast('Listening... Speak your farming question', 'info');
+        showToast(t('ai.listening'), 'info');
       } catch (err) {
         setIsListening(false);
       }
@@ -161,7 +161,7 @@ export default function AIAssistant() {
   const handleCopy = (text: string, msgId: string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(msgId);
-    showToast('Copied to clipboard', 'success');
+    showToast(t('common.copied'), 'success');
     setTimeout(() => setCopiedId(null), 2000);
   };
 
@@ -192,7 +192,7 @@ export default function AIAssistant() {
 
       setMessages((prev) => [...prev, assistantMsg]);
     } catch {
-      showToast('Error getting AI response', 'error');
+      showToast(t('common.error'), 'error');
     } finally {
       setTyping(false);
     }
@@ -204,7 +204,7 @@ export default function AIAssistant() {
       setSpeakingId(null);
     }
     setMessages([]);
-    showToast('Chat history cleared', 'info');
+    showToast(t('common.clearChat'), 'info');
   };
 
   return (
@@ -219,9 +219,9 @@ export default function AIAssistant() {
               variant="ghost"
               onClick={handleClear}
               icon={<Trash2 className="w-4 h-4 text-red-500" />}
-              className="hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600"
+              className="hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600 font-medium"
             >
-              Clear Chat
+              {t('common.clearChat')}
             </Button>
           ) : undefined
         }
@@ -310,7 +310,7 @@ export default function AIAssistant() {
                         msg.role === 'user' ? 'text-primary-100' : 'text-primary-600 dark:text-primary-400'
                       }`}
                     >
-                      {msg.role === 'user' ? 'You' : 'Agri AI Assistant'}
+                      {msg.role === 'user' ? t('header.myProfile') : t('ai.title')}
                     </span>
                     <span
                       className={`text-[10px] ${
@@ -331,7 +331,7 @@ export default function AIAssistant() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => handleSpeak(msg.content, msg.id)}
-                          title="Read Aloud"
+                          title={t('ai.readAloud')}
                           className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors"
                         >
                           {speakingId === msg.id ? (
@@ -342,7 +342,7 @@ export default function AIAssistant() {
                         </button>
                         <button
                           onClick={() => handleCopy(msg.content, msg.id)}
-                          title="Copy Answer"
+                          title={t('ai.copyAnswer')}
                           className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors"
                         >
                           {copiedId === msg.id ? (
@@ -394,7 +394,7 @@ export default function AIAssistant() {
                 <span className="w-2 h-2 rounded-full bg-primary-500 animate-bounce" />
                 <span className="w-2 h-2 rounded-full bg-primary-500 animate-bounce [animation-delay:0.2s]" />
                 <span className="w-2 h-2 rounded-full bg-primary-500 animate-bounce [animation-delay:0.4s]" />
-                <span className="text-xs text-slate-400 ml-1">Analyzing farming data...</span>
+                <span className="text-xs text-slate-400 ml-1">{t('ai.analyzing')}</span>
               </div>
             </motion.div>
           )}
@@ -413,7 +413,7 @@ export default function AIAssistant() {
             <button
               type="button"
               onClick={toggleVoiceInput}
-              title={isListening ? 'Stop listening' : 'Voice search'}
+              title={isListening ? t('common.cancel') : t('ai.listening')}
               className={`p-2.5 rounded-2xl transition-all ${
                 isListening
                   ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/30'

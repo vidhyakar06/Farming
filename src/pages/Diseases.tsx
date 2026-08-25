@@ -438,7 +438,7 @@ export default function Diseases() {
           icon={<Upload className="w-4 h-4" />}
           className="shrink-0 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-md shadow-emerald-500/20"
         >
-          Inspect Crop Image
+          {t('diseases.inspectBtn')}
         </Button>
         <input
           type="file"
@@ -474,7 +474,7 @@ export default function Diseases() {
                   {isAnalyzing && (
                     <div className="flex items-center gap-2 text-emerald-600 font-medium">
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Analyzing crop health...
+                      {t('diseases.analyzing')}
                     </div>
                   )}
                 </div>
@@ -482,7 +482,7 @@ export default function Diseases() {
                 <div className="md:col-span-3">
                   <div className="flex items-center gap-2 mb-4 text-emerald-700 dark:text-emerald-400">
                     <Sparkles className="w-5 h-5" />
-                    <h3 className="text-xl font-bold">AI Diagnosis Report</h3>
+                    <h3 className="text-xl font-bold">{t('diseases.diagnosisTitle')}</h3>
                   </div>
                   
                   <div className="bg-white/60 dark:bg-slate-900/60 rounded-2xl p-5 min-h-[250px] shadow-inner ring-1 ring-black/5 dark:ring-white/5">
@@ -494,7 +494,7 @@ export default function Diseases() {
                         >
                           <Sprout className="w-12 h-12 text-emerald-500" />
                         </motion.div>
-                        <p>Our AI is examining the leaves for pathogens...</p>
+                        <p>{t('diseases.examiningLeaves')}</p>
                       </div>
                     ) : aiDiagnosis ? (
                       <div className="prose prose-sm dark:prose-invert max-w-none prose-emerald prose-p:leading-relaxed prose-li:marker:text-emerald-500">
@@ -524,7 +524,7 @@ export default function Diseases() {
 
       {filtered.length === 0 ? (
         <Card className="p-6">
-          <EmptyState icon={<Bug className="w-10 h-10" />} title={t('diseases.title')} message={t('common.search')} />
+          <EmptyState icon={<Bug className="w-10 h-10" />} title={t('diseases.emptyTitle')} message={t('diseases.emptyMsg')} />
         </Card>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -557,7 +557,7 @@ export default function Diseases() {
                 <div className="p-4">
                   <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">{disease.symptoms}</p>
                   <div className="flex items-center gap-1.5 text-xs text-primary-600 font-bold mt-4 tracking-wide uppercase">
-                    <Eye className="w-4 h-4" /> View Treatment Guide
+                    <Eye className="w-4 h-4" /> {t('diseases.viewGuide')}
                   </div>
                 </div>
               </Card>
@@ -613,7 +613,7 @@ export default function Diseases() {
                     <AlertCircle className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="text-base font-bold text-slate-800 dark:text-white">Symptoms to Look For</h4>
+                    <h4 className="text-base font-bold text-slate-800 dark:text-white">{t('diseases.symptoms')}</h4>
                     <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">{selected.symptoms}</p>
                   </div>
                 </div>
@@ -623,7 +623,7 @@ export default function Diseases() {
                     <Bug className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="text-base font-bold text-slate-800 dark:text-white">Primary Causes</h4>
+                    <h4 className="text-base font-bold text-slate-800 dark:text-white">{t('diseases.causes')}</h4>
                     <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">{selected.causes}</p>
                   </div>
                 </div>
@@ -633,7 +633,7 @@ export default function Diseases() {
                     <Shield className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="text-base font-bold text-slate-800 dark:text-white">Prevention Steps</h4>
+                    <h4 className="text-base font-bold text-slate-800 dark:text-white">{t('diseases.prevention')}</h4>
                     <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">{selected.prevention}</p>
                   </div>
                 </div>
@@ -642,7 +642,7 @@ export default function Diseases() {
                   <div className="bg-purple-50/50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-900/30 rounded-2xl p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <FlaskRound className="w-5 h-5 text-purple-600" />
-                      <h4 className="font-bold text-purple-900 dark:text-purple-300">Chemical Treatment</h4>
+                      <h4 className="font-bold text-purple-900 dark:text-purple-300">{t('diseases.chemical')}</h4>
                     </div>
                     <p className="text-sm text-purple-800/80 dark:text-purple-300/80 leading-relaxed">{selected.treatment}</p>
                   </div>
@@ -650,7 +650,7 @@ export default function Diseases() {
                   <div className="bg-green-50/50 dark:bg-green-900/10 border border-green-100 dark:border-green-900/30 rounded-2xl p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <Leaf className="w-5 h-5 text-green-600" />
-                      <h4 className="font-bold text-green-900 dark:text-green-300">Organic Solution</h4>
+                      <h4 className="font-bold text-green-900 dark:text-green-300">{t('diseases.organic')}</h4>
                     </div>
                     <p className="text-sm text-green-800/80 dark:text-green-300/80 leading-relaxed">{selected.organic_solution}</p>
                   </div>

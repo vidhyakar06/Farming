@@ -9,7 +9,6 @@ import { useLanguage } from '../context/LanguageContext';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import { Select } from '../components/ui/Input';
 import { EmptyState, LoadingSpinner } from '../components/ui/Loading';
 
 export default function FertilizerRecommendation() {

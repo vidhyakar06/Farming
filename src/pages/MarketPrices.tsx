@@ -157,7 +157,7 @@ export default function MarketPrices() {
               <Flame className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Top Gainer Today</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{t('market.topGainer')}</p>
               <p className="text-sm font-bold text-slate-800 dark:text-white truncate max-w-[150px]">
                 {stats.topGainer ? stats.topGainer.crop_name : '—'}
               </p>
@@ -174,11 +174,11 @@ export default function MarketPrices() {
               <Scale className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Average Mandi Rate</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{t('market.avgRate')}</p>
               <p className="text-sm font-bold text-slate-800 dark:text-white">
                 ₹{stats.avgPrice.toLocaleString()}
               </p>
-              <span className="text-[11px] text-slate-400">Across {prices.length} commodities</span>
+              <span className="text-[11px] text-slate-400">({prices.length} {t('common.items')})</span>
             </div>
           </Card>
         </motion.div>
@@ -189,11 +189,11 @@ export default function MarketPrices() {
               <Building2 className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Active Mandis</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{t('market.activeMandis')}</p>
               <p className="text-sm font-bold text-slate-800 dark:text-white">
-                {stats.totalMarkets} Markets
+                {stats.totalMarkets} {t('market.marketName')}
               </p>
-              <span className="text-[11px] text-slate-400">TN, PB, MP, GJ, AP & more</span>
+              <span className="text-[11px] text-slate-400">TN, PB, MP, GJ, AP</span>
             </div>
           </Card>
         </motion.div>
@@ -204,12 +204,12 @@ export default function MarketPrices() {
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Market Sentiment</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{t('market.sentiment')}</p>
               <p className="text-sm font-bold text-slate-800 dark:text-white">
-                {stats.upCount} Bullish / {prices.length - stats.upCount} Bearish
+                {stats.upCount} {t('market.bullish')} / {prices.length - stats.upCount} {t('market.bearish')}
               </p>
               <span className="text-[11px] text-emerald-600 font-medium">
-                {Math.round((stats.upCount / (prices.length || 1)) * 100)}% Positive Trend
+                {Math.round((stats.upCount / (prices.length || 1)) * 100)}% {t('market.bullish')}
               </span>
             </div>
           </Card>
@@ -239,7 +239,7 @@ export default function MarketPrices() {
               setPage(1);
             }}
             options={[
-              { value: '', label: 'All Mandis / Markets' },
+              { value: '', label: t('market.allMandis') },
               ...markets.map((m) => ({ value: m, label: m })),
             ]}
           />
@@ -255,7 +255,7 @@ export default function MarketPrices() {
             />
             <button
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-              title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
+              title={t('common.action')}
               className="px-3.5 rounded-xl border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
             >
               <ArrowUpDown className="w-4 h-4" />
@@ -268,8 +268,8 @@ export default function MarketPrices() {
         <Card className="p-6">
           <EmptyState
             icon={<TrendingUp className="w-10 h-10" />}
-            title="No Matching Market Prices"
-            message="Try searching for a different crop name like Tomato, Paddy, Onion, or Cotton."
+            title={t('market.emptyTitle')}
+            message={t('market.emptyMsg')}
           />
         </Card>
       ) : (
@@ -281,9 +281,9 @@ export default function MarketPrices() {
                 <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                   <th className="text-left px-6 py-4">{t('market.commodity')}</th>
                   <th className="text-left px-6 py-4">{t('market.marketName')}</th>
-                  <th className="text-right px-6 py-4">{t('market.modalPrice')} (₹/qtl)</th>
-                  <th className="text-right px-6 py-4">Previous Price</th>
-                  <th className="text-center px-6 py-4">24h Trend</th>
+                  <th className="text-right px-6 py-4">{t('market.modalPrice')}</th>
+                  <th className="text-right px-6 py-4">{t('market.prevPrice')}</th>
+                  <th className="text-center px-6 py-4">{t('market.trend24h')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
@@ -318,7 +318,7 @@ export default function MarketPrices() {
                         <span className="text-base font-bold text-slate-900 dark:text-white">
                           ₹{item.current_price.toLocaleString()}
                         </span>
-                        <span className="text-[11px] text-slate-400 block">per quintal</span>
+                        <span className="text-[11px] text-slate-400 block">{t('common.perQuintal')}</span>
                       </td>
                       <td className="px-6 py-4 text-right text-xs text-slate-500 dark:text-slate-400">
                         {item.previous_price ? `₹${item.previous_price.toLocaleString()}` : '—'}
@@ -337,7 +337,7 @@ export default function MarketPrices() {
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium">
-                              Stable (0%)
+                              {t('market.stable')} (0%)
                             </span>
                           )}
                         </div>
@@ -353,9 +353,9 @@ export default function MarketPrices() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30">
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Showing <span className="font-semibold">{(page - 1) * pageSize + 1}</span> to{' '}
-                <span className="font-semibold">{Math.min(page * pageSize, filtered.length)}</span> of{' '}
-                <span className="font-semibold">{filtered.length}</span> mandi rates
+                {t('common.showing')} <span className="font-semibold">{(page - 1) * pageSize + 1}</span> {t('common.to')}{' '}
+                <span className="font-semibold">{Math.min(page * pageSize, filtered.length)}</span> {t('common.of')}{' '}
+                <span className="font-semibold">{filtered.length}</span> {t('common.items')}
               </p>
               <div className="flex gap-2">
                 <button
@@ -363,14 +363,14 @@ export default function MarketPrices() {
                   disabled={page === 1}
                   className="px-3.5 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 disabled:opacity-40 transition-colors"
                 >
-                  Previous
+                  {t('common.previous')}
                 </button>
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
                   className="px-3.5 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 disabled:opacity-40 transition-colors"
                 >
-                  Next
+                  {t('common.next')}
                 </button>
               </div>
             </div>

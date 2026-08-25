@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Sun, Moon, Menu, X, Sprout, User, LogOut, Settings, Bell, Globe, Check,
+  Sun, Moon, Menu, Sprout, User, LogOut, Settings, Bell, Globe, Check,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';

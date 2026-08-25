@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  FileBarChart, Download, FileText, TrendingUp, Sprout, Users,
+  FileBarChart, Download, FileText, TrendingUp, Sprout,
   Calendar, MapPin,
 } from 'lucide-react';
 import jsPDF from 'jspdf';

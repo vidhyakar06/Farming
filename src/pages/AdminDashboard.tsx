@@ -11,7 +11,7 @@ import { useToast } from '../context/ToastContext';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import { Input, Select } from '../components/ui/Input';
+import { Input } from '../components/ui/Input';
 import { LoadingSpinner, EmptyState } from '../components/ui/Loading';
 
 type Tab = 'overview' | 'crops' | 'farmers' | 'diseases' | 'fertilizers' | 'market';

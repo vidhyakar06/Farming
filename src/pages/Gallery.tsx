@@ -5,6 +5,7 @@ import {
   Calendar, Leaf, ZoomIn, Filter,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useLanguage } from '../context/LanguageContext';
 import PageHeader from '../components/ui/PageHeader';
 import CropImage from '../components/ui/CropImage';
 import { LoadingSpinner } from '../components/ui/Loading';
@@ -66,6 +67,7 @@ const DISEASE_TAGS = ['All', 'Paddy', 'Tomato', 'Wheat', 'Cotton', 'Maize', 'Chi
 type Tab = 'crops' | 'diseases';
 
 export default function Gallery() {
+  const { t } = useLanguage();
   const [tab, setTab] = useState<Tab>('crops');
   const [loading, setLoading] = useState(true);
   const [allCrops, setAllCrops] = useState<GalleryItem[]>(BUILTIN_CROPS);
@@ -125,7 +127,7 @@ export default function Gallery() {
               name: d.disease_name,
               subtitle: d.crop_name || '',
               tag: d.crop_name || 'General',
-              season: d.season || matchingBuiltin?.season || '',
+              season: matchingBuiltin?.season || '',
               type: 'disease' as const,
               image_url: isValidUrl ? d.image_url : (matchingBuiltin?.image_url || ''),
             };
@@ -169,8 +171,8 @@ export default function Gallery() {
     setSelected(filtered[newIdx]);
   };
 
-  const handleTabChange = (t: Tab) => {
-    setTab(t);
+  const handleTabChange = (newTab: Tab) => {
+    setTab(newTab);
     setActiveTag('All');
     setSearch('');
   };
@@ -178,8 +180,8 @@ export default function Gallery() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Image Gallery"
-        subtitle="Browse beautiful crop photos and disease identification images"
+        title={t('gallery.title')}
+        subtitle={t('gallery.subtitle')}
         icon={<Images className="w-6 h-6 text-primary-500" />}
       />
 
@@ -194,7 +196,7 @@ export default function Gallery() {
           }`}
         >
           <Sprout className="w-4 h-4" />
-          🌾 Crops ({allCrops.length})
+          🌾 {t('gallery.cropsTab')} ({allCrops.length})
         </button>
         <button
           onClick={() => handleTabChange('diseases')}
@@ -205,7 +207,7 @@ export default function Gallery() {
           }`}
         >
           <Bug className="w-4 h-4" />
-          🐛 Diseases ({allDiseases.length})
+          🐛 {t('gallery.diseasesTab')} ({allDiseases.length})
         </button>
       </div>
 
@@ -217,13 +219,13 @@ export default function Gallery() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={`Search ${tab === 'crops' ? 'crops by name, type...' : 'diseases, crop name...'}`}
+            placeholder={t('gallery.searchPlaceholder')}
             className="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
         </div>
         <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 px-1">
           <Filter className="w-4 h-4" />
-          <span>{filtered.length} items</span>
+          <span>{filtered.length} {t('common.items')}</span>
         </div>
       </div>
 
