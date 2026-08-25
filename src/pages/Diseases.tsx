@@ -288,8 +288,9 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Crop rotation, use certified seeds, remove crop debris, stake plants for airflow.',
     treatment: 'Spray Chlorothalonil 75 WP @ 2g/litre or Azoxystrobin 23 SC @ 1ml/litre.',
     organic_solution: 'Spray Trichoderma viride @ 5g/litre or Copper Oxychloride 3g/litre every 10-14 days.',
-    image_url: '/images/diseases/ftcdn_451908727.jpg',
+    image_url: '/images/diseases/tomato_early_blight_lucid.jpg',
     images: [
+      '/images/diseases/tomato_early_blight_lucid.jpg',
       '/images/diseases/ftcdn_451908727.jpg',
       '/images/diseases/tomato_early_blight.jpg'
     ],
