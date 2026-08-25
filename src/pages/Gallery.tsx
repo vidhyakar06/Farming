@@ -22,7 +22,7 @@ interface GalleryItem {
 }
 
 const BUILTIN_CROPS: GalleryItem[] = [
-  { id: 'g-paddy', name: 'Paddy (Rice)', subtitle: 'Oryza sativa', tag: 'Cereal', season: 'Kharif', type: 'crop', image_url: 'https://cdn.pixabay.com/photo/2022/06/29/06/41/paddy-crops-7291074_640.jpg' },
+  { id: 'g-paddy', name: 'Paddy (Rice)', subtitle: 'Oryza sativa', tag: 'Cereal', season: 'Kharif', type: 'crop', image_url: 'https://cdn.pixabay.com/photo/2017/07/25/01/22/rice-2536817_640.jpg' },
   { id: 'g-wheat', name: 'Wheat', subtitle: 'Triticum aestivum', tag: 'Cereal', season: 'Rabi', type: 'crop', image_url: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80' },
   { id: 'g-tomato', name: 'Tomato', subtitle: 'Solanum lycopersicum', tag: 'Vegetable', season: 'All Season', type: 'crop', image_url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80' },
   { id: 'g-cotton', name: 'Cotton', subtitle: 'Gossypium hirsutum', tag: 'Cash Crop', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1594488555776-8809ff44f24b?w=600&auto=format&fit=crop&q=80' },
@@ -86,30 +86,24 @@ export default function Gallery() {
           supabase.from('diseases').select('id, disease_name, crop_name, image_url, symptoms').order('crop_name'),
         ]);
 
+        // Always use BUILTIN_CROPS as source of truth (guaranteed working images)
+        // Optionally enrich with DB metadata (scientific name, season) but never override images
         if (cropRes.data && cropRes.data.length > 0) {
-          const dbCrops: GalleryItem[] = cropRes.data.map((c) => {
-            const matchingBuiltin = BUILTIN_CROPS.find(
-              (b) =>
-                b.name.toLowerCase().includes(c.crop_name.toLowerCase()) ||
-                c.crop_name.toLowerCase().includes(b.name.toLowerCase().split(' ')[0])
+          const enriched = BUILTIN_CROPS.map((builtin) => {
+            const dbMatch = cropRes.data!.find(
+              (c) =>
+                builtin.name.toLowerCase().includes(c.crop_name.toLowerCase()) ||
+                c.crop_name.toLowerCase().includes(builtin.name.toLowerCase().split(' ')[0])
             );
-            const isValidUrl = c.image_url && c.image_url.startsWith('http') && !c.image_url.includes('1536617621572');
             return {
-              id: c.id,
-              name: c.crop_name,
-              subtitle: c.scientific_name || matchingBuiltin?.subtitle || '',
-              tag: matchingBuiltin?.tag || 'Crop',
-              season: c.suitable_season || matchingBuiltin?.season || 'All Season',
-              type: 'crop' as const,
-              // Always prefer the builtin curated image; fall back to DB image only if no builtin match
-              image_url: matchingBuiltin?.image_url || (isValidUrl ? c.image_url : ''),
+              ...builtin,
+              id: dbMatch?.id || builtin.id,
+              subtitle: dbMatch?.scientific_name || builtin.subtitle,
+              season: dbMatch?.suitable_season || builtin.season,
+              // image_url stays from builtin - never from DB
             };
           });
-
-          // Ensure any built-in crops not in DB are also included
-          const existingNames = new Set(dbCrops.map((c) => c.name.toLowerCase()));
-          const extraCrops = BUILTIN_CROPS.filter((b) => !existingNames.has(b.name.toLowerCase()));
-          setAllCrops([...dbCrops, ...extraCrops]);
+          setAllCrops(enriched);
         } else {
           setAllCrops(BUILTIN_CROPS);
         }
