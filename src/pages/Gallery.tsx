@@ -101,7 +101,8 @@ export default function Gallery() {
               tag: matchingBuiltin?.tag || 'Crop',
               season: c.suitable_season || matchingBuiltin?.season || 'All Season',
               type: 'crop' as const,
-              image_url: isValidUrl ? c.image_url : (matchingBuiltin?.image_url || ''),
+              // Always prefer the builtin curated image; fall back to DB image only if no builtin match
+              image_url: matchingBuiltin?.image_url || (isValidUrl ? c.image_url : ''),
             };
           });
 
