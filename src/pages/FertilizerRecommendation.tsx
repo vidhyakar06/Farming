@@ -5,6 +5,7 @@ import { FlaskConical, Search, AlertTriangle, Beaker, Info } from 'lucide-react'
 import { supabase, type Fertilizer, type FarmDetail } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { useLanguage } from '../context/LanguageContext';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -14,6 +15,7 @@ import { EmptyState, LoadingSpinner } from '../components/ui/Loading';
 export default function FertilizerRecommendation() {
   const { session } = useAuth();
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [farmData, setFarmData] = useState<FarmDetail | null>(null);
@@ -60,11 +62,13 @@ export default function FertilizerRecommendation() {
     const result = matched.length > 0 ? matched : fertilizers.filter((f) => f.soil_condition?.includes('All'));
     setRecommended(result);
     setSoilCondition(conditions.join(', '));
-    showToast(`Found ${result.length} fertilizer recommendations`, 'success');
+    showToast(`Found ${result.length} fertilizer suggestions`, 'success');
   };
 
-  const filtered = recommended.filter((f) =>
-    f.fertilizer_name.toLowerCase().includes(search.toLowerCase())
+  const filtered = recommended.filter(
+    (f) =>
+      f.fertilizer_name.toLowerCase().includes(search.toLowerCase()) ||
+      f.soil_condition?.toLowerCase().includes(search.toLowerCase())
   );
 
   if (loading) {
@@ -78,10 +82,10 @@ export default function FertilizerRecommendation() {
   return (
     <div>
       <PageHeader
-        title="Fertilizer Suggestion"
-        subtitle="Get the right fertilizer for your soil nutrients"
+        title={t('fertilizer.title')}
+        subtitle={t('fertilizer.subtitle')}
         icon={<FlaskConical className="w-6 h-6" />}
-        action={<Button onClick={analyzeSoil} icon={<Search className="w-4 h-4" />}>Find Fertilizer</Button>}
+        action={<Button onClick={analyzeSoil} icon={<Search className="w-4 h-4" />}>{t('fertilizer.calculate')}</Button>}
       />
 
       {!farmData && (
@@ -97,29 +101,29 @@ export default function FertilizerRecommendation() {
 
       {farmData && (
         <Card className="p-6 mb-6">
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Your Soil Details</h3>
+          <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">{t('reports.soilHealth')}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="rounded-xl bg-amber-50 dark:bg-amber-900/20 p-4">
-              <p className="text-xs text-amber-600 font-medium">Soil pH</p>
+              <p className="text-xs text-amber-600 font-medium">{t('crop.ph')}</p>
               <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">{farmData.soil_ph || 'N/A'}</p>
             </div>
             <div className="rounded-xl bg-green-50 dark:bg-green-900/20 p-4">
-              <p className="text-xs text-green-600 font-medium">Nitrogen</p>
+              <p className="text-xs text-green-600 font-medium">{t('crop.nitrogen')}</p>
               <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">{farmData.nitrogen || 'N/A'}</p>
             </div>
             <div className="rounded-xl bg-blue-50 dark:bg-blue-900/20 p-4">
-              <p className="text-xs text-blue-600 font-medium">Phosphorus</p>
+              <p className="text-xs text-blue-600 font-medium">{t('crop.phosphorus')}</p>
               <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">{farmData.phosphorus || 'N/A'}</p>
             </div>
             <div className="rounded-xl bg-purple-50 dark:bg-purple-900/20 p-4">
-              <p className="text-xs text-purple-600 font-medium">Potassium</p>
+              <p className="text-xs text-purple-600 font-medium">{t('crop.potassium')}</p>
               <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">{farmData.potassium || 'N/A'}</p>
             </div>
           </div>
           {soilCondition && (
             <div className="mt-4 p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50">
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                <span className="font-medium">Soil conditions:</span> {soilCondition}
+                <span className="font-medium">{t('common.details')}:</span> {soilCondition}
               </p>
             </div>
           )}

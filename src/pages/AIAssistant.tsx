@@ -5,21 +5,13 @@ import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { useToast } from '../context/ToastContext';
+import { useLanguage } from '../context/LanguageContext';
 
 type Message = {
   role: 'user' | 'assistant';
   content: string;
   timestamp: string;
 };
-
-const suggestedQuestions = [
-  'Which crop grows well in normal soil during monsoon season?',
-  'What fertilizer is best when soil lacks nitrogen?',
-  'How to control pests organically?',
-  'What are the best watering methods for small farms?',
-  'What government schemes are available for farmers?',
-  'When is the best time to harvest paddy?',
-];
 
 const knowledgeBase: Record<string, string> = {
   'loamy soil kharif': 'For normal farm soil in monsoon season, the best crops are Paddy, Sugarcane, Maize, Soybean, and Cotton. These grow well in soil that holds water nicely and stays warm (25-35°C). Paddy is the most popular choice, giving about 4-5 tons per acre.',
@@ -42,10 +34,17 @@ function getResponse(query: string): string {
 
 export default function AIAssistant() {
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const suggestedQuestions = [
+    t('ai.prompt1'),
+    t('ai.prompt2'),
+    t('ai.prompt3'),
+  ];
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
@@ -60,23 +59,22 @@ export default function AIAssistant() {
     setTyping(true);
 
     setTimeout(() => {
-      const response = getResponse(query);
-      const aiMsg: Message = { role: 'assistant', content: response, timestamp: new Date().toISOString() };
-      setMessages((prev) => [...prev, aiMsg]);
+      const reply = getResponse(query);
+      setMessages((prev) => [...prev, { role: 'assistant', content: reply, timestamp: new Date().toISOString() }]);
       setTyping(false);
-    }, 1200);
+    }, 1000);
   };
 
   const handleClear = () => {
     setMessages([]);
-    showToast('Conversation cleared', 'info');
+    showToast('Chat history cleared', 'info');
   };
 
   return (
     <div>
       <PageHeader
-        title="AI Farming Assistant"
-        subtitle="Get instant answers to your farming questions"
+        title={t('ai.title')}
+        subtitle={t('ai.subtitle')}
         icon={<Bot className="w-6 h-6" />}
         action={messages.length > 0 ? <Button variant="ghost" onClick={handleClear} icon={<Trash2 className="w-4 h-4" />}>Clear</Button> : undefined}
       />
@@ -89,9 +87,9 @@ export default function AIAssistant() {
               <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white mb-4">
                 <Sparkles className="w-10 h-10" />
               </div>
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-white">Ask me anything about farming!</h3>
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-white">{t('ai.title')}</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-md">
-                I can help with crop suggestions, fertilizer advice, pest control, watering, harvesting, and government schemes.
+                {t('ai.subtitle')}
               </p>
               <div className="grid sm:grid-cols-2 gap-3 mt-8 max-w-2xl w-full">
                 {suggestedQuestions.map((q) => (
@@ -138,35 +136,38 @@ export default function AIAssistant() {
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 text-white flex items-center justify-center shrink-0">
                 <Bot className="w-5 h-5" />
               </div>
-              <div className="bg-slate-100 dark:bg-slate-700 rounded-2xl px-4 py-3 flex gap-1.5">
-                {[0, 0.2, 0.4].map((delay) => (
-                  <motion.div
-                    key={delay}
-                    animate={{ y: [0, -6, 0] }}
-                    transition={{ duration: 0.6, repeat: Infinity, delay }}
-                    className="w-2 h-2 rounded-full bg-slate-400"
-                  />
-                ))}
+              <div className="bg-slate-100 dark:bg-slate-700 rounded-2xl px-4 py-3 text-slate-400 flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" />
+                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:0.2s]" />
+                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:0.4s]" />
               </div>
             </motion.div>
           )}
         </div>
 
         {/* Input */}
-        <div className="border-t border-slate-200 dark:border-slate-700 p-4">
-          <div className="flex gap-3">
+        <div className="p-4 border-t border-slate-200 dark:border-slate-700">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSend();
+            }}
+            className="flex gap-2"
+          >
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Ask a farming question..."
+              placeholder={t('ai.inputPlaceholder')}
               className="input-field flex-1"
             />
-            <Button onClick={() => handleSend()} disabled={!input.trim()} icon={<Send className="w-4 h-4" />}>
-              Send
+            <Button type="submit" disabled={!input.trim() || typing} icon={<Send className="w-4 h-4" />}>
+              {t('ai.send')}
             </Button>
-          </div>
+          </form>
+          <p className="text-xs text-slate-400 text-center mt-2">
+            {t('ai.disclaimer')}
+          </p>
         </div>
       </Card>
     </div>

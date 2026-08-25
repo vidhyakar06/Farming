@@ -4,6 +4,7 @@ import { User, Upload, MapPin, Phone, Mail, Save, Sprout } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { useLanguage } from '../context/LanguageContext';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -16,6 +17,7 @@ const irrigationMethods = ['Drip', 'Sprinkler', 'Flood', 'Canal', 'Rainfed', 'Tu
 export default function Profile() {
   const { profile, session, refreshProfile } = useAuth();
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -77,6 +79,7 @@ export default function Profile() {
           soil_type: form.soil_type,
           irrigation_method: form.irrigation_method,
           profile_photo_url: form.profile_photo_url,
+          updated_at: new Date().toISOString(),
         })
         .eq('id', session?.user?.id);
       if (error) throw error;
@@ -99,7 +102,7 @@ export default function Profile() {
 
   return (
     <div>
-      <PageHeader title="My Profile" subtitle="Manage your personal and farm information" icon={<User className="w-6 h-6" />} />
+      <PageHeader title={t('profile.title')} subtitle={t('profile.subtitle')} icon={<User className="w-6 h-6" />} />
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Profile Card */}

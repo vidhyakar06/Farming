@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Bug, Search, AlertCircle, Shield, FlaskRound, Leaf, Eye, Calendar } from 'lucide-react';
 import { supabase, type Disease } from '../lib/supabase';
+import { useLanguage } from '../context/LanguageContext';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import { EmptyState, LoadingSpinner } from '../components/ui/Loading';
 import CropImage from '../components/ui/CropImage';
 
 export default function Diseases() {
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [diseases, setDiseases] = useState<Disease[]>([]);
   const [search, setSearch] = useState('');
@@ -38,8 +40,8 @@ export default function Diseases() {
   return (
     <div>
       <PageHeader
-        title="Crop Diseases"
-        subtitle="Find and learn about diseases affecting your crops"
+        title={t('diseases.title')}
+        subtitle={t('diseases.subtitle')}
         icon={<Bug className="w-6 h-6" />}
       />
 
@@ -47,7 +49,7 @@ export default function Diseases() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input
           type="text"
-          placeholder="Search by crop or disease name..."
+          placeholder={t('common.search')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="input-field pl-10"
@@ -56,7 +58,7 @@ export default function Diseases() {
 
       {filtered.length === 0 ? (
         <Card className="p-6">
-          <EmptyState icon={<Bug className="w-10 h-10" />} title="No Diseases Matched Your Search" message="Try searching with a different crop or disease name." />
+          <EmptyState icon={<Bug className="w-10 h-10" />} title={t('diseases.title')} message={t('common.search')} />
         </Card>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

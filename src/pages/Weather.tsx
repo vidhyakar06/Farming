@@ -9,6 +9,7 @@ import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { LoadingSpinner } from '../components/ui/Loading';
 import { useToast } from '../context/ToastContext';
+import { useLanguage } from '../context/LanguageContext';
 import {
   fetchWeather, searchLocation, getCurrentPosition, reverseGeocode, isRainCode, locationLabel,
   type WeatherData, type GeoLocation, type LocationSource,
@@ -33,6 +34,7 @@ function WeatherIcon({ code, className }: { code: number; className?: string }) 
 
 export default function Weather() {
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [detecting, setDetecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +45,7 @@ export default function Weather() {
   const [searching, setSearching] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout>>();
   const containerRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     if (searchTimer.current) clearTimeout(searchTimer.current);
@@ -240,8 +243,8 @@ export default function Weather() {
   return (
     <div>
       <PageHeader
-        title="Weather Dashboard"
-        subtitle="Current conditions and 7-day forecast for your farm"
+        title={t('weather.title')}
+        subtitle={t('weather.subtitle')}
         icon={<Cloud className="w-6 h-6" />}
         action={
           <div ref={containerRef} className="relative flex gap-2">

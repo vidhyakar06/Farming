@@ -9,6 +9,7 @@ import jsPDF from 'jspdf';
 import { supabase, type Crop, type FarmDetail } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { useLanguage } from '../context/LanguageContext';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -20,6 +21,7 @@ type RecommendationResult = Crop & { confidence: number };
 export default function CropRecommendation() {
   const { session } = useAuth();
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
@@ -98,35 +100,31 @@ export default function CropRecommendation() {
     setTimeout(async () => {
       const scored = allCrops
         .map((crop) => ({ ...crop, confidence: calculateConfidence(crop, farmData) }))
-        .filter((c) => c.confidence > 0)
-        .sort((a, b) => b.confidence - a.confidence)
-        .slice(0, 12);
+        .sort((a, b) => b.confidence - a.confidence);
 
       setResults(scored);
+      setAnalyzing(false);
 
-      // Save top 5 recommendations
-      if (session?.user?.id) {
-        const top5 = scored.slice(0, 5);
-        for (const rec of top5) {
+      if (scored.length > 0) {
+        try {
           await supabase.from('recommendations').insert({
-            farmer_id: session.user.id,
-            crop_id: rec.id,
-            confidence: rec.confidence,
+            farmer_id: session?.user?.id,
+            crop_id: scored[0].id,
+            confidence: scored[0].confidence,
           });
+        } catch (err) {
+          console.error('Failed to save recommendation:', err);
         }
       }
-      setAnalyzing(false);
-      showToast(`Found ${scored.length} recommended crops!`, 'success');
-    }, 1500);
+    }, 1000);
   };
 
   const handleDownloadPDF = () => {
-    if (results.length === 0) return;
     const doc = new jsPDF();
     doc.setFontSize(20);
-    doc.text('My Crop Suggestions', 20, 20);
-    doc.setFontSize(12);
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 30);
+    doc.text('Crop Recommendations Report', 20, 20);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 30);
     doc.text(`Farmer: ${session?.user?.email || 'N/A'}`, 20, 38);
 
     let y = 50;
@@ -162,8 +160,8 @@ export default function CropRecommendation() {
   return (
     <div>
       <PageHeader
-        title="Crop Suggestion"
-        subtitle="Get smart crop suggestions based on your farm conditions"
+        title={t('crop.title')}
+        subtitle={t('crop.subtitle')}
         icon={<Sprout className="w-6 h-6" />}
         action={
           <div className="flex gap-2">
@@ -171,7 +169,7 @@ export default function CropRecommendation() {
               <Button variant="outline" onClick={handleDownloadPDF} icon={<Download className="w-4 h-4" />}>PDF</Button>
             )}
             <Button onClick={handleRecommend} disabled={analyzing} icon={analyzing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}>
-              {analyzing ? 'Finding best crops...' : 'Get Crop Suggestions'}
+              {analyzing ? t('common.loading') : t('crop.getRecommendation')}
             </Button>
           </div>
         }
@@ -193,22 +191,22 @@ export default function CropRecommendation() {
           <div className="w-16 h-16 rounded-2xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 mx-auto mb-4">
             <Sprout className="w-8 h-8" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-white">Ready to Find Your Best Crops</h3>
+          <h3 className="text-lg font-semibold text-slate-800 dark:text-white">{t('crop.title')}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-md mx-auto">
-            Click "Get Crop Suggestions" to find the best crops for your farm from over 42 crops.
+            {t('crop.subtitle')}
           </p>
           <div className="flex flex-wrap justify-center gap-3 mt-6">
             <div className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-sm text-slate-600 dark:text-slate-300">
-              Soil: {farmData.soil_type}
+              {t('crop.soilType')}: {farmData.soil_type}
             </div>
             <div className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-sm text-slate-600 dark:text-slate-300">
-              Season: {farmData.current_season}
+              {t('crop.season')}: {farmData.current_season}
             </div>
             <div className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-sm text-slate-600 dark:text-slate-300">
-              Temp: {farmData.temperature}°C
+              {t('crop.temperature')}: {farmData.temperature}°C
             </div>
             <div className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-sm text-slate-600 dark:text-slate-300">
-              Rainfall: {farmData.rainfall}mm
+              {t('crop.rainfall')}: {farmData.rainfall}mm
             </div>
           </div>
         </Card>
@@ -217,7 +215,7 @@ export default function CropRecommendation() {
       {analyzing && (
         <Card className="p-12 mb-6 text-center">
           <LoadingSpinner size="lg" />
-          <p className="text-slate-500 dark:text-slate-400 mt-4">Finding the best crops for your farm...</p>
+          <p className="text-slate-500 dark:text-slate-400 mt-4">{t('common.loading')}</p>
         </Card>
       )}
 

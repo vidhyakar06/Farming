@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Search, ArrowUpDown, MapPin } from 'lucide-react';
 import { supabase, type MarketPrice } from '../lib/supabase';
+import { useLanguage } from '../context/LanguageContext';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import { Select } from '../components/ui/Input';
@@ -11,6 +12,7 @@ type SortKey = 'crop_name' | 'current_price' | 'market_name';
 type SortOrder = 'asc' | 'desc';
 
 export default function MarketPrices() {
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [prices, setPrices] = useState<MarketPrice[]>([]);
   const [search, setSearch] = useState('');
@@ -60,8 +62,8 @@ export default function MarketPrices() {
   return (
     <div>
       <PageHeader
-        title="Market Prices"
-        subtitle="Track live market prices across local markets"
+        title={t('market.title')}
+        subtitle={t('market.subtitle')}
         icon={<TrendingUp className="w-6 h-6" />}
       />
 
@@ -72,7 +74,7 @@ export default function MarketPrices() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Search crop..."
+              placeholder={t('common.search')}
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
               className="input-field pl-10"
@@ -81,16 +83,16 @@ export default function MarketPrices() {
           <Select
             value={marketFilter}
             onChange={(e) => { setMarketFilter(e.target.value); setPage(1); }}
-            options={[{ value: '', label: 'All Markets' }, ...markets.map((m) => ({ value: m, label: m }))]}
+            options={[{ value: '', label: t('market.marketName') }, ...markets.map((m) => ({ value: m, label: m }))]}
           />
           <div className="flex gap-2">
             <Select
               value={sortKey}
               onChange={(e) => setSortKey(e.target.value as SortKey)}
               options={[
-                { value: 'crop_name', label: 'Sort: Crop Name' },
-                { value: 'current_price', label: 'Sort: Price' },
-                { value: 'market_name', label: 'Sort: Market' },
+                { value: 'crop_name', label: t('market.commodity') },
+                { value: 'current_price', label: t('market.modalPrice') },
+                { value: 'market_name', label: t('market.marketName') },
               ]}
             />
             <button
@@ -105,7 +107,7 @@ export default function MarketPrices() {
 
       {filtered.length === 0 ? (
         <Card className="p-6">
-          <EmptyState icon={<TrendingUp className="w-10 h-10" />} title="No Prices Available" message="Try adjusting your search or filters." />
+          <EmptyState icon={<TrendingUp className="w-10 h-10" />} title={t('market.title')} message={t('common.search')} />
         </Card>
       ) : (
         <>
@@ -115,9 +117,10 @@ export default function MarketPrices() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-                    <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Crop</th>
-                    <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Market</th>
-                    <th className="text-right px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Current Price</th>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">{t('market.commodity')}</th>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">{t('market.marketName')}</th>
+                    <th className="text-right px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">{t('market.modalPrice')}</th>
+
                     <th className="text-right px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Previous Price</th>
                     <th className="text-center px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Trend</th>
                   </tr>
