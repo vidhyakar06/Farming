@@ -54,7 +54,7 @@ const DEFAULT_CROP_IMAGES: Record<string, string> = {
   'tikka': '/images/diseases/groundnut_tikka.jpg',
   'panama wilt': '/images/diseases/banana_panama_wilt.jpg',
   'sigatoka': '/images/diseases/banana_sigatoka.jpg',
-  'powdery mildew': '/images/diseases/mango_powdery_mildew.jpg',
+  'powdery mildew': '/images/diseases/mango_powdery_mildew_greenlife.jpg',
   'hopper': '/images/diseases/mango_hopper_2.webp',
   'root wilt': '/images/diseases/coconut_root_wilt.jpg',
   'shoot and fruit borer': '/images/diseases/brinjal_borer_trap.jpg',
@@ -67,6 +67,8 @@ const DEFAULT_CROP_IMAGES: Record<string, string> = {
   'fusarium': '/images/diseases/cabbage_fusarium_yellows.jpg',
   'chickpea': '/images/diseases/chickpea_dry_root_rot.webp',
   'dry root rot': '/images/diseases/chickpea_dry_root_rot.webp',
+  'lettuce': '/images/diseases/lettuce_pythium_wilt.jpg',
+  'pythium': '/images/diseases/lettuce_pythium_wilt.jpg',
 };
 
 function getCropFallback(altText: string): string | undefined {

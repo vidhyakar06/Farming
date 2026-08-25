@@ -51,7 +51,7 @@ const BUILTIN_DISEASES: GalleryItem[] = [
   { id: 'gd-stemborer', name: 'Stem Borer', subtitle: 'Scirpophaga incertulas', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: '/images/diseases/stem_borer.jpg' },
   { id: 'gd-leafcurl', name: 'Tomato Leaf Curl', subtitle: 'ToLCV Virus', tag: 'Tomato', season: 'All Season', type: 'disease', image_url: '/images/diseases/tomato_leaf_curl.jpg' },
   { id: 'gd-pinkboll', name: 'Pink Bollworm', subtitle: 'Pectinophora gossypiella', tag: 'Cotton', season: 'Kharif', type: 'disease', image_url: 'https://www.multiplexgroup.com/uploads/products/1709286012_364775.jpg' },
-  { id: 'gd-powdery', name: 'Powdery Mildew', subtitle: 'Oidium mangiferae', tag: 'Mango', season: 'Rabi', type: 'disease', image_url: '/images/diseases/mango_powdery_mildew.jpg' },
+  { id: 'gd-powdery', name: 'Powdery Mildew', subtitle: 'Oidium mangiferae', tag: 'Mango', season: 'Rabi', type: 'disease', image_url: '/images/diseases/mango_powdery_mildew_greenlife.jpg' },
   { id: 'gd-rust', name: 'Yellow Stripe Rust', subtitle: 'Puccinia striiformis', tag: 'Wheat', season: 'Rabi', type: 'disease', image_url: '/images/diseases/yellow_rust.jpg' },
   { id: 'gd-faw', name: 'Fall Armyworm', subtitle: 'Spodoptera frugiperda', tag: 'Maize', season: 'Kharif', type: 'disease', image_url: '/images/diseases/fall_armyworm.jpg' },
   { id: 'gd-lateblight', name: 'Potato Late Blight', subtitle: 'Phytophthora infestans', tag: 'Potato', season: 'Rabi', type: 'disease', image_url: '/images/diseases/potato_late_blight_spudsmart.jpg' },
@@ -65,10 +65,11 @@ const BUILTIN_DISEASES: GalleryItem[] = [
   { id: 'gd-cabbage-fusarium', name: 'Cabbage Fusarium Yellows', subtitle: 'Fusarium oxysporum', tag: 'Cabbage', season: 'Rabi', type: 'disease', image_url: '/images/diseases/cabbage_fusarium_yellows.jpg' },
   { id: 'gd-chickpea-rootrot', name: 'Chickpea Dry Root Rot', subtitle: 'Macrophomina phaseolina', tag: 'Chickpea', season: 'Rabi', type: 'disease', image_url: '/images/diseases/chickpea_dry_root_rot.webp' },
   { id: 'gd-cotton-alternaria', name: 'Alternaria Leaf Spot', subtitle: 'Alternaria macrospora', tag: 'Cotton', season: 'Kharif', type: 'disease', image_url: '/images/diseases/bing_oip_ge7gg.jpg' },
+  { id: 'gd-lettuce-pythium', name: 'Lettuce Pythium Wilt', subtitle: 'Pythium uncinulatum', tag: 'Lettuce', season: 'Rabi', type: 'disease', image_url: '/images/diseases/lettuce_pythium_wilt.jpg' },
 ];
 
 const CROP_TAGS = ['All', 'Cereal', 'Vegetable', 'Fruit', 'Cash Crop', 'Oilseed', 'Spice', 'Plantation'];
-const DISEASE_TAGS = ['All', 'Paddy', 'Tomato', 'Wheat', 'Cotton', 'Maize', 'Chilli', 'Banana', 'Mango', 'Potato', 'Soybean', 'Brinjal', 'Cucumber', 'Cabbage', 'Chickpea'];
+const DISEASE_TAGS = ['All', 'Paddy', 'Tomato', 'Wheat', 'Cotton', 'Maize', 'Chilli', 'Banana', 'Mango', 'Potato', 'Soybean', 'Brinjal', 'Cucumber', 'Cabbage', 'Chickpea', 'Lettuce'];
 
 type Tab = 'crops' | 'diseases';
 
