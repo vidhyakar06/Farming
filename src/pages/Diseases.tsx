@@ -189,10 +189,10 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Prune dense shoots before season, avoid excess nitrogen which promotes tender growth.',
     treatment: 'Spray Imidacloprid 17.8 SL @ 0.3ml/litre or Thiamethoxam 25 WG @ 0.3g/litre.',
     organic_solution: 'Spray Neem oil 5ml/litre + liquid soap 2ml/litre. Release natural predators like Chrysoperla larvae.',
-    image_url: '/images/diseases/mango_hopper_1.jpg',
+    image_url: '/images/diseases/mango_hopper_2.webp',
     images: [
-      '/images/diseases/mango_hopper_1.jpg',
       '/images/diseases/mango_hopper_2.webp',
+      '/images/diseases/mango_hopper_1.jpg',
       '/images/diseases/mango_hopper.jpg'
     ],
     season: 'Rabi',

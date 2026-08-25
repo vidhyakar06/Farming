@@ -55,7 +55,7 @@ const DEFAULT_CROP_IMAGES: Record<string, string> = {
   'panama wilt': '/images/diseases/banana_panama_wilt.jpg',
   'sigatoka': '/images/diseases/banana_sigatoka.jpg',
   'powdery mildew': '/images/diseases/mango_powdery_mildew.jpg',
-  'hopper': '/images/diseases/mango_hopper.jpg',
+  'hopper': '/images/diseases/mango_hopper_2.webp',
   'root wilt': '/images/diseases/coconut_root_wilt.jpg',
   'shoot and fruit borer': '/images/diseases/brinjal_borer.jpg',
   'borer': '/images/diseases/brinjal_borer.jpg',
