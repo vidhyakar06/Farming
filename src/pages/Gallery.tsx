@@ -54,7 +54,7 @@ const BUILTIN_DISEASES: GalleryItem[] = [
   { id: 'gd-powdery', name: 'Powdery Mildew', subtitle: 'Oidium mangiferae', tag: 'Mango', season: 'Rabi', type: 'disease', image_url: '/images/diseases/mango_powdery_mildew.jpg' },
   { id: 'gd-rust', name: 'Yellow Stripe Rust', subtitle: 'Puccinia striiformis', tag: 'Wheat', season: 'Rabi', type: 'disease', image_url: '/images/diseases/yellow_rust.jpg' },
   { id: 'gd-faw', name: 'Fall Armyworm', subtitle: 'Spodoptera frugiperda', tag: 'Maize', season: 'Kharif', type: 'disease', image_url: '/images/diseases/fall_armyworm.jpg' },
-  { id: 'gd-lateblight', name: 'Potato Late Blight', subtitle: 'Phytophthora infestans', tag: 'Potato', season: 'Rabi', type: 'disease', image_url: '/images/diseases/potato_late_blight.jpg' },
+  { id: 'gd-lateblight', name: 'Potato Late Blight', subtitle: 'Phytophthora infestans', tag: 'Potato', season: 'Rabi', type: 'disease', image_url: '/images/diseases/potato_late_blight_spudsmart.jpg' },
   { id: 'gd-anthrac', name: 'Anthracnose / Fruit Rot', subtitle: 'Colletotrichum capsici', tag: 'Chilli', season: 'Kharif', type: 'disease', image_url: '/images/diseases/chilli_anthracnose.jpg' },
   { id: 'gd-panama', name: 'Panama Wilt', subtitle: 'Fusarium oxysporum', tag: 'Banana', season: 'All Season', type: 'disease', image_url: '/images/diseases/banana_panama_wilt.jpg' },
   { id: 'gd-brinjalborer', name: 'Shoot & Fruit Borer', subtitle: 'Leucinodes orbonalis', tag: 'Brinjal', season: 'All Season', type: 'disease', image_url: '/images/diseases/brinjal_borer_trap.jpg' },

@@ -44,7 +44,7 @@ const DEFAULT_CROP_IMAGES: Record<string, string> = {
   'stem borer': '/images/diseases/stem_borer.jpg',
   'leaf curl': '/images/diseases/tomato_leaf_curl.jpg',
   'early blight': '/images/diseases/tomato_early_blight.jpg',
-  'late blight': '/images/diseases/potato_late_blight.jpg',
+  'late blight': '/images/diseases/potato_late_blight_spudsmart.jpg',
   'pink bollworm': 'https://www.multiplexgroup.com/uploads/products/1709286012_364775.jpg',
   'yellow rust': '/images/diseases/yellow_rust.jpg',
   'red rot': '/images/diseases/sugarcane_red_rot.jpg',

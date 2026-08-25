@@ -237,7 +237,11 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Use certified seed tubers, avoid overhead irrigation, maintain proper plant spacing.',
     treatment: 'Spray Metalaxyl + Mancozeb 72 WP @ 2.5g/litre or Cymoxanil 8% + Mancozeb 64% WP @ 3g/litre.',
     organic_solution: 'Spray Copper Oxychloride 50 WP @ 3g/litre or Bordeaux mixture 1% as preventive spray.',
-    image_url: '/images/diseases/potato_late_blight.jpg',
+    image_url: '/images/diseases/potato_late_blight_spudsmart.jpg',
+    images: [
+      '/images/diseases/potato_late_blight_spudsmart.jpg',
+      '/images/diseases/potato_late_blight.jpg'
+    ],
     season: 'Rabi',
     created_at: new Date().toISOString(),
   },
