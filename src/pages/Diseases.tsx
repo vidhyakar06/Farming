@@ -33,7 +33,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Clip seedling leaf tips before transplanting, install 5 pheromone traps/acre.',
     treatment: 'Apply Chlorantraniliprole 18.5 SC @ 60 ml/acre or Cartap hydrochloride 4G @ 10 kg/acre.',
     organic_solution: 'Release Trichogramma egg parasitoids @ 60,000/acre; spray 5% Neem oil.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Paddy%20rice%20plant%20with%20Stem%20Borer%20Scirpophaga%20incertulas%20damage.%20Show%20dead%20heart%20with%20wilted%20central%20shoot%20in%20vegetative%20stage%2C%20and%20white%20earhead%20with%20chaffy%20unfilled%20grains.%20Natural%20paddy%20field%2C%20daylight%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/stem_borer.jpg',
     season: 'Kharif',
     created_at: new Date().toISOString(),
   },

@@ -48,7 +48,7 @@ const BUILTIN_CROPS: GalleryItem[] = [
 
 const BUILTIN_DISEASES: GalleryItem[] = [
   { id: 'gd-blast', name: 'Paddy Blast Disease', subtitle: 'Magnaporthe oryzae', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: '/images/diseases/paddy_blast.jpg' },
-  { id: 'gd-stemborer', name: 'Stem Borer', subtitle: 'Scirpophaga incertulas', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Scirpophaga_incertulas_female_moth.png/600px-Scirpophaga_incertulas_female_moth.png' },
+  { id: 'gd-stemborer', name: 'Stem Borer', subtitle: 'Scirpophaga incertulas', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: '/images/diseases/stem_borer.jpg' },
   { id: 'gd-leafcurl', name: 'Tomato Leaf Curl', subtitle: 'ToLCV Virus', tag: 'Tomato', season: 'All Season', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Yellow_curl_leaf_disease_Pj_IMG_3162.jpg/600px-Yellow_curl_leaf_disease_Pj_IMG_3162.jpg' },
   { id: 'gd-pinkboll', name: 'Pink Bollworm', subtitle: 'Pectinophora gossypiella', tag: 'Cotton', season: 'Kharif', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Pectinophora_gossypiella_1265079.jpg/600px-Pectinophora_gossypiella_1265079.jpg' },
   { id: 'gd-powdery', name: 'Powdery Mildew', subtitle: 'Oidium mangiferae', tag: 'Mango', season: 'Rabi', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Golovinomyces_sordidus_on_Broadleaf_Plantain_-_Plantago_major_%2844171864324%29.jpg/600px-Golovinomyces_sordidus_on_Broadleaf_Plantain_-_Plantago_major_%2844171864324%29.jpg' },
