@@ -47,22 +47,25 @@ const BUILTIN_CROPS: GalleryItem[] = [
 ];
 
 const BUILTIN_DISEASES: GalleryItem[] = [
-  { id: 'gd-blast', name: 'Paddy Blast Disease', subtitle: 'Magnaporthe oryzae', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: 'https://images.unsplash.com/photo-1598512752271-33f913a5af13?w=600&auto=format&fit=crop&q=80' },
-  { id: 'gd-leafcurl', name: 'Tomato Leaf Curl', subtitle: 'ToLCV Virus', tag: 'Tomato', season: 'All Season', type: 'disease', image_url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80' },
-  { id: 'gd-powdery', name: 'Powdery Mildew', subtitle: 'Oidium spp.', tag: 'Mango', season: 'Rabi', type: 'disease', image_url: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80' },
-  { id: 'gd-rust', name: 'Wheat Yellow Rust', subtitle: 'Puccinia striiformis', tag: 'Wheat', season: 'Rabi', type: 'disease', image_url: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80' },
-  { id: 'gd-blight', name: 'Potato Late Blight', subtitle: 'Phytophthora infestans', tag: 'Potato', season: 'Rabi', type: 'disease', image_url: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80' },
-  { id: 'gd-faw', name: 'Fall Armyworm', subtitle: 'Spodoptera frugiperda', tag: 'Maize', season: 'Kharif', type: 'disease', image_url: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=600&auto=format&fit=crop&q=80' },
-  { id: 'gd-anthrac', name: 'Anthracnose', subtitle: 'Colletotrichum spp.', tag: 'Chilli', season: 'Kharif', type: 'disease', image_url: 'https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=600&auto=format&fit=crop&q=80' },
-  { id: 'gd-panama', name: 'Panama Wilt', subtitle: 'Fusarium oxysporum', tag: 'Banana', season: 'All Season', type: 'disease', image_url: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=600&auto=format&fit=crop&q=80' },
-  { id: 'gd-mosaic', name: 'Yellow Mosaic Disease', subtitle: 'MYMV Virus', tag: 'Soybean', season: 'Kharif', type: 'disease', image_url: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=600&auto=format&fit=crop&q=80' },
-  { id: 'gd-bfb', name: 'Shoot & Fruit Borer', subtitle: 'Leucinodes orbonalis', tag: 'Brinjal', season: 'All Season', type: 'disease', image_url: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&auto=format&fit=crop&q=80' },
-  { id: 'gd-redrot', name: 'Red Rot', subtitle: 'Colletotrichum falcatum', tag: 'Sugarcane', season: 'All Season', type: 'disease', image_url: 'https://images.unsplash.com/photo-1598112972019-91e1162b80f7?w=600&auto=format&fit=crop&q=80' },
-  { id: 'gd-earlyblight', name: 'Early Blight', subtitle: 'Alternaria solani', tag: 'Tomato', season: 'All Season', type: 'disease', image_url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80' },
+  { id: 'gd-blast', name: 'Paddy Blast Disease', subtitle: 'Magnaporthe oryzae', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/6/66/Magnaporthe_grisea.jpg' },
+  { id: 'gd-stemborer', name: 'Stem Borer', subtitle: 'Scirpophaga incertulas', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Scirpophaga_incertulas_female_moth.png/600px-Scirpophaga_incertulas_female_moth.png' },
+  { id: 'gd-leafcurl', name: 'Tomato Leaf Curl', subtitle: 'ToLCV Virus', tag: 'Tomato', season: 'All Season', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Yellow_curl_leaf_disease_Pj_IMG_3162.jpg/600px-Yellow_curl_leaf_disease_Pj_IMG_3162.jpg' },
+  { id: 'gd-pinkboll', name: 'Pink Bollworm', subtitle: 'Pectinophora gossypiella', tag: 'Cotton', season: 'Kharif', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Pectinophora_gossypiella_1265079.jpg/600px-Pectinophora_gossypiella_1265079.jpg' },
+  { id: 'gd-powdery', name: 'Powdery Mildew', subtitle: 'Oidium mangiferae', tag: 'Mango', season: 'Rabi', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Golovinomyces_sordidus_on_Broadleaf_Plantain_-_Plantago_major_%2844171864324%29.jpg/600px-Golovinomyces_sordidus_on_Broadleaf_Plantain_-_Plantago_major_%2844171864324%29.jpg' },
+  { id: 'gd-rust', name: 'Yellow Stripe Rust', subtitle: 'Puccinia striiformis', tag: 'Wheat', season: 'Rabi', type: 'disease', image_url: 'https://cdn.pixabay.com/photo/2020/04/13/12/29/rust-5038805_640.jpg' },
+  { id: 'gd-faw', name: 'Fall Armyworm', subtitle: 'Spodoptera frugiperda', tag: 'Maize', season: 'Kharif', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Spodoptera_frugiperda.jpg/600px-Spodoptera_frugiperda.jpg' },
+  { id: 'gd-lateblight', name: 'Potato Late Blight', subtitle: 'Phytophthora infestans', tag: 'Potato', season: 'Rabi', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Late_blight_on_potato_leaf_2.jpg/600px-Late_blight_on_potato_leaf_2.jpg' },
+  { id: 'gd-anthrac', name: 'Anthracnose / Fruit Rot', subtitle: 'Colletotrichum capsici', tag: 'Chilli', season: 'Kharif', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Chain_of_conidia_of_an_Alternaria_sp._fungus_PHIL_3963_lores.jpg/600px-Chain_of_conidia_of_an_Alternaria_sp._fungus_PHIL_3963_lores.jpg' },
+  { id: 'gd-panama', name: 'Panama Wilt', subtitle: 'Fusarium oxysporum', tag: 'Banana', season: 'All Season', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/K7725-1-sm.jpg/600px-K7725-1-sm.jpg' },
+  { id: 'gd-brinjalborer', name: 'Shoot & Fruit Borer', subtitle: 'Leucinodes orbonalis', tag: 'Brinjal', season: 'All Season', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Leucinodes_orbonalis.jpg/600px-Leucinodes_orbonalis.jpg' },
+  { id: 'gd-earlyblight', name: 'Early Blight', subtitle: 'Alternaria solani', tag: 'Tomato', season: 'All Season', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Alternaria_solani_-_leaf_lesions.jpg/600px-Alternaria_solani_-_leaf_lesions.jpg' },
+  { id: 'gd-bph', name: 'Brown Planthopper', subtitle: 'Nilaparvata lugens', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Nilaparvata_lugens_439632934.jpg/600px-Nilaparvata_lugens_439632934.jpg' },
+  { id: 'gd-downy', name: 'Downy Mildew', subtitle: 'Pseudoperonospora cubensis', tag: 'Cucumber', season: 'All Season', type: 'disease', image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Falscher_Mehltau.jpg/600px-Falscher_Mehltau.jpg' },
+  { id: 'gd-mosaic', name: 'Yellow Mosaic Disease', subtitle: 'MYMV Virus', tag: 'Soybean', season: 'Kharif', type: 'disease', image_url: 'https://cdn.pixabay.com/photo/2018/03/14/15/55/leaf-3225867_640.jpg' },
 ];
 
 const CROP_TAGS = ['All', 'Cereal', 'Vegetable', 'Fruit', 'Cash Crop', 'Oilseed', 'Spice', 'Plantation'];
-const DISEASE_TAGS = ['All', 'Paddy', 'Tomato', 'Wheat', 'Cotton', 'Maize', 'Chilli', 'Banana', 'Mango', 'Potato', 'Soybean', 'Brinjal', 'Sugarcane'];
+const DISEASE_TAGS = ['All', 'Paddy', 'Tomato', 'Wheat', 'Cotton', 'Maize', 'Chilli', 'Banana', 'Mango', 'Potato', 'Soybean', 'Brinjal', 'Cucumber'];
 
 type Tab = 'crops' | 'diseases';
 
