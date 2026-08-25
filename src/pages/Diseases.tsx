@@ -46,7 +46,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Install 15 yellow sticky traps/acre, use border barrier crops like maize/sorghum.',
     treatment: 'Spray Acetamiprid 20 SP @ 50g/acre or Imidacloprid 17.8 SL @ 60ml/acre to control whiteflies.',
     organic_solution: 'Spray Neem oil (10,000 ppm) @ 5ml/L + garlic extract every 10 days.',
-    image_url: 'https://image.pollinations.ai/prompt/Photorealistic%20agricultural%20crop%20pathology%20photography.%20Tomato%20plant%20with%20Tomato%20Leaf%20Curl%20Virus%20ToLCV.%20Show%20severely%20curled%20upward%20cupped%20leaves%2C%20leaf%20puckering%2C%20dark%20green%20crinkled%20stunted%20bushy%20growth.%20Whitefly%20visible%20on%20undersides.%20Natural%20farm%20daylight%2C%20scientifically%20accurate%2C%2016%3A9?width=800&height=450&model=flux&nologo=true&enhance=true',
+    image_url: '/images/diseases/tomato_leaf_curl.jpg',
     season: 'All Season',
     created_at: new Date().toISOString(),
   },
