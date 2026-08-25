@@ -62,10 +62,11 @@ const BUILTIN_DISEASES: GalleryItem[] = [
   { id: 'gd-bph', name: 'Brown Planthopper', subtitle: 'Nilaparvata lugens', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: '/images/diseases/paddy_bph.jpg' },
   { id: 'gd-downy', name: 'Downy Mildew', subtitle: 'Pseudoperonospora cubensis', tag: 'Cucumber', season: 'All Season', type: 'disease', image_url: '/images/diseases/cucumber_downy_mildew.jpg' },
   { id: 'gd-mosaic', name: 'Yellow Mosaic Disease', subtitle: 'MYMV Virus', tag: 'Soybean', season: 'Kharif', type: 'disease', image_url: '/images/diseases/soybean_yellow_mosaic.jpg' },
+  { id: 'gd-cabbage-fusarium', name: 'Cabbage Fusarium Yellows', subtitle: 'Fusarium oxysporum', tag: 'Cabbage', season: 'Rabi', type: 'disease', image_url: '/images/diseases/cabbage_fusarium_yellows.jpg' },
 ];
 
 const CROP_TAGS = ['All', 'Cereal', 'Vegetable', 'Fruit', 'Cash Crop', 'Oilseed', 'Spice', 'Plantation'];
-const DISEASE_TAGS = ['All', 'Paddy', 'Tomato', 'Wheat', 'Cotton', 'Maize', 'Chilli', 'Banana', 'Mango', 'Potato', 'Soybean', 'Brinjal', 'Cucumber'];
+const DISEASE_TAGS = ['All', 'Paddy', 'Tomato', 'Wheat', 'Cotton', 'Maize', 'Chilli', 'Banana', 'Mango', 'Potato', 'Soybean', 'Brinjal', 'Cucumber', 'Cabbage'];
 
 type Tab = 'crops' | 'diseases';
 
