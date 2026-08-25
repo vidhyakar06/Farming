@@ -57,7 +57,7 @@ const BUILTIN_DISEASES: GalleryItem[] = [
   { id: 'gd-lateblight', name: 'Potato Late Blight', subtitle: 'Phytophthora infestans', tag: 'Potato', season: 'Rabi', type: 'disease', image_url: '/images/diseases/potato_late_blight.jpg' },
   { id: 'gd-anthrac', name: 'Anthracnose / Fruit Rot', subtitle: 'Colletotrichum capsici', tag: 'Chilli', season: 'Kharif', type: 'disease', image_url: '/images/diseases/chilli_anthracnose.jpg' },
   { id: 'gd-panama', name: 'Panama Wilt', subtitle: 'Fusarium oxysporum', tag: 'Banana', season: 'All Season', type: 'disease', image_url: '/images/diseases/banana_panama_wilt.jpg' },
-  { id: 'gd-brinjalborer', name: 'Shoot & Fruit Borer', subtitle: 'Leucinodes orbonalis', tag: 'Brinjal', season: 'All Season', type: 'disease', image_url: '/images/diseases/brinjal_borer.jpg' },
+  { id: 'gd-brinjalborer', name: 'Shoot & Fruit Borer', subtitle: 'Leucinodes orbonalis', tag: 'Brinjal', season: 'All Season', type: 'disease', image_url: '/images/diseases/brinjal_borer_trap.jpg' },
   { id: 'gd-earlyblight', name: 'Early Blight', subtitle: 'Alternaria solani', tag: 'Tomato', season: 'All Season', type: 'disease', image_url: '/images/diseases/tomato_early_blight.jpg' },
   { id: 'gd-bph', name: 'Brown Planthopper', subtitle: 'Nilaparvata lugens', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: '/images/diseases/paddy_bph.jpg' },
   { id: 'gd-downy', name: 'Downy Mildew', subtitle: 'Pseudoperonospora cubensis', tag: 'Cucumber', season: 'All Season', type: 'disease', image_url: '/images/diseases/cucumber_downy_mildew.jpg' },
