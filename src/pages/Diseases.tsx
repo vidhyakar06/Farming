@@ -8,6 +8,7 @@ import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { EmptyState, LoadingSpinner } from '../components/ui/Loading';
+import CropImage from '../components/ui/CropImage';
 
 const DEFAULT_DISEASES: Disease[] = [
   {
@@ -535,27 +536,29 @@ export default function Diseases() {
               transition={{ delay: i * 0.05 }}
               onClick={() => setSelected(disease)}
             >
-              <Card className="p-5 flex flex-col justify-between h-full overflow-hidden cursor-pointer hover:shadow-xl transition-all hover:-translate-y-1 group border border-slate-200/80 dark:border-slate-800">
-                <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-[10px] uppercase tracking-wider font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50">
-                      {disease.crop_name}
-                    </span>
-                    {disease.season && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-100 dark:bg-teal-950/60 text-[10px] uppercase tracking-wider font-bold text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800/50">
-                        <Calendar className="w-3 h-3" /> {disease.season}
+              <Card className="overflow-hidden cursor-pointer hover:shadow-xl transition-all hover:-translate-y-1 group">
+                <div className="relative h-44">
+                  <CropImage src={disease.image_url} alt={`${disease.crop_name} ${disease.disease_name}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
+                  <div className="absolute bottom-3 left-3 right-3">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/95 dark:bg-slate-800/95 text-[10px] uppercase tracking-wider font-bold text-primary-600 shadow-sm">
+                        {disease.crop_name}
                       </span>
-                    )}
+                      {disease.season && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/95 text-[10px] uppercase tracking-wider font-bold text-white shadow-sm">
+                          <Calendar className="w-3 h-3" /> {disease.season}
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-white font-bold text-lg leading-tight group-hover:text-primary-300 transition-colors">{disease.disease_name}</h3>
                   </div>
-                  <h3 className="text-slate-900 dark:text-white font-bold text-lg leading-tight group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-2">
-                    {disease.disease_name}
-                  </h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed">
-                    {disease.symptoms}
-                  </p>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-primary-600 dark:text-primary-400 font-bold mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 tracking-wide uppercase group-hover:translate-x-1 transition-transform">
-                  <Eye className="w-4 h-4" /> {t('diseases.viewGuide')}
+                <div className="p-4">
+                  <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">{disease.symptoms}</p>
+                  <div className="flex items-center gap-1.5 text-xs text-primary-600 font-bold mt-4 tracking-wide uppercase">
+                    <Eye className="w-4 h-4" /> {t('diseases.viewGuide')}
+                  </div>
                 </div>
               </Card>
             </motion.div>
@@ -580,24 +583,28 @@ export default function Diseases() {
               onClick={(e) => e.stopPropagation()}
               className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800"
             >
-              <div className="p-6 md:p-8 bg-gradient-to-r from-emerald-600 to-teal-700 text-white relative rounded-t-2xl">
+              <div className="relative h-56">
+                <CropImage src={selected.image_url} alt={`${selected.crop_name} ${selected.disease_name}`} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
                 <button
                   onClick={() => setSelected(null)}
-                  className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/20 hover:bg-black/40 text-white flex items-center justify-center transition-colors"
+                  className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md flex items-center justify-center text-white transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider text-white">
-                    {selected.crop_name}
-                  </span>
-                  {selected.season && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider text-white">
-                      <Calendar className="w-3 h-3" /> {selected.season}
+                <div className="absolute bottom-5 left-5 right-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="inline-block px-3 py-1 rounded-full bg-white/95 text-xs font-bold uppercase tracking-wider text-primary-600 shadow-sm">
+                      {selected.crop_name}
                     </span>
-                  )}
+                    {selected.season && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/95 text-xs font-bold uppercase tracking-wider text-white shadow-sm">
+                        <Calendar className="w-3 h-3" /> {selected.season}
+                      </span>
+                    )}
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-white leading-tight">{selected.disease_name}</h2>
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold leading-tight">{selected.disease_name}</h2>
               </div>
 
               <div className="p-5 md:p-7 space-y-6">
