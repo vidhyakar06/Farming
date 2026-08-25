@@ -29,7 +29,7 @@ ON CONFLICT DO NOTHING;
 
 -- 2. SEED CROPS MASTER DATA
 INSERT INTO crops (crop_name, scientific_name, soil_type, suitable_season, water_requirement, temperature_range, rainfall_range, fertilizer, growth_duration, expected_yield, market_value, image_url) VALUES
-('Paddy', 'Oryza sativa', 'Clayey / Loamy', 'Kharif', 'High (1200-1500 mm)', '22-32°C', '1000-1500 mm', 'Urea: 50kg, DAP: 50kg, MOP: 25kg', '120-140 days', '4-5 tons/acre', 'High', 'https://images.unsplash.com/photo-1536617621572-1d5f1e6269a0?w=600&auto=format&fit=crop&q=80'),
+('Paddy', 'Oryza sativa', 'Clayey / Loamy', 'Kharif', 'High (1200-1500 mm)', '22-32°C', '1000-1500 mm', 'Urea: 50kg, DAP: 50kg, MOP: 25kg', '120-140 days', '4-5 tons/acre', 'High', 'https://images.pexels.com/photos/247599/pexels-photo-247599.jpeg?auto=compress&cs=tinysrgb&w=600'),
 ('Wheat', 'Triticum aestivum', 'Loamy / Clay Loam', 'Rabi', 'Medium (450-650 mm)', '15-25°C', '500-750 mm', 'Urea: 60kg, DAP: 55kg, MOP: 20kg', '110-130 days', '3-4 tons/acre', 'High', 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80'),
 ('Cotton', 'Gossypium hirsutum', 'Black / Regur Soil', 'Kharif', 'Medium (600-800 mm)', '21-30°C', '600-1000 mm', 'NPK: 60:30:30 kg/acre', '150-180 days', '1.5-2.5 tons/acre', 'Very High', 'https://images.unsplash.com/photo-1594488555776-8809ff44f24b?w=600&auto=format&fit=crop&q=80'),
 ('Tomato', 'Solanum lycopersicum', 'Red Loam / Sandy Loam', 'All Season', 'Medium (400-600 mm)', '18-28°C', '500-700 mm', 'FYM: 10t, DAP: 40kg, Potash: 30kg', '90-110 days', '15-20 tons/acre', 'High', 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80'),

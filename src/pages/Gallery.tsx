@@ -21,7 +21,7 @@ interface GalleryItem {
 }
 
 const BUILTIN_CROPS: GalleryItem[] = [
-  { id: 'g-paddy', name: 'Paddy (Rice)', subtitle: 'Oryza sativa', tag: 'Cereal', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-paddy', name: 'Paddy (Rice)', subtitle: 'Oryza sativa', tag: 'Cereal', season: 'Kharif', type: 'crop', image_url: 'https://images.pexels.com/photos/247599/pexels-photo-247599.jpeg?auto=compress&cs=tinysrgb&w=600' },
   { id: 'g-wheat', name: 'Wheat', subtitle: 'Triticum aestivum', tag: 'Cereal', season: 'Rabi', type: 'crop', image_url: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80' },
   { id: 'g-tomato', name: 'Tomato', subtitle: 'Solanum lycopersicum', tag: 'Vegetable', season: 'All Season', type: 'crop', image_url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80' },
   { id: 'g-cotton', name: 'Cotton', subtitle: 'Gossypium hirsutum', tag: 'Cash Crop', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1594488555776-8809ff44f24b?w=600&auto=format&fit=crop&q=80' },
@@ -85,29 +85,54 @@ export default function Gallery() {
         ]);
 
         if (cropRes.data && cropRes.data.length > 0) {
-          const dbCrops: GalleryItem[] = cropRes.data.map((c) => ({
-            id: c.id,
-            name: c.crop_name,
-            subtitle: c.scientific_name || '',
-            tag: 'Crop',
-            season: c.suitable_season || 'All Season',
-            type: 'crop' as const,
-            image_url: c.image_url || '',
-          }));
-          setAllCrops(dbCrops.length > 0 ? dbCrops : BUILTIN_CROPS);
+          const dbCrops: GalleryItem[] = cropRes.data.map((c) => {
+            const matchingBuiltin = BUILTIN_CROPS.find(
+              (b) =>
+                b.name.toLowerCase().includes(c.crop_name.toLowerCase()) ||
+                c.crop_name.toLowerCase().includes(b.name.toLowerCase().split(' ')[0])
+            );
+            const isValidUrl = c.image_url && c.image_url.startsWith('http') && !c.image_url.includes('1536617621572');
+            return {
+              id: c.id,
+              name: c.crop_name,
+              subtitle: c.scientific_name || matchingBuiltin?.subtitle || '',
+              tag: matchingBuiltin?.tag || 'Crop',
+              season: c.suitable_season || matchingBuiltin?.season || 'All Season',
+              type: 'crop' as const,
+              image_url: isValidUrl ? c.image_url : (matchingBuiltin?.image_url || ''),
+            };
+          });
+
+          // Ensure any built-in crops not in DB are also included
+          const existingNames = new Set(dbCrops.map((c) => c.name.toLowerCase()));
+          const extraCrops = BUILTIN_CROPS.filter((b) => !existingNames.has(b.name.toLowerCase()));
+          setAllCrops([...dbCrops, ...extraCrops]);
+        } else {
+          setAllCrops(BUILTIN_CROPS);
         }
 
         if (diseaseRes.data && diseaseRes.data.length > 0) {
-          const dbDiseases: GalleryItem[] = diseaseRes.data.map((d) => ({
-            id: d.id,
-            name: d.disease_name,
-            subtitle: d.crop_name || '',
-            tag: d.crop_name || 'General',
-            season: '',
-            type: 'disease' as const,
-            image_url: d.image_url || '',
-          }));
-          setAllDiseases(dbDiseases);
+          const dbDiseases: GalleryItem[] = diseaseRes.data.map((d) => {
+            const matchingBuiltin = BUILTIN_DISEASES.find(
+              (b) =>
+                b.name.toLowerCase().includes(d.disease_name.toLowerCase()) ||
+                d.disease_name.toLowerCase().includes(b.name.toLowerCase()) ||
+                b.tag.toLowerCase() === (d.crop_name || '').toLowerCase()
+            );
+            const isValidUrl = d.image_url && d.image_url.startsWith('http') && !d.image_url.includes('1536617621572');
+            return {
+              id: d.id,
+              name: d.disease_name,
+              subtitle: d.crop_name || '',
+              tag: d.crop_name || 'General',
+              season: d.season || matchingBuiltin?.season || '',
+              type: 'disease' as const,
+              image_url: isValidUrl ? d.image_url : (matchingBuiltin?.image_url || ''),
+            };
+          });
+          setAllDiseases(dbDiseases.length > 0 ? dbDiseases : BUILTIN_DISEASES);
+        } else {
+          setAllDiseases(BUILTIN_DISEASES);
         }
       } catch {
         // fallback to built-in data
