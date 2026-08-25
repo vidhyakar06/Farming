@@ -20,7 +20,7 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Avoid excess nitrogen fertilizer, use blast-resistant varieties (IR 64, CO 51), seed treatment with Carbendazim.',
     treatment: 'Spray Tricyclazole 75 WP @ 120g/acre or Isoprothiolane 40 EC @ 300ml/acre.',
     organic_solution: 'Spray Pseudomonas fluorescens @ 1 kg/acre or 5% Neem seed kernel extract (NSKE).',
-    image_url: 'https://image.pollinations.ai/prompt/Realistic%20macro%20photo%20of%20paddy%20leaf%20infected%20with%20Blast%20Disease%20showing%20diamond%20spots%20high%20quality%20agriculture%20photography?width=600&height=400&nologo=true',
+    image_url: 'https://tse4.mm.bing.net/th/id/OIP.XiWURGwsHWurWL6UGC4sewHaEJ?r=0&pid=Api&P=0&h=180',
     season: 'Kharif',
     created_at: new Date().toISOString(),
   },
