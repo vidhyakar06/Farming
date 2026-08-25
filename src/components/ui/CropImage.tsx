@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sprout } from 'lucide-react';
 
 const gradients = [
@@ -63,15 +63,27 @@ type CropImageProps = {
 };
 
 export default function CropImage({ src, alt, className = '' }: CropImageProps) {
+  const fallbackImg = getCropFallback(alt);
+  const [imgSrc, setImgSrc] = useState<string | null>(src || fallbackImg || null);
   const [failed, setFailed] = useState(false);
 
-  const fallbackImg = getCropFallback(alt);
-  const effectiveSrc = failed ? (src !== fallbackImg ? fallbackImg : null) : (src || fallbackImg);
+  useEffect(() => {
+    setImgSrc(src || fallbackImg || null);
+    setFailed(false);
+  }, [src, alt]);
 
-  const showFallback = !effectiveSrc;
+  const handleError = () => {
+    if (imgSrc && fallbackImg && imgSrc !== fallbackImg) {
+      // Fallback from failed remote URL to local static asset
+      setImgSrc(fallbackImg);
+    } else {
+      setFailed(true);
+    }
+  };
+
   const gradient = gradients[hashString(alt) % gradients.length];
 
-  if (showFallback) {
+  if (!imgSrc || failed) {
     return (
       <div className={`flex items-center justify-center bg-gradient-to-br ${gradient} ${className}`}>
         <div className="flex flex-col items-center gap-1 text-white/90">
@@ -84,10 +96,10 @@ export default function CropImage({ src, alt, className = '' }: CropImageProps) 
 
   return (
     <img
-      src={effectiveSrc}
+      src={imgSrc}
       alt={alt}
       loading="lazy"
-      onError={() => setFailed(true)}
+      onError={handleError}
       className={className}
     />
   );
