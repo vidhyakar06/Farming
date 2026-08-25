@@ -271,7 +271,11 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Use resistant varieties, drip irrigation instead of overhead, remove infected leaves.',
     treatment: 'Spray Metalaxyl + Mancozeb 72 WP @ 2.5g/litre or Dimethomorph 50 WP @ 1g/litre.',
     organic_solution: 'Spray Copper Oxychloride 3g/litre or diluted milk solution (1:9 milk to water) as a preventive.',
-    image_url: '/images/diseases/cucumber_downy_mildew.jpg',
+    image_url: '/images/diseases/cucumber_downy_mildew_5628815.jpg',
+    images: [
+      '/images/diseases/cucumber_downy_mildew_5628815.jpg',
+      '/images/diseases/cucumber_downy_mildew.jpg'
+    ],
     season: 'All Season',
     created_at: new Date().toISOString(),
   },

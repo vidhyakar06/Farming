@@ -60,7 +60,7 @@ const DEFAULT_CROP_IMAGES: Record<string, string> = {
   'shoot and fruit borer': '/images/diseases/brinjal_borer_trap.jpg',
   'borer': '/images/diseases/brinjal_borer_trap.jpg',
   'yellow mosaic': '/images/diseases/bugwood_5598938.jpg',
-  'downy mildew': '/images/diseases/cucumber_downy_mildew.jpg',
+  'downy mildew': '/images/diseases/cucumber_downy_mildew_5628815.jpg',
   'planthopper': '/images/diseases/paddy_bph.jpg',
   'alternaria': '/images/diseases/cotton_alternaria.jpg',
   'cabbage': '/images/diseases/cabbage_fusarium_yellows.jpg',
