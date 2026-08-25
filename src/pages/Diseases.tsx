@@ -189,7 +189,12 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Prune dense shoots before season, avoid excess nitrogen which promotes tender growth.',
     treatment: 'Spray Imidacloprid 17.8 SL @ 0.3ml/litre or Thiamethoxam 25 WG @ 0.3g/litre.',
     organic_solution: 'Spray Neem oil 5ml/litre + liquid soap 2ml/litre. Release natural predators like Chrysoperla larvae.',
-    image_url: '/images/diseases/mango_hopper.jpg',
+    image_url: '/images/diseases/mango_hopper_1.jpg',
+    images: [
+      '/images/diseases/mango_hopper_1.jpg',
+      '/images/diseases/mango_hopper_2.webp',
+      '/images/diseases/mango_hopper.jpg'
+    ],
     season: 'Rabi',
     created_at: new Date().toISOString(),
   },
@@ -306,6 +311,7 @@ export default function Diseases() {
   const [diseases, setDiseases] = useState<Disease[]>([]);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Disease | null>(null);
+  const [activeModalImage, setActiveModalImage] = useState<string | null>(null);
 
   // AI Image Inspection State
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -534,7 +540,10 @@ export default function Diseases() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              onClick={() => setSelected(disease)}
+              onClick={() => {
+                setSelected(disease);
+                setActiveModalImage(disease.images?.[0] || disease.image_url);
+              }}
             >
               <Card className="overflow-hidden cursor-pointer hover:shadow-xl transition-all hover:-translate-y-1 group">
                 <div className="relative h-44">
@@ -583,16 +592,38 @@ export default function Diseases() {
               onClick={(e) => e.stopPropagation()}
               className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800"
             >
-              <div className="relative h-56">
-                <CropImage src={selected.image_url} alt={`${selected.crop_name} ${selected.disease_name}`} className="w-full h-full object-cover" />
+              <div className="relative h-64 sm:h-72">
+                <CropImage src={activeModalImage || selected.image_url} alt={`${selected.crop_name} ${selected.disease_name}`} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
                 <button
                   onClick={() => setSelected(null)}
-                  className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md flex items-center justify-center text-white transition-colors"
+                  className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md flex items-center justify-center text-white transition-colors z-20"
                 >
                   <X className="w-5 h-5" />
                 </button>
-                <div className="absolute bottom-5 left-5 right-5">
+
+                {selected.images && selected.images.length > 1 && (
+                  <div className="absolute top-4 left-4 z-20 flex gap-2 bg-black/50 p-1.5 rounded-xl backdrop-blur-md border border-white/20">
+                    {selected.images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveModalImage(img);
+                        }}
+                        className={`w-12 h-12 rounded-lg overflow-hidden border-2 transition-all ${
+                          (activeModalImage || selected.image_url) === img
+                            ? 'border-emerald-400 scale-105 shadow-md shadow-emerald-500/40'
+                            : 'border-white/40 opacity-70 hover:opacity-100 hover:border-white'
+                        }`}
+                      >
+                        <CropImage src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div className="absolute bottom-5 left-5 right-5 z-10">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="inline-block px-3 py-1 rounded-full bg-white/95 text-xs font-bold uppercase tracking-wider text-primary-600 shadow-sm">
                       {selected.crop_name}

@@ -78,6 +78,7 @@ export type Disease = {
   treatment: string;
   organic_solution: string;
   image_url: string;
+  images?: string[];
   season: string | null;
   created_at: string;
 };
