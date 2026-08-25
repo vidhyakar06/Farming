@@ -13,8 +13,42 @@ const gradients = [
 ];
 
 const DEFAULT_CROP_IMAGES: Record<string, string> = {
-  papaya: '/images/papaya.png',
+  paddy: '/images/crops/paddy.png',
+  rice: '/images/crops/paddy.png',
+  wheat: '/images/crops/wheat.jpg',
+  tomato: '/images/crops/tomato.jpg',
+  cotton: '/images/crops/cotton.jpg',
+  sugarcane: '/images/crops/sugarcane.jpg',
+  maize: '/images/crops/maize.jpg',
+  corn: '/images/crops/maize.jpg',
+  onion: '/images/crops/onion.jpg',
+  chilli: '/images/crops/chilli.jpg',
+  banana: '/images/crops/banana.jpg',
+  mango: '/images/crops/mango.jpg',
+  coconut: '/images/crops/coconut.jpg',
+  soybean: '/images/crops/soybean.jpg',
+  potato: '/images/crops/potato.jpg',
+  groundnut: '/images/crops/groundnut.jpg',
+  peanut: '/images/crops/groundnut.jpg',
+  brinjal: '/images/crops/brinjal.JPG',
+  eggplant: '/images/crops/brinjal.JPG',
+  turmeric: '/images/crops/turmeric.jpg',
+  ginger: '/images/crops/ginger.jpg',
+  garlic: '/images/crops/garlic.jpg',
+  mustard: '/images/crops/mustard.jpg',
+  cucumber: '/images/crops/cucumber.jpg',
+  papaya: '/images/crops/papaya.jpg',
+  watermelon: '/images/crops/watermelon.jpg',
+  blast: '/images/diseases/paddy_blast.jpg',
 };
+
+function getCropFallback(altText: string): string | undefined {
+  const clean = altText.toLowerCase().replace(/[^a-z0-9]/g, ' ');
+  for (const [key, path] of Object.entries(DEFAULT_CROP_IMAGES)) {
+    if (clean.includes(key)) return path;
+  }
+  return undefined;
+}
 
 function hashString(s: string): number {
   let h = 0;
@@ -31,10 +65,10 @@ type CropImageProps = {
 export default function CropImage({ src, alt, className = '' }: CropImageProps) {
   const [failed, setFailed] = useState(false);
 
-  const defaultImg = DEFAULT_CROP_IMAGES[alt.toLowerCase().trim()];
-  const effectiveSrc = src || defaultImg;
+  const fallbackImg = getCropFallback(alt);
+  const effectiveSrc = failed ? (src !== fallbackImg ? fallbackImg : null) : (src || fallbackImg);
 
-  const showFallback = !effectiveSrc || failed;
+  const showFallback = !effectiveSrc;
   const gradient = gradients[hashString(alt) % gradients.length];
 
   if (showFallback) {
