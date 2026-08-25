@@ -64,6 +64,7 @@ const BUILTIN_DISEASES: GalleryItem[] = [
   { id: 'gd-mosaic', name: 'Yellow Mosaic Disease', subtitle: 'MYMV Virus', tag: 'Soybean', season: 'Kharif', type: 'disease', image_url: '/images/diseases/bugwood_5598938.jpg' },
   { id: 'gd-cabbage-fusarium', name: 'Cabbage Fusarium Yellows', subtitle: 'Fusarium oxysporum', tag: 'Cabbage', season: 'Rabi', type: 'disease', image_url: '/images/diseases/cabbage_fusarium_yellows.jpg' },
   { id: 'gd-chickpea-rootrot', name: 'Chickpea Dry Root Rot', subtitle: 'Macrophomina phaseolina', tag: 'Chickpea', season: 'Rabi', type: 'disease', image_url: '/images/diseases/chickpea_dry_root_rot.webp' },
+  { id: 'gd-cotton-alternaria', name: 'Alternaria Leaf Spot', subtitle: 'Alternaria macrospora', tag: 'Cotton', season: 'Kharif', type: 'disease', image_url: '/images/diseases/bing_oip_ge7gg.jpg' },
 ];
 
 const CROP_TAGS = ['All', 'Cereal', 'Vegetable', 'Fruit', 'Cash Crop', 'Oilseed', 'Spice', 'Plantation'];

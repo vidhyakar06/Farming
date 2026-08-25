@@ -306,7 +306,11 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Crop rotation, seed treatment, remove infected debris promptly.',
     treatment: 'Spray Mancozeb 75 WP @ 2.5g/litre or Iprodione 50 WP @ 1.5g/litre.',
     organic_solution: 'Spray Neem leaf extract (5%) or Pseudomonas fluorescens @ 2.5g/litre.',
-    image_url: '/images/diseases/cotton_alternaria.jpg',
+    image_url: '/images/diseases/bing_oip_ge7gg.jpg',
+    images: [
+      '/images/diseases/bing_oip_ge7gg.jpg',
+      '/images/diseases/cotton_alternaria.jpg'
+    ],
     season: 'Kharif',
     created_at: new Date().toISOString(),
   },
