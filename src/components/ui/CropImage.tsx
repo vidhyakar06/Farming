@@ -17,7 +17,7 @@ const DEFAULT_CROP_IMAGES: Record<string, string> = {
   rice: '/images/crops/paddy.png',
   wheat: '/images/crops/wheat.jpg',
   tomato: '/images/crops/tomato.jpg',
-  cotton: '/images/crops/cotton.jpg',
+  cotton: '/images/crops/cotton_amvac.jpg',
   sugarcane: '/images/crops/sugarcane.jpg',
   maize: '/images/crops/maize.jpg',
   corn: '/images/crops/maize.jpg',
