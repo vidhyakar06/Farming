@@ -18,6 +18,17 @@ import CropImage from '../components/ui/CropImage';
 
 type RecommendationResult = Crop & { confidence: number };
 
+const DEFAULT_CROPS: Crop[] = [
+  { id: 'c1', crop_name: 'Paddy', scientific_name: 'Oryza sativa', soil_type: 'Clayey / Loamy', suitable_season: 'Kharif', water_requirement: 'High (1200-1500 mm)', temperature_range: '22-32°C', rainfall_range: '1000-1500 mm', fertilizer: 'Urea: 50kg, DAP: 50kg, MOP: 25kg', growth_duration: '120-140 days', expected_yield: '4-5 tons/acre', market_value: 'High', image_url: 'https://images.pexels.com/photos/247599/pexels-photo-247599.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { id: 'c2', crop_name: 'Wheat', scientific_name: 'Triticum aestivum', soil_type: 'Loamy / Clay Loam', suitable_season: 'Rabi', water_requirement: 'Medium (450-650 mm)', temperature_range: '15-25°C', rainfall_range: '500-750 mm', fertilizer: 'Urea: 60kg, DAP: 55kg, MOP: 20kg', growth_duration: '110-130 days', expected_yield: '3-4 tons/acre', market_value: 'High', image_url: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80' },
+  { id: 'c3', crop_name: 'Cotton', scientific_name: 'Gossypium hirsutum', soil_type: 'Black / Regur Soil', suitable_season: 'Kharif', water_requirement: 'Medium (600-800 mm)', temperature_range: '21-30°C', rainfall_range: '600-1000 mm', fertilizer: 'NPK: 60:30:30 kg/acre', growth_duration: '150-180 days', expected_yield: '1.5-2.5 tons/acre', market_value: 'Very High', image_url: 'https://images.unsplash.com/photo-1594488555776-8809ff44f24b?w=600&auto=format&fit=crop&q=80' },
+  { id: 'c4', crop_name: 'Tomato', scientific_name: 'Solanum lycopersicum', soil_type: 'Red Loam / Sandy Loam', suitable_season: 'All Season', water_requirement: 'Medium (400-600 mm)', temperature_range: '18-28°C', rainfall_range: '500-700 mm', fertilizer: 'FYM: 10t, DAP: 40kg, Potash: 30kg', growth_duration: '90-110 days', expected_yield: '15-20 tons/acre', market_value: 'High', image_url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80' },
+  { id: 'c5', crop_name: 'Onion', scientific_name: 'Allium cepa', soil_type: 'Sandy Loam', suitable_season: 'Rabi / Kharif', water_requirement: 'Medium (350-550 mm)', temperature_range: '15-28°C', rainfall_range: '400-600 mm', fertilizer: 'NPK: 40:20:30 kg/acre', growth_duration: '100-120 days', expected_yield: '10-15 tons/acre', market_value: 'High', image_url: 'https://images.unsplash.com/photo-1508747703725-719777637510?w=600&auto=format&fit=crop&q=80' },
+  { id: 'c6', crop_name: 'Sugarcane', scientific_name: 'Saccharum officinarum', soil_type: 'Deep Rich Loamy', suitable_season: 'All Season', water_requirement: 'High (1500-2500 mm)', temperature_range: '20-35°C', rainfall_range: '1100-1500 mm', fertilizer: 'Urea: 100kg, SSP: 125kg, MOP: 50kg', growth_duration: '300-365 days', expected_yield: '40-50 tons/acre', market_value: 'Very High', image_url: 'https://images.unsplash.com/photo-1598112972019-91e1162b80f7?w=600&auto=format&fit=crop&q=80' },
+  { id: 'c7', crop_name: 'Maize', scientific_name: 'Zea mays', soil_type: 'Well-drained Loam', suitable_season: 'Kharif / Rabi', water_requirement: 'Medium (500-750 mm)', temperature_range: '18-30°C', rainfall_range: '600-900 mm', fertilizer: 'Urea: 50kg, DAP: 45kg, MOP: 25kg', growth_duration: '90-110 days', expected_yield: '3-4 tons/acre', market_value: 'Medium', image_url: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=600&auto=format&fit=crop&q=80' },
+  { id: 'c8', crop_name: 'Chilli', scientific_name: 'Capsicum annuum', soil_type: 'Black / Red Loam', suitable_season: 'Kharif', water_requirement: 'Low-Medium (400-600 mm)', temperature_range: '20-30°C', rainfall_range: '500-800 mm', fertilizer: 'NPK: 50:25:25 kg/acre', growth_duration: '120-150 days', expected_yield: '2-3 tons dry/acre', market_value: 'Very High', image_url: 'https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=600&auto=format&fit=crop&q=80' }
+];
+
 export default function CropRecommendation() {
   const { session } = useAuth();
   const { showToast } = useToast();
@@ -38,7 +49,7 @@ export default function CropRecommendation() {
         supabase.from('crops').select('*'),
       ]);
       setFarmData(farm.data as FarmDetail | null);
-      setAllCrops(crops.data || []);
+      setAllCrops(crops.data?.length ? crops.data : DEFAULT_CROPS);
       setLoading(false);
     };
     fetchFarmAndCrops();

@@ -11,6 +11,14 @@ import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { EmptyState, LoadingSpinner } from '../components/ui/Loading';
 
+const DEFAULT_FERTILIZERS: Fertilizer[] = [
+  { id: 'f1', fertilizer_name: 'Urea (46% N)', soil_condition: 'Nitrogen deficient soils, all soil types', quantity: '50-100 kg/acre in 2-3 split doses', application_method: 'Broadcast or side dressing near root zone', precautions: 'Do not apply in direct water logging; mix with neem cake for slow release' },
+  { id: 'f2', fertilizer_name: 'DAP (Di-Ammonium Phosphate 18:46:0)', soil_condition: 'Phosphorus deficient, neutral to alkaline soils', quantity: '40-50 kg/acre as basal dose', application_method: 'Soil placement at sowing or transplanting', precautions: 'Always apply before sowing directly into furrow near seeds' },
+  { id: 'f3', fertilizer_name: 'MOP (Muriate of Potash 60% K2O)', soil_condition: 'Sandy and light textured soils, Potassium deficient', quantity: '25-40 kg/acre in split doses', application_method: 'Basal and top dressing at flowering', precautions: 'Avoid excess in saline soils; use SOP for chlorine-sensitive crops' },
+  { id: 'f4', fertilizer_name: 'Single Super Phosphate (SSP 16% P, 11% S)', soil_condition: 'Sulphur & Phosphorus deficient soils', quantity: '100-150 kg/acre basal', application_method: 'Soil incorporation during field preparation', precautions: 'Best suited for oilseeds (Groundnut, Mustard) and pulses' },
+  { id: 'f5', fertilizer_name: 'Vermicompost (Organic)', soil_condition: 'Low organic carbon soils (< 0.5% OC)', quantity: '2-3 tons/acre', application_method: 'Broadcast and mix during primary ploughing', precautions: 'Keep moist and protect from direct harsh sunlight' }
+];
+
 export default function FertilizerRecommendation() {
   const { session } = useAuth();
   const { showToast } = useToast();
@@ -31,7 +39,7 @@ export default function FertilizerRecommendation() {
         supabase.from('fertilizers').select('*'),
       ]);
       setFarmData(farm.data as FarmDetail | null);
-      setFertilizers(ferts.data || []);
+      setFertilizers(ferts.data?.length ? ferts.data : DEFAULT_FERTILIZERS);
       setLoading(false);
     };
     fetchData();
