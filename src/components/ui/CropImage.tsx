@@ -61,7 +61,7 @@ const DEFAULT_CROP_IMAGES: Record<string, string> = {
   'borer': '/images/diseases/brinjal_borer_trap.jpg',
   'yellow mosaic': '/images/diseases/bugwood_5598938.jpg',
   'downy mildew': '/images/diseases/cucumber_downy_mildew_5628815.jpg',
-  'planthopper': '/images/diseases/paddy_bph.jpg',
+  'planthopper': '/images/diseases/paddy_bph_irri.jpg',
   'alternaria': '/images/diseases/bing_oip_ge7gg.jpg',
   'cabbage': '/images/diseases/cabbage_fusarium_yellows.jpg',
   'fusarium': '/images/diseases/cabbage_fusarium_yellows.jpg',

@@ -59,7 +59,7 @@ const BUILTIN_DISEASES: GalleryItem[] = [
   { id: 'gd-panama', name: 'Panama Wilt', subtitle: 'Fusarium oxysporum', tag: 'Banana', season: 'All Season', type: 'disease', image_url: '/images/diseases/banana_panama_wilt.jpg' },
   { id: 'gd-brinjalborer', name: 'Shoot & Fruit Borer', subtitle: 'Leucinodes orbonalis', tag: 'Brinjal', season: 'All Season', type: 'disease', image_url: '/images/diseases/brinjal_borer_trap.jpg' },
   { id: 'gd-earlyblight', name: 'Early Blight', subtitle: 'Alternaria solani', tag: 'Tomato', season: 'All Season', type: 'disease', image_url: '/images/diseases/tomato_early_blight_lucid.jpg' },
-  { id: 'gd-bph', name: 'Brown Planthopper', subtitle: 'Nilaparvata lugens', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: '/images/diseases/paddy_bph.jpg' },
+  { id: 'gd-bph', name: 'Brown Planthopper', subtitle: 'Nilaparvata lugens', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: '/images/diseases/paddy_bph_irri.jpg' },
   { id: 'gd-downy', name: 'Downy Mildew', subtitle: 'Pseudoperonospora cubensis', tag: 'Cucumber', season: 'All Season', type: 'disease', image_url: '/images/diseases/cucumber_downy_mildew_5628815.jpg' },
   { id: 'gd-mosaic', name: 'Yellow Mosaic Disease', subtitle: 'MYMV Virus', tag: 'Soybean', season: 'Kharif', type: 'disease', image_url: '/images/diseases/bugwood_5598938.jpg' },
   { id: 'gd-cabbage-fusarium', name: 'Cabbage Fusarium Yellows', subtitle: 'Fusarium oxysporum', tag: 'Cabbage', season: 'Rabi', type: 'disease', image_url: '/images/diseases/cabbage_fusarium_yellows.jpg' },

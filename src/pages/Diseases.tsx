@@ -323,7 +323,11 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Plant resistant varieties (IR 36, IR 64), reduce nitrogen application, drain field water.',
     treatment: 'Spray Buprofezin 25 SC @ 1ml/litre or Pymetrozine 50 WG @ 0.3g/litre.',
     organic_solution: 'Spray Neem oil 5ml/litre near plant base; install light traps to monitor pest pressure.',
-    image_url: '/images/diseases/paddy_bph.jpg',
+    image_url: '/images/diseases/paddy_bph_irri.jpg',
+    images: [
+      '/images/diseases/paddy_bph_irri.jpg',
+      '/images/diseases/paddy_bph.jpg'
+    ],
     season: 'Kharif',
     created_at: new Date().toISOString(),
   },
