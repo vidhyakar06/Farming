@@ -39,6 +39,8 @@ const DEFAULT_CROP_IMAGES: Record<string, string> = {
   cucumber: '/images/crops/cucumber.jpg',
   papaya: '/images/crops/papaya.jpg',
   watermelon: '/images/crops/watermelon.jpg',
+  variegated: '/images/crops/plantly_var.webp',
+  ornamental: '/images/crops/plantly_var.webp',
   // Diseases
   blast: '/images/diseases/paddy_blast.jpg',
   'stem borer': '/images/diseases/stem_borer.jpg',

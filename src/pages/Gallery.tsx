@@ -45,6 +45,7 @@ const BUILTIN_CROPS: GalleryItem[] = [
   { id: 'g-papaya', name: 'Papaya', subtitle: 'Carica papaya', tag: 'Fruit', season: 'All Season', type: 'crop', image_url: '/images/crops/papaya.jpg' },
   { id: 'g-watermelon', name: 'Watermelon', subtitle: 'Citrullus lanatus', tag: 'Fruit', season: 'Summer', type: 'crop', image_url: '/images/crops/watermelon.jpg' },
   { id: 'g-lettuce', name: 'Lettuce', subtitle: 'Lactuca sativa', tag: 'Vegetable', season: 'Rabi', type: 'crop', image_url: '/images/diseases/lettuce_pythium_wilt.jpg' },
+  { id: 'g-variegated-foliage', name: 'Variegated Foliage / Ornamental', subtitle: 'Monstera / Philodendron spp.', tag: 'Plantation', season: 'All Season', type: 'crop', image_url: '/images/crops/plantly_var.webp' },
 ];
 
 const BUILTIN_DISEASES: GalleryItem[] = [
