@@ -85,7 +85,7 @@ export default function MarketPrices() {
 
   // KPI Metrics
   const stats = useMemo(() => {
-    if (prices.length === 0) return { topGainer: null, avgPrice: 0, totalMarkets: 0, upCount: 0 };
+    if (prices.length === 0) return { topGainer: null as MarketPrice | null, avgPrice: 0, totalMarkets: 0, upCount: 0 };
     
     let maxDiff = -Infinity;
     let topGainerItem: MarketPrice | null = null;
