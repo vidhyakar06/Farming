@@ -302,6 +302,19 @@ const DEFAULT_DISEASES: Disease[] = [
     season: 'Kharif',
     created_at: new Date().toISOString(),
   },
+  {
+    id: 'd23',
+    crop_name: 'Cabbage',
+    disease_name: 'Fusarium Yellows / Wilt (Fusarium oxysporum)',
+    symptoms: 'Yellowing of leaves starting from lower parts, stunting of head growth, vascular browning inside stem.',
+    causes: 'Soil-borne fungus Fusarium oxysporum f. sp. conglutinans thriving in warm soil temperatures (20-30°C).',
+    prevention: 'Use resistant cabbage cultivars (Yellows-resistant hybrids), practice long crop rotation (3-5 years).',
+    treatment: 'Soil drench with Carbendazim 50 WP @ 2g/litre or Copper Oxychloride 50 WP @ 3g/litre.',
+    organic_solution: 'Apply Trichoderma viride or Pseudomonas fluorescens @ 2.5 kg/acre mixed with well-rotted FYM to soil.',
+    image_url: '/images/diseases/cabbage_fusarium_yellows.jpg',
+    season: 'Rabi',
+    created_at: new Date().toISOString(),
+  },
 ];
 
 export default function Diseases() {

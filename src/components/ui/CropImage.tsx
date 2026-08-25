@@ -63,6 +63,8 @@ const DEFAULT_CROP_IMAGES: Record<string, string> = {
   'downy mildew': '/images/diseases/cucumber_downy_mildew.jpg',
   'planthopper': '/images/diseases/paddy_bph.jpg',
   'alternaria': '/images/diseases/cotton_alternaria.jpg',
+  'cabbage': '/images/diseases/cabbage_fusarium_yellows.jpg',
+  'fusarium': '/images/diseases/cabbage_fusarium_yellows.jpg',
 };
 
 function getCropFallback(altText: string): string | undefined {
