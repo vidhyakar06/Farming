@@ -254,7 +254,11 @@ const DEFAULT_DISEASES: Disease[] = [
     prevention: 'Use resistant varieties (MACS 450, Phule Agrani), install yellow sticky traps.',
     treatment: 'No direct cure. Control the whitefly vector: Spray Thiamethoxam 25 WG @ 0.3g/litre.',
     organic_solution: 'Remove and destroy infected plants immediately; spray Neem oil 5ml/litre to control whitefly.',
-    image_url: '/images/diseases/soybean_yellow_mosaic.jpg',
+    image_url: '/images/diseases/bugwood_5598938.jpg',
+    images: [
+      '/images/diseases/bugwood_5598938.jpg',
+      '/images/diseases/soybean_yellow_mosaic.jpg'
+    ],
     season: 'Kharif',
     created_at: new Date().toISOString(),
   },
