@@ -24,7 +24,7 @@ export type Crop = {
   expected_yield: string;
   market_value: string;
   image_url: string;
-  created_at: string;
+  created_at?: string;
 };
 
 export type Profile = {
@@ -65,7 +65,7 @@ export type Fertilizer = {
   quantity: string;
   application_method: string;
   precautions: string;
-  created_at: string;
+  created_at?: string;
 };
 
 export type Disease = {
