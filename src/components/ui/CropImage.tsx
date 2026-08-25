@@ -65,6 +65,8 @@ const DEFAULT_CROP_IMAGES: Record<string, string> = {
   'alternaria': '/images/diseases/cotton_alternaria.jpg',
   'cabbage': '/images/diseases/cabbage_fusarium_yellows.jpg',
   'fusarium': '/images/diseases/cabbage_fusarium_yellows.jpg',
+  'chickpea': '/images/diseases/chickpea_dry_root_rot.webp',
+  'dry root rot': '/images/diseases/chickpea_dry_root_rot.webp',
 };
 
 function getCropFallback(altText: string): string | undefined {

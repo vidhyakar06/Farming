@@ -315,6 +315,19 @@ const DEFAULT_DISEASES: Disease[] = [
     season: 'Rabi',
     created_at: new Date().toISOString(),
   },
+  {
+    id: 'd24',
+    crop_name: 'Chickpea',
+    disease_name: 'Dry Root Rot (Macrophomina phaseolina)',
+    symptoms: 'Sudden drooping and drying of leaves, dark brown/black rot of taproot with fine black sclerotia spots.',
+    causes: 'Soil-borne fungus Macrophomina phaseolina triggered by high soil temperature (>30°C) and drought stress during flowering/podding stage.',
+    prevention: 'Deep plowing in summer, timely sowing, seed treatment with Trichoderma, maintain optimum soil moisture.',
+    treatment: 'Seed treatment with Carbendazim + Mancozeb @ 2g/kg seed; soil drenching with Carbendazim 50 WP @ 1g/litre.',
+    organic_solution: 'Seed treatment & soil application of Trichoderma viride @ 4g/kg seed and 2.5 kg/acre with FYM; apply neem cake @ 100 kg/acre.',
+    image_url: '/images/diseases/chickpea_dry_root_rot.webp',
+    season: 'Rabi',
+    created_at: new Date().toISOString(),
+  },
 ];
 
 export default function Diseases() {
