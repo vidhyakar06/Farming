@@ -8,6 +8,74 @@ import Card from '../components/ui/Card';
 import { EmptyState, LoadingSpinner } from '../components/ui/Loading';
 import CropImage from '../components/ui/CropImage';
 
+const DEFAULT_DISEASES: Disease[] = [
+  {
+    id: 'd1',
+    crop_name: 'Paddy',
+    disease_name: 'Blast Disease (Magnaporthe oryzae)',
+    symptoms: 'Spindle-shaped diamond spots with grey center on leaves; dark neck rot at flowering.',
+    causes: 'High humidity (>90%), excessive nitrogen application, cool night temperatures.',
+    prevention: 'Avoid excess nitrogen fertilizer, use blast-resistant varieties (IR 64, CO 51), seed treatment with Carbendazim.',
+    treatment: 'Spray Tricyclazole 75 WP @ 120g/acre or Isoprothiolane 40 EC @ 300ml/acre.',
+    organic_solution: 'Spray Pseudomonas fluorescens @ 1 kg/acre or 5% Neem seed kernel extract (NSKE).',
+    image_url: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
+    season: 'Kharif',
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: 'd2',
+    crop_name: 'Paddy',
+    disease_name: 'Stem Borer (Scirpophaga incertulas)',
+    symptoms: 'Dead heart in vegetative stage; White earhead with chaffy grains in reproductive stage.',
+    causes: 'Larvae boring into central shoot and feeding internally.',
+    prevention: 'Clip seedling leaf tips before transplanting, install 5 pheromone traps/acre.',
+    treatment: 'Apply Chlorantraniliprole 18.5 SC @ 60 ml/acre or Cartap hydrochloride 4G @ 10 kg/acre.',
+    organic_solution: 'Release Trichogramma egg parasitoids @ 60,000/acre; spray 5% Neem oil.',
+    image_url: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=600&auto=format&fit=crop&q=80',
+    season: 'Kharif',
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: 'd3',
+    crop_name: 'Tomato',
+    disease_name: 'Leaf Curl Virus (ToLCV)',
+    symptoms: 'Severe curling, puckering of leaves, stunting of plants with bushy growth.',
+    causes: 'Tomato leaf curl virus transmitted by Whitefly (Bemisia tabaci).',
+    prevention: 'Install 15 yellow sticky traps/acre, use border barrier crops like maize/sorghum.',
+    treatment: 'Spray Acetamiprid 20 SP @ 50g/acre or Imidacloprid 17.8 SL @ 60ml/acre to control whiteflies.',
+    organic_solution: 'Spray Neem oil (10,000 ppm) @ 5ml/L + garlic extract every 10 days.',
+    image_url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80',
+    season: 'All Season',
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: 'd4',
+    crop_name: 'Cotton',
+    disease_name: 'Pink Bollworm (Pectinophora gossypiella)',
+    symptoms: 'Rosetted flowers, bore holes in developing bolls with pink larvae feeding on seeds and lint.',
+    causes: 'High humidity, repeated monocropping of cotton.',
+    prevention: 'Crop rotation, destroy crop residue, install 8-10 pheromone traps/acre.',
+    treatment: 'Spray Emamectin benzoate 5 SG @ 100g/acre or Spinosad 45 SC @ 75ml/acre.',
+    organic_solution: 'Spray Agniastra or Neem seed kernel extract 5%; release Trichogramma wasps.',
+    image_url: 'https://images.unsplash.com/photo-1594488555776-8809ff44f24b?w=600&auto=format&fit=crop&q=80',
+    season: 'Kharif',
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: 'd5',
+    crop_name: 'Wheat',
+    disease_name: 'Yellow Stripe Rust (Puccinia striiformis)',
+    symptoms: 'Yellow pustules arranged in linear stripes on leaf surface, powder rubs off on fingers.',
+    causes: 'Fungus Puccinia striiformis, cool temperatures (10-15°C) and persistent dew.',
+    prevention: 'Early sowing, use rust-resistant cultivars (HD 2967, PBW 550).',
+    treatment: 'Spray Propiconazole 25 EC @ 200ml/acre in 200L water.',
+    organic_solution: 'Spray sour buttermilk (5L in 100L water) or Trichoderma viride.',
+    image_url: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80',
+    season: 'Rabi',
+    created_at: new Date().toISOString(),
+  },
+];
+
 export default function Diseases() {
   const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
@@ -17,9 +85,18 @@ export default function Diseases() {
 
   useEffect(() => {
     const fetchDiseases = async () => {
-      const { data } = await supabase.from('diseases').select('*').order('crop_name');
-      setDiseases(data || []);
-      setLoading(false);
+      try {
+        const { data, error } = await supabase.from('diseases').select('*').order('crop_name');
+        if (error || !data || data.length === 0) {
+          setDiseases(DEFAULT_DISEASES);
+        } else {
+          setDiseases(data);
+        }
+      } catch {
+        setDiseases(DEFAULT_DISEASES);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchDiseases();
   }, []);
