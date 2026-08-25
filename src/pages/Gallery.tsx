@@ -1,236 +1,385 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Images, Bug, Sprout, X, Search } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Images, Bug, Sprout, X, Search, ChevronLeft, ChevronRight,
+  Calendar, Leaf, ZoomIn, Filter,
+} from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PageHeader from '../components/ui/PageHeader';
 import CropImage from '../components/ui/CropImage';
 import { LoadingSpinner } from '../components/ui/Loading';
 
-type Crop = {
+// ---------- Rich built-in image data ----------
+interface GalleryItem {
   id: string;
-  crop_name: string;
-  scientific_name: string | null;
-  image_url: string | null;
-  suitable_season: string | null;
-};
+  name: string;
+  subtitle: string;
+  tag: string;
+  image_url: string;
+  type: 'crop' | 'disease';
+  season?: string;
+}
 
-type Disease = {
-  id: string;
-  disease_name: string;
-  crop_name: string | null;
-  image_url: string | null;
-  symptoms: string | null;
-};
+const BUILTIN_CROPS: GalleryItem[] = [
+  { id: 'g-paddy', name: 'Paddy (Rice)', subtitle: 'Oryza sativa', tag: 'Cereal', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1536617621572-1d5f1e6269a0?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-wheat', name: 'Wheat', subtitle: 'Triticum aestivum', tag: 'Cereal', season: 'Rabi', type: 'crop', image_url: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-tomato', name: 'Tomato', subtitle: 'Solanum lycopersicum', tag: 'Vegetable', season: 'All Season', type: 'crop', image_url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-cotton', name: 'Cotton', subtitle: 'Gossypium hirsutum', tag: 'Cash Crop', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1594488555776-8809ff44f24b?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-sugarcane', name: 'Sugarcane', subtitle: 'Saccharum officinarum', tag: 'Cash Crop', season: 'All Season', type: 'crop', image_url: 'https://images.unsplash.com/photo-1598112972019-91e1162b80f7?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-maize', name: 'Maize (Corn)', subtitle: 'Zea mays', tag: 'Cereal', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-onion', name: 'Onion', subtitle: 'Allium cepa', tag: 'Vegetable', season: 'Rabi', type: 'crop', image_url: 'https://images.unsplash.com/photo-1508747703725-719777637510?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-chilli', name: 'Chilli', subtitle: 'Capsicum annuum', tag: 'Spice', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-banana', name: 'Banana', subtitle: 'Musa acuminata', tag: 'Fruit', season: 'All Season', type: 'crop', image_url: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-mango', name: 'Mango', subtitle: 'Mangifera indica', tag: 'Fruit', season: 'Summer', type: 'crop', image_url: 'https://images.unsplash.com/photo-1591073113125-e46713c829ed?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-coconut', name: 'Coconut', subtitle: 'Cocos nucifera', tag: 'Plantation', season: 'All Season', type: 'crop', image_url: 'https://images.unsplash.com/photo-1627308595229-7830a5c18037?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-soybean', name: 'Soybean', subtitle: 'Glycine max', tag: 'Oilseed', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-potato', name: 'Potato', subtitle: 'Solanum tuberosum', tag: 'Vegetable', season: 'Rabi', type: 'crop', image_url: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-groundnut', name: 'Groundnut', subtitle: 'Arachis hypogaea', tag: 'Oilseed', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-brinjal', name: 'Brinjal (Eggplant)', subtitle: 'Solanum melongena', tag: 'Vegetable', season: 'All Season', type: 'crop', image_url: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-turmeric', name: 'Turmeric', subtitle: 'Curcuma longa', tag: 'Spice', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-ginger', name: 'Ginger', subtitle: 'Zingiber officinale', tag: 'Spice', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1615485291234-9d694218aeb6?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-garlic', name: 'Garlic', subtitle: 'Allium sativum', tag: 'Spice', season: 'Rabi', type: 'crop', image_url: 'https://images.unsplash.com/photo-1501420101890-43a2bdfca77f?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-mustard', name: 'Mustard', subtitle: 'Brassica juncea', tag: 'Oilseed', season: 'Rabi', type: 'crop', image_url: 'https://images.unsplash.com/photo-1631209121750-a9f656d28f4b?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-cucumber', name: 'Cucumber', subtitle: 'Cucumis sativus', tag: 'Vegetable', season: 'All Season', type: 'crop', image_url: 'https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-papaya', name: 'Papaya', subtitle: 'Carica papaya', tag: 'Fruit', season: 'All Season', type: 'crop', image_url: '/images/papaya.png' },
+  { id: 'g-watermelon', name: 'Watermelon', subtitle: 'Citrullus lanatus', tag: 'Fruit', season: 'Summer', type: 'crop', image_url: 'https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=600&auto=format&fit=crop&q=80' },
+];
+
+const BUILTIN_DISEASES: GalleryItem[] = [
+  { id: 'gd-blast', name: 'Paddy Blast Disease', subtitle: 'Magnaporthe oryzae', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: 'https://images.unsplash.com/photo-1598512752271-33f913a5af13?w=600&auto=format&fit=crop&q=80' },
+  { id: 'gd-leafcurl', name: 'Tomato Leaf Curl', subtitle: 'ToLCV Virus', tag: 'Tomato', season: 'All Season', type: 'disease', image_url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80' },
+  { id: 'gd-powdery', name: 'Powdery Mildew', subtitle: 'Oidium spp.', tag: 'Mango', season: 'Rabi', type: 'disease', image_url: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80' },
+  { id: 'gd-rust', name: 'Wheat Yellow Rust', subtitle: 'Puccinia striiformis', tag: 'Wheat', season: 'Rabi', type: 'disease', image_url: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80' },
+  { id: 'gd-blight', name: 'Potato Late Blight', subtitle: 'Phytophthora infestans', tag: 'Potato', season: 'Rabi', type: 'disease', image_url: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80' },
+  { id: 'gd-faw', name: 'Fall Armyworm', subtitle: 'Spodoptera frugiperda', tag: 'Maize', season: 'Kharif', type: 'disease', image_url: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=600&auto=format&fit=crop&q=80' },
+  { id: 'gd-anthrac', name: 'Anthracnose', subtitle: 'Colletotrichum spp.', tag: 'Chilli', season: 'Kharif', type: 'disease', image_url: 'https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=600&auto=format&fit=crop&q=80' },
+  { id: 'gd-panama', name: 'Panama Wilt', subtitle: 'Fusarium oxysporum', tag: 'Banana', season: 'All Season', type: 'disease', image_url: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=600&auto=format&fit=crop&q=80' },
+  { id: 'gd-mosaic', name: 'Yellow Mosaic Disease', subtitle: 'MYMV Virus', tag: 'Soybean', season: 'Kharif', type: 'disease', image_url: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=600&auto=format&fit=crop&q=80' },
+  { id: 'gd-bfb', name: 'Shoot & Fruit Borer', subtitle: 'Leucinodes orbonalis', tag: 'Brinjal', season: 'All Season', type: 'disease', image_url: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&auto=format&fit=crop&q=80' },
+  { id: 'gd-redrot', name: 'Red Rot', subtitle: 'Colletotrichum falcatum', tag: 'Sugarcane', season: 'All Season', type: 'disease', image_url: 'https://images.unsplash.com/photo-1598112972019-91e1162b80f7?w=600&auto=format&fit=crop&q=80' },
+  { id: 'gd-earlyblight', name: 'Early Blight', subtitle: 'Alternaria solani', tag: 'Tomato', season: 'All Season', type: 'disease', image_url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80' },
+];
+
+const CROP_TAGS = ['All', 'Cereal', 'Vegetable', 'Fruit', 'Cash Crop', 'Oilseed', 'Spice', 'Plantation'];
+const DISEASE_TAGS = ['All', 'Paddy', 'Tomato', 'Wheat', 'Cotton', 'Maize', 'Chilli', 'Banana', 'Mango', 'Potato', 'Soybean', 'Brinjal', 'Sugarcane'];
 
 type Tab = 'crops' | 'diseases';
 
 export default function Gallery() {
   const [tab, setTab] = useState<Tab>('crops');
-  const [crops, setCrops] = useState<Crop[]>([]);
-  const [diseases, setDiseases] = useState<Disease[]>([]);
   const [loading, setLoading] = useState(true);
+  const [allCrops, setAllCrops] = useState<GalleryItem[]>(BUILTIN_CROPS);
+  const [allDiseases, setAllDiseases] = useState<GalleryItem[]>(BUILTIN_DISEASES);
   const [search, setSearch] = useState('');
-  const [selected, setSelected] = useState<Crop | Disease | null>(null);
+  const [activeTag, setActiveTag] = useState('All');
+  const [selected, setSelected] = useState<GalleryItem | null>(null);
+  const [lightboxIdx, setLightboxIdx] = useState(0);
 
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const [cropRes, diseaseRes] = await Promise.all([
-        supabase.from('crops').select('id, crop_name, scientific_name, image_url, suitable_season').order('crop_name'),
-        supabase.from('diseases').select('id, disease_name, crop_name, image_url, symptoms').order('crop_name'),
-      ]);
-      
-      const defaultCrops: Crop[] = [
-        {
-          id: 'papaya-crop',
-          crop_name: 'Papaya',
-          scientific_name: 'Carica papaya',
-          image_url: '/images/papaya.png',
-          suitable_season: 'All',
-        },
-      ];
+      try {
+        const [cropRes, diseaseRes] = await Promise.all([
+          supabase.from('crops').select('id, crop_name, scientific_name, image_url, suitable_season').order('crop_name'),
+          supabase.from('diseases').select('id, disease_name, crop_name, image_url, symptoms').order('crop_name'),
+        ]);
 
-      const loadedCrops = cropRes.data && cropRes.data.length > 0 ? cropRes.data : defaultCrops;
-      const hasPapaya = loadedCrops.some(c => c.crop_name.toLowerCase() === 'papaya');
-      if (!hasPapaya) {
-        loadedCrops.unshift(defaultCrops[0]);
+        if (cropRes.data && cropRes.data.length > 0) {
+          const dbCrops: GalleryItem[] = cropRes.data.map((c) => ({
+            id: c.id,
+            name: c.crop_name,
+            subtitle: c.scientific_name || '',
+            tag: 'Crop',
+            season: c.suitable_season || 'All Season',
+            type: 'crop' as const,
+            image_url: c.image_url || '',
+          }));
+          setAllCrops(dbCrops.length > 0 ? dbCrops : BUILTIN_CROPS);
+        }
+
+        if (diseaseRes.data && diseaseRes.data.length > 0) {
+          const dbDiseases: GalleryItem[] = diseaseRes.data.map((d) => ({
+            id: d.id,
+            name: d.disease_name,
+            subtitle: d.crop_name || '',
+            tag: d.crop_name || 'General',
+            season: '',
+            type: 'disease' as const,
+            image_url: d.image_url || '',
+          }));
+          setAllDiseases(dbDiseases);
+        }
+      } catch {
+        // fallback to built-in data
+      } finally {
+        setLoading(false);
       }
-
-      setCrops(loadedCrops);
-      setDiseases(diseaseRes.data || []);
-      setLoading(false);
     }
     load();
   }, []);
 
-  const filteredCrops = crops.filter((c) =>
-    c.crop_name.toLowerCase().includes(search.toLowerCase()) ||
-    (c.scientific_name || '').toLowerCase().includes(search.toLowerCase())
-  );
+  const items = tab === 'crops' ? allCrops : allDiseases;
+  const tags = tab === 'crops' ? CROP_TAGS : DISEASE_TAGS;
 
-  const filteredDiseases = diseases.filter((d) =>
-    d.disease_name.toLowerCase().includes(search.toLowerCase()) ||
-    (d.crop_name || '').toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = useMemo(() => {
+    return items.filter((item) => {
+      const matchSearch =
+        item.name.toLowerCase().includes(search.toLowerCase()) ||
+        item.subtitle.toLowerCase().includes(search.toLowerCase()) ||
+        item.tag.toLowerCase().includes(search.toLowerCase());
+      const matchTag = activeTag === 'All' || item.tag === activeTag;
+      return matchSearch && matchTag;
+    });
+  }, [items, search, activeTag]);
 
-  const isCrop = (item: Crop | Disease): item is Crop => 'crop_name' in item && !('disease_name' in item);
+  const openLightbox = (item: GalleryItem) => {
+    const idx = filtered.findIndex((f) => f.id === item.id);
+    setLightboxIdx(idx);
+    setSelected(item);
+  };
+
+  const navigateLightbox = (dir: 1 | -1) => {
+    const newIdx = (lightboxIdx + dir + filtered.length) % filtered.length;
+    setLightboxIdx(newIdx);
+    setSelected(filtered[newIdx]);
+  };
+
+  const handleTabChange = (t: Tab) => {
+    setTab(t);
+    setActiveTag('All');
+    setSearch('');
+  };
 
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
         title="Image Gallery"
-        subtitle="Browse all crop and disease images"
-        icon={<Images className="w-6 h-6" />}
+        subtitle="Browse beautiful crop photos and disease identification images"
+        icon={<Images className="w-6 h-6 text-primary-500" />}
       />
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2">
         <button
-          onClick={() => setTab('crops')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${
+          onClick={() => handleTabChange('crops')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all ${
             tab === 'crops'
-              ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/30'
-              : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-primary-600 to-emerald-600 text-white shadow-lg shadow-primary-500/30'
+              : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-primary-400'
           }`}
         >
           <Sprout className="w-4 h-4" />
-          Crops ({crops.length})
+          🌾 Crops ({allCrops.length})
         </button>
         <button
-          onClick={() => setTab('diseases')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${
+          onClick={() => handleTabChange('diseases')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all ${
             tab === 'diseases'
-              ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/30'
-              : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/30'
+              : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-red-400'
           }`}
         >
           <Bug className="w-4 h-4" />
-          Diseases ({diseases.length})
+          🐛 Diseases ({allDiseases.length})
         </button>
       </div>
 
-      {/* Search */}
-      <div className="relative mb-6">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder={tab === 'crops' ? 'Search crops...' : 'Search diseases or crops...'}
-          className="w-full pl-12 pr-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
-        />
+      {/* Search + Count */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={`Search ${tab === 'crops' ? 'crops by name, type...' : 'diseases, crop name...'}`}
+            className="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 px-1">
+          <Filter className="w-4 h-4" />
+          <span>{filtered.length} items</span>
+        </div>
       </div>
 
+      {/* Tag Filter Pills */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+        {tags.map((tag) => (
+          <button
+            key={tag}
+            onClick={() => setActiveTag(tag)}
+            className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+              activeTag === tag
+                ? tab === 'crops'
+                  ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20'
+                  : 'bg-red-600 text-white shadow-md shadow-red-500/20'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-primary-400'
+            }`}
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+
+      {/* Grid */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <LoadingSpinner size="lg" />
         </div>
-      ) : tab === 'crops' ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          {filteredCrops.map((crop, i) => (
-            <motion.button
-              key={crop.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: i * 0.02 }}
-              onClick={() => setSelected(crop)}
-              className="group relative aspect-square rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer"
-            >
-              <CropImage src={crop.image_url} alt={crop.crop_name} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-3">
-                <p className="text-white font-semibold text-sm truncate">{crop.crop_name}</p>
-                {crop.suitable_season && (
-                  <p className="text-white/70 text-xs truncate">{crop.suitable_season}</p>
-                )}
-              </div>
-            </motion.button>
-          ))}
+      ) : filtered.length === 0 ? (
+        <div className="text-center py-20 text-slate-500 dark:text-slate-400">
+          <Images className="w-12 h-12 mx-auto mb-3 opacity-30" />
+          <p className="font-medium">No images found for "<span className="text-primary-500">{search || activeTag}</span>"</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          {filteredDiseases.map((disease, i) => (
-            <motion.button
-              key={disease.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: i * 0.02 }}
-              onClick={() => setSelected(disease)}
-              className="group relative aspect-square rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer"
-            >
-              <CropImage src={disease.image_url} alt={disease.disease_name} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-3">
-                <p className="text-white font-semibold text-sm truncate">{disease.disease_name}</p>
-                {disease.crop_name && (
-                  <p className="text-white/70 text-xs truncate">{disease.crop_name}</p>
-                )}
-              </div>
-            </motion.button>
-          ))}
-        </div>
-      )}
-
-      {/* Lightbox modal */}
-      {selected && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={() => setSelected(null)}
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          layout
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3"
         >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="relative max-w-2xl w-full bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setSelected(null)}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <div className="aspect-video w-full overflow-hidden">
-              <CropImage
-                src={selected.image_url}
-                alt={isCrop(selected) ? selected.crop_name : selected.disease_name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="p-6">
-              {isCrop(selected) ? (
-                <>
-                  <h3 className="text-xl font-bold text-slate-800 dark:text-white">{selected.crop_name}</h3>
-                  {selected.scientific_name && (
-                    <p className="text-sm italic text-slate-500 dark:text-slate-400 mt-1">{selected.scientific_name}</p>
+          <AnimatePresence>
+            {filtered.map((item, i) => (
+              <motion.button
+                key={item.id}
+                layout
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.85 }}
+                transition={{ duration: 0.25, delay: i * 0.015 }}
+                onClick={() => openLightbox(item)}
+                className="group relative aspect-square rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer ring-2 ring-transparent hover:ring-primary-400 dark:hover:ring-primary-500"
+              >
+                <CropImage
+                  src={item.image_url}
+                  alt={item.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                {/* Tag chip */}
+                <div className="absolute top-2 left-2">
+                  <span className={`text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full backdrop-blur-sm ${
+                    item.type === 'crop'
+                      ? 'bg-emerald-500/80 text-white'
+                      : 'bg-red-500/80 text-white'
+                  }`}>
+                    {item.tag}
+                  </span>
+                </div>
+
+                {/* Zoom icon */}
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <ZoomIn className="w-3.5 h-3.5 text-white" />
+                  </div>
+                </div>
+
+                {/* Name */}
+                <div className="absolute bottom-0 left-0 right-0 p-2.5">
+                  <p className="text-white font-bold text-xs leading-tight truncate">{item.name}</p>
+                  {item.subtitle && (
+                    <p className="text-white/60 text-[10px] italic truncate mt-0.5">{item.subtitle}</p>
                   )}
-                  {selected.suitable_season && (
-                    <p className="text-sm text-slate-600 dark:text-slate-300 mt-3">
-                      <span className="font-medium">Best Season:</span> {selected.suitable_season}
-                    </p>
-                  )}
-                </>
-              ) : (
-                <>
-                  <h3 className="text-xl font-bold text-slate-800 dark:text-white">{selected.disease_name}</h3>
-                  {selected.crop_name && (
-                    <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                      <span className="font-medium">Affects:</span> {selected.crop_name}
-                    </p>
-                  )}
-                  {selected.symptoms && (
-                    <p className="text-sm text-slate-600 dark:text-slate-300 mt-3">
-                      <span className="font-medium">Symptoms:</span> {selected.symptoms}
-                    </p>
-                  )}
-                </>
-              )}
-            </div>
-          </motion.div>
+                </div>
+              </motion.button>
+            ))}
+          </AnimatePresence>
         </motion.div>
       )}
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {selected && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelected(null)}
+            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', damping: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-2xl w-full bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-2xl"
+            >
+              {/* Image */}
+              <div className="relative aspect-video w-full overflow-hidden">
+                <CropImage
+                  src={selected.image_url}
+                  alt={selected.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+
+                {/* Close */}
+                <button
+                  onClick={() => setSelected(null)}
+                  className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md flex items-center justify-center text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                {/* Counter */}
+                <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md text-white text-xs font-medium">
+                  {lightboxIdx + 1} / {filtered.length}
+                </div>
+
+                {/* Nav arrows */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); navigateLightbox(-1); }}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md flex items-center justify-center text-white transition-colors"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); navigateLightbox(1); }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md flex items-center justify-center text-white transition-colors"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+
+                {/* Name overlay */}
+                <div className="absolute bottom-4 left-5 right-16">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className={`text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full ${
+                      selected.type === 'crop' ? 'bg-emerald-500/90 text-white' : 'bg-red-500/90 text-white'
+                    }`}>
+                      {selected.tag}
+                    </span>
+                    {selected.season && (
+                      <span className="inline-flex items-center gap-1 text-[10px] uppercase font-bold text-white/70">
+                        <Calendar className="w-3 h-3" /> {selected.season}
+                      </span>
+                    )}
+                  </div>
+                  <h2 className="text-xl md:text-2xl font-bold text-white leading-tight">{selected.name}</h2>
+                </div>
+              </div>
+
+              {/* Details */}
+              <div className="p-5 flex items-center gap-4">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
+                  selected.type === 'crop'
+                    ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600'
+                    : 'bg-red-100 dark:bg-red-900/30 text-red-600'
+                }`}>
+                  {selected.type === 'crop' ? <Leaf className="w-6 h-6" /> : <Bug className="w-6 h-6" />}
+                </div>
+                <div>
+                  <p className="font-bold text-slate-800 dark:text-white text-base">{selected.name}</p>
+                  {selected.subtitle && (
+                    <p className="text-sm italic text-slate-500 dark:text-slate-400">{selected.subtitle}</p>
+                  )}
+                  <p className="text-xs text-slate-400 mt-0.5 capitalize">{selected.type} • {selected.tag}{selected.season ? ` • ${selected.season}` : ''}</p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
