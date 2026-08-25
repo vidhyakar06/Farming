@@ -25,7 +25,7 @@ const BUILTIN_CROPS: GalleryItem[] = [
   { id: 'g-paddy', name: 'Paddy (Rice)', subtitle: 'Oryza sativa', tag: 'Cereal', season: 'Kharif', type: 'crop', image_url: '/images/crops/paddy.png' },
   { id: 'g-wheat', name: 'Wheat', subtitle: 'Triticum aestivum', tag: 'Cereal', season: 'Rabi', type: 'crop', image_url: '/images/crops/wheat.jpg' },
   { id: 'g-tomato', name: 'Tomato', subtitle: 'Solanum lycopersicum', tag: 'Vegetable', season: 'All Season', type: 'crop', image_url: '/images/crops/tomato.jpg' },
-  { id: 'g-cotton', name: 'Cotton', subtitle: 'Gossypium hirsutum', tag: 'Cash Crop', season: 'Kharif', type: 'crop', image_url: 'https://images.unsplash.com/photo-1594488555776-8809ff44f24b?w=600&auto=format&fit=crop&q=80' },
+  { id: 'g-cotton', name: 'Cotton', subtitle: 'Gossypium hirsutum', tag: 'Cash Crop', season: 'Kharif', type: 'crop', image_url: '/images/crops/cotton.jpg' },
   { id: 'g-sugarcane', name: 'Sugarcane', subtitle: 'Saccharum officinarum', tag: 'Cash Crop', season: 'All Season', type: 'crop', image_url: '/images/crops/sugarcane.jpg' },
   { id: 'g-maize', name: 'Maize (Corn)', subtitle: 'Zea mays', tag: 'Cereal', season: 'Kharif', type: 'crop', image_url: '/images/crops/maize.jpg' },
   { id: 'g-onion', name: 'Onion', subtitle: 'Allium cepa', tag: 'Vegetable', season: 'Rabi', type: 'crop', image_url: '/images/crops/onion.jpg' },
