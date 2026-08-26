@@ -70,6 +70,7 @@ const BUILTIN_DISEASES: GalleryItem[] = [
 
 const CROP_TAGS = ['All', 'Cereal', 'Vegetable', 'Fruit', 'Cash Crop', 'Oilseed', 'Spice', 'Plantation'];
 const DISEASE_TAGS = ['All', 'Paddy', 'Tomato', 'Wheat', 'Cotton', 'Maize', 'Chilli', 'Banana', 'Mango', 'Potato', 'Soybean', 'Cucumber', 'Cabbage', 'Chickpea', 'Lettuce'];
+const SEASONS = ['All', 'Kharif', 'Rabi', 'Summer', 'All Season'];
 
 type Tab = 'crops' | 'diseases';
 
@@ -81,6 +82,7 @@ export default function Gallery() {
   const [allDiseases, setAllDiseases] = useState<GalleryItem[]>(BUILTIN_DISEASES);
   const [search, setSearch] = useState('');
   const [activeTag, setActiveTag] = useState('All');
+  const [activeSeason, setActiveSeason] = useState('All');
   const [selected, setSelected] = useState<GalleryItem | null>(null);
   const [lightboxIdx, setLightboxIdx] = useState(0);
 
@@ -157,9 +159,10 @@ export default function Gallery() {
         item.subtitle.toLowerCase().includes(search.toLowerCase()) ||
         item.tag.toLowerCase().includes(search.toLowerCase());
       const matchTag = activeTag === 'All' || item.tag === activeTag;
-      return matchSearch && matchTag;
+      const matchSeason = activeSeason === 'All' || item.season === activeSeason;
+      return matchSearch && matchTag && matchSeason;
     });
-  }, [items, search, activeTag]);
+  }, [items, search, activeTag, activeSeason]);
 
   const openLightbox = (item: GalleryItem) => {
     const idx = filtered.findIndex((f) => f.id === item.id);
@@ -176,6 +179,7 @@ export default function Gallery() {
   const handleTabChange = (newTab: Tab) => {
     setTab(newTab);
     setActiveTag('All');
+    setActiveSeason('All');
     setSearch('');
   };
 
@@ -213,9 +217,9 @@ export default function Gallery() {
         </button>
       </div>
 
-      {/* Search + Count */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
+      {/* Search + Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 items-center">
+        <div className="relative flex-1 w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
@@ -225,9 +229,30 @@ export default function Gallery() {
             className="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
         </div>
-        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 px-1">
-          <Filter className="w-4 h-4" />
-          <span>{filtered.length} {t('common.items')}</span>
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="relative shrink-0">
+            <select
+              value={activeSeason}
+              onChange={(e) => setActiveSeason(e.target.value)}
+              className="appearance-none pl-10 pr-8 py-2.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 hover:border-primary-400 transition-colors cursor-pointer"
+            >
+              {SEASONS.map((season) => (
+                <option key={season} value={season}>
+                  {season === 'All' ? 'All Seasons' : season}
+                </option>
+              ))}
+            </select>
+            <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary-500" />
+            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 px-1 shrink-0">
+            <Filter className="w-4 h-4" />
+            <span>{filtered.length} {t('common.items')}</span>
+          </div>
         </div>
       </div>
 
