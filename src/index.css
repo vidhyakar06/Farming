@@ -62,3 +62,20 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-slate-400 dark:bg-slate-500;
 }
+
+/* Google Translate Clean Styling */
+.goog-te-banner-frame,
+.goog-te-balloon-frame,
+#goog-gt-tt,
+.goog-te-spinner-pos {
+  display: none !important;
+}
+body {
+  top: 0px !important;
+}
+.skiptranslate {
+  display: none !important;
+}
+body > .skiptranslate {
+  display: none !important;
+}

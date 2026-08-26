@@ -4,6 +4,7 @@ import { Sprout, Save, FlaskConical, Cloud, Droplets, Thermometer, RotateCcw, Ch
 import { supabase, type FarmDetail } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { useLanguage } from '../context/LanguageContext';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -51,6 +52,7 @@ function Hint({ children }: { children: React.ReactNode }) {
 }
 
 export default function FarmDetails() {
+  const { t } = useLanguage();
   const { session } = useAuth();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -162,8 +164,8 @@ export default function FarmDetails() {
   return (
     <div className="pb-24">
       <PageHeader
-        title="Farm Details"
-        subtitle="Enter your soil and weather details so we can suggest the best crops for your farm"
+        title={t('farm.title')}
+        subtitle={t('farm.subtitle')}
         icon={<Sprout className="w-6 h-6" />}
         action={
           <div className="flex items-center gap-3">

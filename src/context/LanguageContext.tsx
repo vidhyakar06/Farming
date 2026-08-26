@@ -1617,10 +1617,32 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return 'en';
   });
 
+  const applyAutoTranslation = (lang: LanguageCode) => {
+    try {
+      const gtCombo = document.querySelector('.goog-te-combo') as HTMLSelectElement | null;
+      if (gtCombo) {
+        gtCombo.value = lang;
+        gtCombo.dispatchEvent(new Event('change'));
+      }
+      document.cookie = `googtrans=/en/${lang}; path=/;`;
+      document.cookie = `googtrans=/en/${lang}; path=/; domain=${window.location.hostname}`;
+    } catch {
+      // Ignore fallback errors
+    }
+  };
+
   const setLanguage = (lang: LanguageCode) => {
     setLanguageState(lang);
     localStorage.setItem('app_language', lang);
+    applyAutoTranslation(lang);
   };
+
+  React.useEffect(() => {
+    if (language && language !== 'en') {
+      const timer = setTimeout(() => applyAutoTranslation(language), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [language]);
 
   const t = (key: string): string => {
     return translations[language]?.[key] || translations['en']?.[key] || key;
