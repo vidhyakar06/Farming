@@ -331,14 +331,28 @@ Provide clear, actionable, and practical advice. Format responses with relevant 
           console.warn(`Model ${modelName} overloaded, trying next...`);
           continue;
         }
+        // If it's a 404 Not Found (e.g. model not available for this key type) try next model
+        if (msg.includes('404 Not Found') || msg.includes('is not found')) {
+           console.warn(`Model ${modelName} not available for this key, trying next...`);
+           continue;
+        }
         // API key invalid
-        if (msg.includes('400') || msg.includes('API_KEY') || msg.includes('invalid')) {
+        if (msg.includes('400') || msg.includes('API_KEY') || msg.includes('invalid') || msg.includes('403')) {
           console.error('Invalid API key:', e);
-          break;
+          return { 
+            reply: '⚠️ **API Key Error:** The Gemini API key provided is invalid or does not have access. Please ensure you generated a valid key from Google AI Studio (usually starts with "AIzaSy..."). \n\nClick the "Set API Key" button above to update your key.', 
+            followUps: [] 
+          };
         }
         console.warn(`Gemini model ${modelName} error:`, e);
       }
     }
+    
+    // If we exhausted all models and none worked but they had a key:
+    return {
+      reply: '⚠️ **Connection Error:** Could not connect to Gemini AI. The API key might be restricted, or the models are not available in your region. \n\nPlease generate a new standard API key from [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) and try again.',
+      followUps: []
+    };
   }
 
   return generateSmartFallback(userQuery, language);
