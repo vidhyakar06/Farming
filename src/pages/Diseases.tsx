@@ -203,23 +203,6 @@ const DEFAULT_DISEASES: Disease[] = [
     created_at: new Date().toISOString(),
   },
   {
-    id: 'd16',
-    crop_name: 'Brinjal',
-    disease_name: 'Shoot and Fruit Borer (Leucinodes orbonalis)',
-    symptoms: 'Wilting of young shoots (dead heart), larvae bore into fruits causing rotting, pin holes on fruits.',
-    causes: 'Leucinodes orbonalis larvae boring into tender shoots and fruits.',
-    prevention: 'Install pheromone traps (5/acre), collect and destroy infested shoots and fruits.',
-    treatment: 'Spray Spinosad 45 SC @ 0.3ml/litre or Chlorantraniliprole 18.5 SC @ 0.3ml/litre.',
-    organic_solution: 'Release egg parasitoid Trichogramma chilonis @ 50,000/acre; spray Bt (Bacillus thuringiensis) @ 2g/litre.',
-    image_url: '/images/diseases/brinjal_borer_trap.jpg',
-    images: [
-      '/images/diseases/brinjal_borer_trap.jpg',
-      '/images/diseases/brinjal_borer.jpg'
-    ],
-    season: 'All Season',
-    created_at: new Date().toISOString(),
-  },
-  {
     id: 'd17',
     crop_name: 'Potato',
     disease_name: 'Late Blight (Phytophthora infestans)',

@@ -36,7 +36,6 @@ const BUILTIN_CROPS: GalleryItem[] = [
   { id: 'g-soybean', name: 'Soybean', subtitle: 'Glycine max', tag: 'Oilseed', season: 'Kharif', type: 'crop', image_url: '/images/crops/soybean.jpg' },
   { id: 'g-potato', name: 'Potato', subtitle: 'Solanum tuberosum', tag: 'Vegetable', season: 'Rabi', type: 'crop', image_url: '/images/crops/potato.jpg' },
   { id: 'g-groundnut', name: 'Groundnut', subtitle: 'Arachis hypogaea', tag: 'Oilseed', season: 'Kharif', type: 'crop', image_url: '/images/crops/groundnut.jpg' },
-  { id: 'g-brinjal', name: 'Brinjal (Eggplant)', subtitle: 'Solanum melongena', tag: 'Vegetable', season: 'All Season', type: 'crop', image_url: '/images/crops/brinjal.JPG' },
   { id: 'g-turmeric', name: 'Turmeric', subtitle: 'Curcuma longa', tag: 'Spice', season: 'Kharif', type: 'crop', image_url: '/images/crops/turmeric.jpg' },
   { id: 'g-ginger', name: 'Ginger', subtitle: 'Zingiber officinale', tag: 'Spice', season: 'Kharif', type: 'crop', image_url: '/images/crops/ginger.jpg' },
   { id: 'g-garlic', name: 'Garlic', subtitle: 'Allium sativum', tag: 'Spice', season: 'Rabi', type: 'crop', image_url: '/images/crops/garlic.jpg' },
@@ -59,7 +58,6 @@ const BUILTIN_DISEASES: GalleryItem[] = [
   { id: 'gd-lateblight', name: 'Potato Late Blight', subtitle: 'Phytophthora infestans', tag: 'Potato', season: 'Rabi', type: 'disease', image_url: '/images/diseases/potato_late_blight_spudsmart.jpg' },
   { id: 'gd-anthrac', name: 'Anthracnose / Fruit Rot', subtitle: 'Colletotrichum capsici', tag: 'Chilli', season: 'Kharif', type: 'disease', image_url: '/images/diseases/chilli_anthracnose.jpg' },
   { id: 'gd-panama', name: 'Panama Wilt', subtitle: 'Fusarium oxysporum', tag: 'Banana', season: 'All Season', type: 'disease', image_url: '/images/diseases/banana_panama_wilt.jpg' },
-  { id: 'gd-brinjalborer', name: 'Shoot & Fruit Borer', subtitle: 'Leucinodes orbonalis', tag: 'Brinjal', season: 'All Season', type: 'disease', image_url: '/images/diseases/brinjal_borer_trap.jpg' },
   { id: 'gd-earlyblight', name: 'Early Blight', subtitle: 'Alternaria solani', tag: 'Tomato', season: 'All Season', type: 'disease', image_url: '/images/diseases/tomato_early_blight_lucid.jpg' },
   { id: 'gd-bph', name: 'Brown Planthopper', subtitle: 'Nilaparvata lugens', tag: 'Paddy', season: 'Kharif', type: 'disease', image_url: '/images/diseases/paddy_bph_irri.jpg' },
   { id: 'gd-downy', name: 'Downy Mildew', subtitle: 'Pseudoperonospora cubensis', tag: 'Cucumber', season: 'All Season', type: 'disease', image_url: '/images/diseases/cucumber_downy_mildew_5628815.jpg' },
@@ -71,7 +69,7 @@ const BUILTIN_DISEASES: GalleryItem[] = [
 ];
 
 const CROP_TAGS = ['All', 'Cereal', 'Vegetable', 'Fruit', 'Cash Crop', 'Oilseed', 'Spice', 'Plantation'];
-const DISEASE_TAGS = ['All', 'Paddy', 'Tomato', 'Wheat', 'Cotton', 'Maize', 'Chilli', 'Banana', 'Mango', 'Potato', 'Soybean', 'Brinjal', 'Cucumber', 'Cabbage', 'Chickpea', 'Lettuce'];
+const DISEASE_TAGS = ['All', 'Paddy', 'Tomato', 'Wheat', 'Cotton', 'Maize', 'Chilli', 'Banana', 'Mango', 'Potato', 'Soybean', 'Cucumber', 'Cabbage', 'Chickpea', 'Lettuce'];
 
 type Tab = 'crops' | 'diseases';
 
