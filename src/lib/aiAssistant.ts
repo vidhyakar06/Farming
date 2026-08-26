@@ -1,3 +1,4 @@
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
 import { LanguageCode } from '../context/LanguageContext';
 
 export interface ChatMessage {
@@ -278,18 +279,10 @@ export async function getAIResponse(
       es: 'Spanish (Español)',
     };
 
-    const systemInstruction = `You are a helpful, intelligent, and versatile AI assistant. 
-You specialize in Agriculture and Crop Advisory, but you are also highly capable of answering ANY question the user asks on ANY topic, just like ChatGPT. Feel free to answer general knowledge, programming, math, conversational, or any other topics if the user asks.
-CRITICAL LANGUAGE RULE: You MUST respond 100% in ${langNames[language]}. Do NOT mix English words unless they are technical terms or names. Every word and explanation must be completely in ${langNames[language]}.
-Provide clear, actionable, and practical advice. Format responses with clean emojis, bullet points, and step-by-step guidance.`;
-
-    const contents = [
-      ...history.slice(-6).map((msg) => ({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }],
-      })),
-      { role: 'user', parts: [{ text: userQuery }] },
-    ];
+    const systemInstruction = `You are a helpful, intelligent, and versatile AI assistant named KrishiBot.
+You specialize in Agriculture and Crop Advisory for Indian farmers, but you are also highly capable of answering ANY question the user asks on ANY topic.
+CRITICAL LANGUAGE RULE: You MUST respond 100% in ${langNames[language]}. Do NOT mix English words unless they are technical terms or proper names. Every word and explanation must be completely in ${langNames[language]}.
+Provide clear, actionable, and practical advice. Format responses with relevant emojis, bullet points, and step-by-step guidance where helpful.`;
 
     const modelsToTry = [
       'gemini-1.5-flash',
@@ -298,31 +291,52 @@ Provide clear, actionable, and practical advice. Format responses with clean emo
       'gemini-2.0-flash-exp',
     ];
 
-    for (const model of modelsToTry) {
-      try {
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents,
-              systemInstruction: { parts: [{ text: systemInstruction }] },
-              generationConfig: { temperature: 0.5, maxOutputTokens: 1000 },
-            }),
-          }
-        );
+    const safetySettings = [
+      { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+      { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+    ];
 
-        if (res.ok) {
-          const data = await res.json();
-          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (text) {
-            const fallback = generateSmartFallback(userQuery, language);
-            return { reply: text, followUps: fallback.followUps };
-          }
+    for (const modelName of modelsToTry) {
+      try {
+        const genAI = new GoogleGenerativeAI(geminiApiKey);
+        const model = genAI.getGenerativeModel({
+          model: modelName,
+          systemInstruction,
+          safetySettings,
+          generationConfig: {
+            temperature: 0.6,
+            maxOutputTokens: 1024,
+            topP: 0.9,
+          },
+        });
+
+        // Build chat history (exclude last user message — that's the current query)
+        const chatHistory = history.slice(-6).map((msg) => ({
+          role: msg.role === 'assistant' ? ('model' as const) : ('user' as const),
+          parts: [{ text: msg.content }],
+        }));
+
+        const chat = model.startChat({ history: chatHistory });
+        const result = await chat.sendMessage(userQuery);
+        const text = result.response.text();
+
+        if (text && text.trim()) {
+          const fallback = generateSmartFallback(userQuery, language);
+          return { reply: text.trim(), followUps: fallback.followUps };
         }
-      } catch (e) {
-        console.warn(`Gemini model ${model} error:`, e);
+      } catch (e: any) {
+        const msg = e?.message || '';
+        // If rate limited or quota exceeded, try next model
+        if (msg.includes('429') || msg.includes('quota') || msg.includes('overloaded')) {
+          console.warn(`Model ${modelName} overloaded, trying next...`);
+          continue;
+        }
+        // API key invalid
+        if (msg.includes('400') || msg.includes('API_KEY') || msg.includes('invalid')) {
+          console.error('Invalid API key:', e);
+          break;
+        }
+        console.warn(`Gemini model ${modelName} error:`, e);
       }
     }
   }

@@ -415,6 +415,45 @@ export default function AIAssistant() {
                 {t('ai.subtitle')}
               </p>
 
+              {/* API Key Not Set Banner */}
+              {!hasApiKey && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-5 flex items-center gap-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 rounded-2xl px-5 py-3.5 max-w-sm w-full"
+                >
+                  <Key className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
+                  <div className="text-left">
+                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">No API Key Connected</p>
+                    <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
+                      Connect your free Gemini API key to unlock live AI responses.{' '}
+                      <button onClick={openApiModal} className="underline font-semibold hover:text-amber-800 dark:hover:text-amber-200 transition-colors">
+                        Set API Key →
+                      </button>
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* API Key Connected confirmation */}
+              {hasApiKey && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-5 flex items-center gap-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700 rounded-2xl px-5 py-3.5 max-w-sm w-full"
+                >
+                  <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <div className="text-left">
+                    <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">🤖 KrishiBot AI is Ready!</p>
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-0.5">
+                      Powered by Google Gemini. Ask me anything about farming or any topic!
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+
               {/* Starter suggested questions */}
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-8 max-w-3xl w-full text-left">
                 {suggestedQuestions.map((q, i) => (
