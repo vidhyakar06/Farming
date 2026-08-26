@@ -285,10 +285,13 @@ CRITICAL LANGUAGE RULE: You MUST respond 100% in ${langNames[language]}. Do NOT 
 Provide clear, actionable, and practical advice. Format responses with relevant emojis, bullet points, and step-by-step guidance where helpful.`;
 
     const modelsToTry = [
+      'gemini-3.5-flash',
+      'gemini-2.5-flash',
+      'gemini-flash-latest',
       'gemini-1.5-flash',
       'gemini-2.0-flash',
       'gemini-1.5-pro',
-      'gemini-2.0-flash-exp',
+      'gemini-pro-latest'
     ];
 
     const safetySettings = [
