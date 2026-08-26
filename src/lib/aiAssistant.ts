@@ -238,59 +238,92 @@ function generateSmartFallback(query: string, lang: LanguageCode): { reply: stri
   return universalFallbacks[lang] || universalFallbacks.en;
 }
 
+export function getStoredApiKey(): string {
+  try {
+    const local = localStorage.getItem('gemini_api_key');
+    if (local && local.trim()) return local.trim();
+  } catch {
+    // Ignore localStorage errors
+  }
+  const envKey = (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_GEMINI_API_KEY ||
+                 (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_GOOGLE_API_KEY;
+  return envKey ? envKey.trim() : '';
+}
+
+export function setStoredApiKey(key: string): void {
+  try {
+    if (key.trim()) {
+      localStorage.setItem('gemini_api_key', key.trim());
+    } else {
+      localStorage.removeItem('gemini_api_key');
+    }
+  } catch {
+    // Ignore localStorage errors
+  }
+}
+
 export async function getAIResponse(
   userQuery: string,
   language: LanguageCode,
   history: ChatMessage[] = []
 ): Promise<{ reply: string; followUps: string[] }> {
-  const geminiApiKey = (import.meta as unknown as { env?: { VITE_GEMINI_API_KEY?: string } }).env?.VITE_GEMINI_API_KEY;
+  const geminiApiKey = getStoredApiKey();
 
   if (geminiApiKey) {
-    try {
-      const langNames: Record<LanguageCode, string> = {
-        en: 'English',
-        ta: 'Tamil (தமிழ்)',
-        hi: 'Hindi (हिंदी)',
-        te: 'Telugu (తెలుగు)',
-        es: 'Spanish (Español)',
-      };
+    const langNames: Record<LanguageCode, string> = {
+      en: 'English',
+      ta: 'Tamil (தமிழ்)',
+      hi: 'Hindi (हिंदी)',
+      te: 'Telugu (తెలుగు)',
+      es: 'Spanish (Español)',
+    };
 
-      const systemInstruction = `You are a helpful, intelligent, and versatile AI assistant. 
+    const systemInstruction = `You are a helpful, intelligent, and versatile AI assistant. 
 You specialize in Agriculture and Crop Advisory, but you are also highly capable of answering ANY question the user asks on ANY topic, just like ChatGPT. Feel free to answer general knowledge, programming, math, conversational, or any other topics if the user asks.
 CRITICAL LANGUAGE RULE: You MUST respond 100% in ${langNames[language]}. Do NOT mix English words unless they are technical terms or names. Every word and explanation must be completely in ${langNames[language]}.
 Provide clear, actionable, and practical advice. Format responses with clean emojis, bullet points, and step-by-step guidance.`;
 
-      const contents = [
-        ...history.slice(-6).map((msg) => ({
-          role: msg.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: msg.content }],
-        })),
-        { role: 'user', parts: [{ text: userQuery }] },
-      ];
+    const contents = [
+      ...history.slice(-6).map((msg) => ({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }],
+      })),
+      { role: 'user', parts: [{ text: userQuery }] },
+    ];
 
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents,
-            systemInstruction: { parts: [{ text: systemInstruction }] },
-            generationConfig: { temperature: 0.5, maxOutputTokens: 1000 },
-          }),
-        }
-      );
+    const modelsToTry = [
+      'gemini-1.5-flash',
+      'gemini-2.0-flash',
+      'gemini-1.5-pro',
+      'gemini-2.0-flash-exp',
+    ];
 
-      if (res.ok) {
-        const data = await res.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (text) {
-          const fallback = generateSmartFallback(userQuery, language);
-          return { reply: text, followUps: fallback.followUps };
+    for (const model of modelsToTry) {
+      try {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents,
+              systemInstruction: { parts: [{ text: systemInstruction }] },
+              generationConfig: { temperature: 0.5, maxOutputTokens: 1000 },
+            }),
+          }
+        );
+
+        if (res.ok) {
+          const data = await res.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+            const fallback = generateSmartFallback(userQuery, language);
+            return { reply: text, followUps: fallback.followUps };
+          }
         }
+      } catch (e) {
+        console.warn(`Gemini model ${model} error:`, e);
       }
-    } catch (e) {
-      console.warn('Gemini API call error:', e);
     }
   }
 
