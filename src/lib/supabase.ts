@@ -55,6 +55,9 @@ export type FarmDetail = {
   humidity: number;
   water_availability: string;
   current_season: string;
+  latitude?: number;
+  longitude?: number;
+  farm_area?: number;
   created_at: string;
 };
 

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sprout, Save, FlaskConical, Cloud, Droplets, Thermometer, RotateCcw, CheckCircle2, Info } from 'lucide-react';
+import { Sprout, Save, FlaskConical, Cloud, Droplets, Thermometer, RotateCcw, CheckCircle2, Info, MapPin } from 'lucide-react';
 import { supabase, type FarmDetail } from '../lib/supabase';
+import FarmMap from '../components/Map/FarmMap';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -18,6 +19,7 @@ const waterAvailability = ['Low', 'Medium', 'High', 'Very High'];
 const emptyForm = {
   soil_type: '', soil_ph: '', nitrogen: '', phosphorus: '', potassium: '',
   rainfall: '', temperature: '', humidity: '', water_availability: '', current_season: '',
+  latitude: 0, longitude: 0, farm_area: 0,
 };
 
 const requiredFields: (keyof typeof emptyForm)[] = [
@@ -61,6 +63,9 @@ export default function FarmDetails() {
           humidity: String(data.humidity || ''),
           water_availability: data.water_availability || '',
           current_season: data.current_season || '',
+          latitude: data.latitude || 0,
+          longitude: data.longitude || 0,
+          farm_area: data.farm_area || 0,
         });
       }
       setLoading(false);
@@ -123,6 +128,9 @@ export default function FarmDetails() {
         humidity: Number(form.humidity),
         water_availability: form.water_availability,
         current_season: form.current_season,
+        latitude: form.latitude,
+        longitude: form.longitude,
+        farm_area: form.farm_area,
       };
       if (existing) {
         const { error } = await supabase.from('farm_details').update(payload).eq('id', existing.id);
@@ -211,6 +219,36 @@ export default function FarmDetails() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
+        {/* Map Section */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="lg:col-span-2">
+          <Card className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-800 dark:text-white">{t('farm.locationArea') || 'Farm Location & Area'}</h3>
+                  <p className="text-sm text-slate-500">{t('farm.mapHint') || 'Draw a polygon around your farm to calculate exact area'}</p>
+                </div>
+              </div>
+              {form.farm_area > 0 && (
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-green-600">{form.farm_area} {t('farm.acres') || 'Acres'}</div>
+                  <div className="text-xs text-slate-500">{t('farm.calculatedArea') || 'Calculated Area'}</div>
+                </div>
+              )}
+            </div>
+            <div className="h-[400px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
+              <FarmMap 
+                onAreaCalculated={(area, lat, lng) => setForm(prev => ({ ...prev, farm_area: area, latitude: lat, longitude: lng }))}
+                initialLat={form.latitude || undefined}
+                initialLng={form.longitude || undefined}
+              />
+            </div>
+          </Card>
+        </motion.div>
+
         {/* Soil Section */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <Card className="p-6">
