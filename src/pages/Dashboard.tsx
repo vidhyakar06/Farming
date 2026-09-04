@@ -18,6 +18,7 @@ import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import { SkeletonCard } from '../components/ui/Skeleton';
 import CropImage from '../components/ui/CropImage';
+import UserLocationCard from '../components/Map/UserLocationCard';
 
 ChartJS.register(
   CategoryScale, LinearScale, PointElement, LineElement,
@@ -213,6 +214,11 @@ export default function Dashboard() {
           </div>
         </Card>
       )}
+
+      {/* User Location */}
+      <div className="mb-8">
+        <UserLocationCard apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''} />
+      </div>
 
       {/* Charts */}
       <div className="grid lg:grid-cols-2 gap-6 mb-8">
