@@ -17,6 +17,7 @@ import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import { SkeletonCard } from '../components/ui/Skeleton';
 import CropImage from '../components/ui/CropImage';
+import { defaultCrops } from '../data/defaultCrops';
 
 ChartJS.register(
   CategoryScale, LinearScale, PointElement, LineElement,
@@ -65,13 +66,43 @@ export default function Dashboard() {
           }
         }
 
+        let userRecs = recs.data || [];
+        if (userRecs.length === 0 && session?.user?.id) {
+          try {
+            const cachedRecs = localStorage.getItem(`crop_recommendations_${session.user.id}`);
+            if (cachedRecs) {
+              const parsed = JSON.parse(cachedRecs);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                userRecs = parsed.map((item: any) => ({
+                  id: item.id,
+                  crops: item,
+                  confidence: item.confidence || 90,
+                  recommendation_date: new Date().toISOString(),
+                }));
+              }
+            }
+          } catch {
+            // ignore
+          }
+        }
+
+        // If still no recommendations, display top starter crops
+        if (userRecs.length === 0) {
+          userRecs = defaultCrops.slice(0, 5).map((c, i) => ({
+            id: c.id,
+            crops: c,
+            confidence: 96 - i * 3,
+            recommendation_date: new Date().toISOString(),
+          }));
+        }
+
         setStats({
-          crops: crops.count || 0,
-          recommendations: recs.data?.length || 0,
+          crops: crops.count || defaultCrops.length,
+          recommendations: userRecs.length,
           marketPrices: markets.count || 0,
           farmers: farmers.count || 0,
         });
-        setRecentRecs(recs.data || []);
+        setRecentRecs(userRecs);
         setFarmDetails(farmData);
       } catch (err) {
         console.error('Dashboard fetch error:', err);
