@@ -294,18 +294,18 @@ export default function FarmDetails() {
 
       <div className="mb-6 rounded-2xl overflow-hidden shadow-lg relative h-48 sm:h-64">
         <img
-          src="https://images.pexels.com/photos/4407999/pexels-photo-4407999.jpeg?auto=compress&cs=tinysrgb&w=1200"
-          alt="Farm field"
+          src="/images/farm_banner.jpg"
+          alt="Lush green farm field"
           className="w-full h-full object-cover"
           onError={(e) => {
             const img = e.currentTarget;
             img.onerror = null;
-            img.src = 'https://images.pexels.com/photos/1112080/pexels-photo-1112080.jpeg?auto=compress&cs=tinysrgb&w=1200';
+            img.src = 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80';
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white">
-          <Sprout className="w-5 h-5" />
+          <Sprout className="w-5 h-5 text-emerald-400" />
           <span className="font-semibold text-sm sm:text-base">Your Farm at a Glance</span>
         </div>
       </div>

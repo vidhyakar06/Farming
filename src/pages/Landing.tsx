@@ -146,7 +146,7 @@ export default function Landing() {
                 onError={(e) => {
                   const img = e.currentTarget;
                   img.onerror = null;
-                  img.src = 'https://images.pexels.com/photos/1112080/pexels-photo-1112080.jpeg?auto=compress&cs=tinysrgb&w=1200';
+                  img.src = '/images/farm_banner.jpg';
                 }}
               />
             </div>
