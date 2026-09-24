@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  FileBarChart, Download, FileText, TrendingUp, Sprout,
+  FileBarChart, Download, FileText, TrendingUp, Sprout, Users,
   Calendar, MapPin,
 } from 'lucide-react';
 import jsPDF from 'jspdf';
@@ -24,15 +24,41 @@ export default function Reports() {
   useEffect(() => {
     const fetchData = async () => {
       if (!session?.user?.id) return;
-      const [recs, farm, market] = await Promise.all([
-        supabase.from('recommendations').select('*, crops(*)').eq('farmer_id', session.user.id).order('recommendation_date', { ascending: false }),
-        supabase.from('farm_details').select('*').eq('farmer_id', session.user.id).order('created_at', { ascending: false }).maybeSingle(),
-        supabase.from('market_prices').select('*').limit(10),
-      ]);
-      setRecommendations(recs.data || []);
-      setFarmDetails(farm.data);
-      setMarketPrices(market.data || []);
-      setLoading(false);
+      try {
+        const [recs, farm, market] = await Promise.all([
+          supabase
+            .from('recommendations')
+            .select('*, crops(*)')
+            .eq('farmer_id', session.user.id)
+            .order('recommendation_date', { ascending: false }),
+          supabase
+            .from('farm_details')
+            .select('*')
+            .eq('farmer_id', session.user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle(),
+          supabase.from('market_prices').select('*').limit(10),
+        ]);
+
+        let farmRecord = farm.data;
+        if (!farmRecord) {
+          try {
+            const cached = localStorage.getItem(`farm_details_${session.user.id}`);
+            if (cached) farmRecord = JSON.parse(cached);
+          } catch {
+            // ignore
+          }
+        }
+
+        setRecommendations(recs.data || []);
+        setFarmDetails(farmRecord);
+        setMarketPrices(market.data || []);
+      } catch (err) {
+        console.error('Error fetching reports data:', err);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, [session?.user?.id]);

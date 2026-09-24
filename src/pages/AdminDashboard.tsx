@@ -11,7 +11,7 @@ import { useToast } from '../context/ToastContext';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
+import { Input, Select } from '../components/ui/Input';
 import { LoadingSpinner, EmptyState } from '../components/ui/Loading';
 
 type Tab = 'overview' | 'crops' | 'farmers' | 'diseases' | 'fertilizers' | 'market';
@@ -208,8 +208,8 @@ export default function AdminDashboard() {
         <ManageTable
           title="Farmers"
           data={farmers}
-          columns={['full_name', 'mobile_number', 'village', 'district', 'state', 'role']}
-          headers={['Name', 'Mobile', 'Village', 'District', 'State', 'Role']}
+          columns={['full_name', 'mobile_number', 'village', 'district', 'state', 'farm_size', 'soil_type', 'role']}
+          headers={['Name', 'Mobile', 'Village', 'District', 'State', 'Farm Size (Acres)', 'Soil Type', 'Role']}
           onEdit={() => {}}
           onDelete={(id) => handleDelete('profiles', id)}
           onAdd={undefined}

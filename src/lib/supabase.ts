@@ -24,7 +24,7 @@ export type Crop = {
   expected_yield: string;
   market_value: string;
   image_url: string;
-  created_at?: string;
+  created_at: string;
 };
 
 export type Profile = {
@@ -55,9 +55,6 @@ export type FarmDetail = {
   humidity: number;
   water_availability: string;
   current_season: string;
-  latitude?: number;
-  longitude?: number;
-  farm_area?: number;
   created_at: string;
 };
 
@@ -68,7 +65,7 @@ export type Fertilizer = {
   quantity: string;
   application_method: string;
   precautions: string;
-  created_at?: string;
+  created_at: string;
 };
 
 export type Disease = {
@@ -81,7 +78,6 @@ export type Disease = {
   treatment: string;
   organic_solution: string;
   image_url: string;
-  images?: string[];
   season: string | null;
   created_at: string;
 };

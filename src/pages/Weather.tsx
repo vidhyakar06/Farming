@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Cloud, Sun, CloudRain, Wind, Droplets,
+  Cloud, Sun, CloudRain, Wind, Droplets, Thermometer,
   MapPin, Search, Eye, Gauge, Sunrise, Sunset, Navigation, X, Loader2, AlertTriangle,
 } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
@@ -9,11 +9,14 @@ import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { LoadingSpinner } from '../components/ui/Loading';
 import { useToast } from '../context/ToastContext';
-import { useLanguage } from '../context/LanguageContext';
 import {
   fetchWeather, searchLocation, getCurrentPosition, reverseGeocode, isRainCode, locationLabel,
   type WeatherData, type GeoLocation, type LocationSource,
 } from '../lib/weather';
+
+const weatherIcons: Record<string, typeof Sun> = {
+  '01d': Sun, '02d': Cloud, '03d': Cloud, '09d': CloudRain, '10d': CloudRain, '11d': CloudRain, '13d': Cloud, '50d': Cloud,
+};
 
 function WeatherIcon({ code, className }: { code: number; className?: string }) {
   const iconMap: Record<number, typeof Sun> = {
@@ -30,7 +33,6 @@ function WeatherIcon({ code, className }: { code: number; className?: string }) 
 
 export default function Weather() {
   const { showToast } = useToast();
-  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [detecting, setDetecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +43,6 @@ export default function Weather() {
   const [searching, setSearching] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout>>();
   const containerRef = useRef<HTMLDivElement>(null);
-
 
   useEffect(() => {
     if (searchTimer.current) clearTimeout(searchTimer.current);
@@ -239,8 +240,8 @@ export default function Weather() {
   return (
     <div>
       <PageHeader
-        title={t('weather.title')}
-        subtitle={t('weather.subtitle')}
+        title="Weather Dashboard"
+        subtitle="Current conditions and 7-day forecast for your farm"
         icon={<Cloud className="w-6 h-6" />}
         action={
           <div ref={containerRef} className="relative flex gap-2">
@@ -271,9 +272,7 @@ export default function Weather() {
               )}
             </div>
             <Button onClick={() => suggestions[0] && handleSelectSuggestion(suggestions[0])} icon={<Search className="w-4 h-4" />}>Search</Button>
-            <div title="Find my location">
-              <Button variant="outline" onClick={loadDetectedLocation} icon={<Navigation className="w-4 h-4" />}>Find Me</Button>
-            </div>
+            <Button variant="outline" onClick={loadDetectedLocation} icon={<Navigation className="w-4 h-4" />} title="Find my location">Find Me</Button>
 
             <AnimatePresence>
               {showSuggestions && suggestions.length > 0 && (

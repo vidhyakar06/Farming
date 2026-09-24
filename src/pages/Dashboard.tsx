@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  LayoutDashboard, Sprout, TrendingUp, Users,
-  Calendar, ArrowRight, Sun, Droplets, Wind,
+  LayoutDashboard, Sprout, Cloud, TrendingUp, Users, Bell,
+  MapPin, Calendar, ArrowRight, Sun, Droplets, Wind,
 } from 'lucide-react';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, PointElement,
@@ -12,13 +12,11 @@ import {
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
 import { fetchWeather, searchLocation, locationLabel, type WeatherData, type GeoLocation } from '../lib/weather';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import { SkeletonCard } from '../components/ui/Skeleton';
 import CropImage from '../components/ui/CropImage';
-import UserLocationCard from '../components/Map/UserLocationCard';
 
 ChartJS.register(
   CategoryScale, LinearScale, PointElement, LineElement,
@@ -27,21 +25,45 @@ ChartJS.register(
 
 export default function Dashboard() {
   const { profile, session } = useAuth();
-  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ crops: 0, recommendations: 0, marketPrices: 0, farmers: 0 });
   const [recentRecs, setRecentRecs] = useState<any[]>([]);
   const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [farmDetails, setFarmDetails] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [crops, recs, markets, farmers] = await Promise.all([
+        const [crops, recs, markets, farmers, farm] = await Promise.all([
           supabase.from('crops').select('*', { count: 'exact', head: true }),
-          supabase.from('recommendations').select('*, crops(*)').eq('farmer_id', session?.user?.id).order('recommendation_date', { ascending: false }).limit(5),
+          supabase
+            .from('recommendations')
+            .select('*, crops(*)')
+            .eq('farmer_id', session?.user?.id)
+            .order('recommendation_date', { ascending: false })
+            .limit(5),
           supabase.from('market_prices').select('*', { count: 'exact', head: true }),
           supabase.from('profiles').select('*', { count: 'exact', head: true }),
+          session?.user?.id
+            ? supabase
+                .from('farm_details')
+                .select('*')
+                .eq('farmer_id', session.user.id)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .maybeSingle()
+            : Promise.resolve({ data: null, error: null }),
         ]);
+
+        let farmData = farm.data;
+        if (!farmData && session?.user?.id) {
+          try {
+            const cached = localStorage.getItem(`farm_details_${session.user.id}`);
+            if (cached) farmData = JSON.parse(cached);
+          } catch {
+            // ignore
+          }
+        }
 
         setStats({
           crops: crops.count || 0,
@@ -50,6 +72,7 @@ export default function Dashboard() {
           farmers: farmers.count || 0,
         });
         setRecentRecs(recs.data || []);
+        setFarmDetails(farmData);
       } catch (err) {
         console.error('Dashboard fetch error:', err);
       } finally {
@@ -97,10 +120,10 @@ export default function Dashboard() {
   }, [profile?.village, profile?.district, profile?.state]);
 
   const statCards = [
-    { icon: Sprout, label: t('dash.statCrops'), value: stats.crops, color: 'from-green-500 to-emerald-600', link: '/crop-recommendation' },
-    { icon: Calendar, label: t('dash.statRecs'), value: stats.recommendations, color: 'from-amber-500 to-orange-600', link: '/crop-recommendation' },
-    { icon: TrendingUp, label: t('dash.statMarket'), value: stats.marketPrices, color: 'from-blue-500 to-cyan-600', link: '/market-prices' },
-    { icon: Users, label: t('dash.statFarmers'), value: stats.farmers, color: 'from-purple-500 to-violet-600', link: '/admin' },
+    { icon: Sprout, label: 'Total Crops', value: stats.crops, color: 'from-green-500 to-emerald-600', link: '/crop-recommendation' },
+    { icon: Calendar, label: 'My Crop Suggestions', value: stats.recommendations, color: 'from-amber-500 to-orange-600', link: '/crop-recommendation' },
+    { icon: TrendingUp, label: 'Market Prices', value: stats.marketPrices, color: 'from-blue-500 to-cyan-600', link: '/market-prices' },
+    { icon: Users, label: 'Farmers Using App', value: stats.farmers, color: 'from-purple-500 to-violet-600', link: '/admin' },
   ];
 
   const cropDistribution = {
@@ -148,8 +171,8 @@ export default function Dashboard() {
   return (
     <div>
       <PageHeader
-        title={`${t('dash.welcome')}, ${profile?.full_name?.split(' ')[0] || 'Farmer'}!`}
-        subtitle={t('dash.subtitle')}
+        title={`Welcome, ${profile?.full_name?.split(' ')[0] || 'Farmer'}!`}
+        subtitle="Here's what's happening with your farm today"
         icon={<LayoutDashboard className="w-6 h-6" />}
       />
 
@@ -200,14 +223,14 @@ export default function Dashboard() {
                 <Droplets className="w-5 h-5 text-blue-500" />
                 <div>
                   <p className="text-lg font-semibold text-slate-800 dark:text-white">{weather.current.humidity}%</p>
-                  <p className="text-xs text-slate-500">{t('dash.humidity')}</p>
+                  <p className="text-xs text-slate-500">Humidity</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Wind className="w-5 h-5 text-slate-400" />
                 <div>
                   <p className="text-lg font-semibold text-slate-800 dark:text-white">{weather.current.wind_speed} km/h</p>
-                  <p className="text-xs text-slate-500">{t('dash.wind')}</p>
+                  <p className="text-xs text-slate-500">Wind</p>
                 </div>
               </div>
             </div>
@@ -215,45 +238,113 @@ export default function Dashboard() {
         </Card>
       )}
 
-      {/* User Location */}
-      <div className="mb-8">
-        <UserLocationCard apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''} />
-      </div>
+      {/* Farm Details Card */}
+      <Card className="p-6 mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white">
+              <Sprout className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-white">My Farm Details</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Current soil & environmental conditions for your recommendations</p>
+            </div>
+          </div>
+          <Link
+            to="/farm-details"
+            className="text-sm text-primary-600 dark:text-primary-400 font-medium hover:underline flex items-center gap-1"
+          >
+            {farmDetails ? 'Edit Details' : 'Add Details'} <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        {farmDetails ? (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/40">
+              <span className="text-[11px] font-semibold text-slate-400 block uppercase tracking-wider">Soil Type & pH</span>
+              <p className="font-bold text-slate-800 dark:text-white text-base mt-1">{farmDetails.soil_type || 'Not specified'}</p>
+              <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">
+                pH {farmDetails.soil_ph != null ? farmDetails.soil_ph : 'N/A'}
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/40">
+              <span className="text-[11px] font-semibold text-slate-400 block uppercase tracking-wider">Nutrients (N-P-K)</span>
+              <p className="font-bold text-slate-800 dark:text-white text-base mt-1">
+                {farmDetails.nitrogen ?? '-'} : {farmDetails.phosphorus ?? '-'} : {farmDetails.potassium ?? '-'}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">kg / acre</p>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/40">
+              <span className="text-[11px] font-semibold text-slate-400 block uppercase tracking-wider">Season & Water</span>
+              <p className="font-bold text-slate-800 dark:text-white text-base mt-1">{farmDetails.current_season || 'N/A'}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{farmDetails.water_availability || 'N/A'} availability</p>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/40">
+              <span className="text-[11px] font-semibold text-slate-400 block uppercase tracking-wider">Climate Averages</span>
+              <p className="font-bold text-slate-800 dark:text-white text-base mt-1">{farmDetails.temperature ?? '-'}°C • {farmDetails.humidity ?? '-'}%</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{farmDetails.rainfall ?? '-'} mm rainfall</p>
+            </div>
+          </div>
+        ) : (
+          <div className="p-5 rounded-2xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 shrink-0">
+                <Sprout className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="font-semibold text-slate-800 dark:text-white text-sm">Farm details not added yet</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Add your soil and weather details to unlock personalized crop suggestions and fertilizer dosage calculations.
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/farm-details"
+              className="px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-semibold shrink-0 transition-colors shadow-sm"
+            >
+              Add Farm Details
+            </Link>
+          </div>
+        )}
+      </Card>
 
       {/* Charts */}
       <div className="grid lg:grid-cols-2 gap-6 mb-8">
         <Card className="p-6">
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">{t('dash.chartWeather')}</h3>
+          <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Weather for Next 7 Days</h3>
           {weatherTrend ? (
             <Line data={weatherTrend} options={{ responsive: true, plugins: { legend: { position: 'top' as const } } }} />
           ) : (
-            <p className="text-sm text-slate-400 text-center py-8">{t('common.loading')}</p>
+            <p className="text-sm text-slate-400 text-center py-8">Loading weather data...</p>
           )}
         </Card>
         <Card className="p-6">
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">{t('dash.chartSeasons')}</h3>
+          <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Crops by Season</h3>
           <Doughnut data={cropDistribution} options={{ responsive: true, plugins: { legend: { position: 'bottom' as const } } }} />
         </Card>
       </div>
 
       <Card className="p-6 mb-8">
-        <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">{t('dash.chartYield')}</h3>
+        <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Expected Monthly Harvest</h3>
         <Bar data={monthlyYield} options={{ responsive: true, plugins: { legend: { display: false } } }} />
       </Card>
 
       {/* Recent Recommendations */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-white">{t('dash.recentRecs')}</h3>
+          <h3 className="text-lg font-semibold text-slate-800 dark:text-white">Recent Crop Suggestions</h3>
           <Link to="/crop-recommendation" className="text-sm text-primary-600 font-medium hover:underline flex items-center gap-1">
-            {t('common.viewAll')} <ArrowRight className="w-3.5 h-3.5" />
+            View All <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
         {recentRecs.length === 0 ? (
           <div className="text-center py-8">
             <Sprout className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-            <p className="text-sm text-slate-500 dark:text-slate-400">{t('dash.noRecs')}</p>
-            <Link to="/crop-recommendation" className="btn-primary mt-4 inline-flex">{t('dash.getRecBtn')}</Link>
+            <p className="text-sm text-slate-500 dark:text-slate-400">No crop suggestions yet. Try getting your first suggestion!</p>
+            <Link to="/crop-recommendation" className="btn-primary mt-4 inline-flex">Get Crop Suggestions</Link>
           </div>
         ) : (
           <div className="space-y-3">
@@ -266,7 +357,7 @@ export default function Dashboard() {
                 </div>
                 <div className="text-right">
                   <span className="inline-block px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-medium">
-                    {rec.confidence}% {t('dash.match')}
+                    {rec.confidence}% match
                   </span>
                 </div>
               </div>
@@ -277,4 +368,3 @@ export default function Dashboard() {
     </div>
   );
 }
-

@@ -1,644 +1,172 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Bot,
-  Send,
-  User,
-  Sparkles,
-  Trash2,
-  Mic,
-  MicOff,
-  Volume2,
-  VolumeX,
-  Copy,
-  Check,
-  Wheat,
-  Sprout,
-  FlaskConical,
-  Bug,
-  Landmark,
-  TrendingUp,
-  Settings,
-  Key,
-  Eye,
-  EyeOff,
-  X,
-  ShieldCheck,
-} from 'lucide-react';
+import { Bot, Send, User, Sparkles, Trash2 } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { useToast } from '../context/ToastContext';
-import { useLanguage } from '../context/LanguageContext';
-import { ChatMessage, getAIResponse, getStoredApiKey, setStoredApiKey } from '../lib/aiAssistant';
 
-interface TopicPill {
-  label: string;
-  query: string;
-  icon: React.ComponentType<{ className?: string }>;
+type Message = {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+};
+
+const suggestedQuestions = [
+  'Which crop grows well in normal soil during monsoon season?',
+  'What fertilizer is best when soil lacks nitrogen?',
+  'How to control pests organically?',
+  'What are the best watering methods for small farms?',
+  'What government schemes are available for farmers?',
+  'When is the best time to harvest paddy?',
+];
+
+const knowledgeBase: Record<string, string> = {
+  'loamy soil kharif': 'For normal farm soil in monsoon season, the best crops are Paddy, Sugarcane, Maize, Soybean, and Cotton. These grow well in soil that holds water nicely and stays warm (25-35°C). Paddy is the most popular choice, giving about 4-5 tons per acre.',
+  'fertilizer nitrogen': 'When soil lacks nitrogen, apply Urea (50-100 kg per acre) in parts every 15 days. You can also use Farm Yard Manure (10-20 tons per acre) before planting. For organic options, Vermicompost (2-5 tons per acre) and green manure crops like Sesbania work well.',
+  'pest organic': 'For natural pest control: 1) Use Neem oil spray (5ml per liter water) every 7-10 days. 2) Use helpful insects like ladybugs. 3) Use natural fungus (Trichoderma) to fight plant diseases. 4) Plant marigold to attract pests away from main crops. 5) Apply cow dung + urine mixture (Jeevamrutham) as a natural pesticide. 6) Use special traps to catch pests.',
+  'irrigation small': 'For small farms, the best watering methods are: 1) Drip watering - saves 50-70% water, ideal for vegetables. 2) Sprinkler watering - good for close-growing crops. 3) Rain gun - affordable for small farms. 4) Cover soil with leaves/straw to keep moisture. Government help is available for drip watering under PMKSY scheme.',
+  'government scheme': 'Key government schemes for farmers: 1) PM-KISAN: ₹6,000/year income help. 2) PMKSY: Up to 55% discount on drip/sprinkler watering. 3) KCC (Kisan Credit Card): Low-interest loans at 4%. 4) PMFBY: Crop insurance at low cost (2% for monsoon crops, 1.5% for winter crops). 5) Soil Health Card: Free soil testing. 6) eNAM: Online selling platform for better prices.',
+  'harvest paddy': 'The best time to harvest paddy is when: 1) 80-85% of grains turn golden yellow. 2) Grain moisture is 20-22%. 3) The seed stalks start drying. Harvesting too early leads to lower yield and quality. After harvesting, dry grains to 14% moisture for storage. The ideal harvesting time is usually 120-140 days after planting seedlings, depending on the variety.',
+};
+
+function getResponse(query: string): string {
+  const lower = query.toLowerCase();
+  for (const [key, response] of Object.entries(knowledgeBase)) {
+    if (key.split(' ').every((word) => lower.includes(word))) {
+      return response;
+    }
+  }
+  return "I'm here to help with farming questions! I can help with crop suggestions, fertilizer advice, pest control, watering methods, harvesting, organic farming, and government schemes. Please ask your question differently or pick a topic below.";
 }
 
 export default function AIAssistant() {
   const { showToast } = useToast();
-  const { language, t } = useLanguage();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
-  const [isListening, setIsListening] = useState(false);
-  const [speakingId, setSpeakingId] = useState<string | null>(null);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const recognitionRef = useRef<any>(null);
 
-  // API Key settings
-  const [showApiModal, setShowApiModal] = useState(false);
-  const [apiKeyInput, setApiKeyInput] = useState('');
-  const [showApiKey, setShowApiKey] = useState(false);
-  const [hasApiKey, setHasApiKey] = useState(() => !!getStoredApiKey());
-
-  // Suggested starter prompts based on language
-  const suggestedQuestions = [
-    t('ai.prompt1'),
-    t('ai.prompt2'),
-    t('ai.prompt3'),
-  ];
-
-  // Quick topics pills
-  const topicPills: TopicPill[] = [
-    { label: t('ai.pillPaddy'), query: language === 'ta' ? 'நெல் சாகுபடி மற்றும் உர மேலாண்மை' : language === 'hi' ? 'धान की खेती और खाद' : language === 'te' ? 'వరి సాగు మరియు ఎరువులు' : language === 'es' ? 'Cultivo y fertilización de arroz' : 'Paddy cultivation and fertilizer guide', icon: Wheat },
-    { label: t('ai.pillTomato'), query: language === 'ta' ? 'தக்காளி இலைச்சுருள் மற்றும் கருகல் நோய் கட்டுப்பாடு' : language === 'hi' ? 'टमाटर की पत्ती मरोड़ बीमारी' : language === 'te' ? 'టమోటా తెగుళ్ల నివారణ' : language === 'es' ? 'Plagas y enfermedades del tomate' : 'Tomato leaf curl and blight disease remedies', icon: Sprout },
-    { label: t('ai.pillFertilizer'), query: language === 'ta' ? 'யுரியா, டிஏபி மற்றும் பொட்டாஷ் உரம் எப்படி பயன்படுத்த வேண்டும்' : language === 'hi' ? 'यूरिया और डीएपी खाद की सही मात्रा' : language === 'te' ? 'యూరియా, డీఏపీ మోతాదు' : language === 'es' ? 'Balance de fertilizantes NPK' : 'How to balance Urea, DAP, and MOP fertilizers', icon: FlaskConical },
-    { label: t('ai.pillPest'), query: language === 'ta' ? 'வேப்பெண்ணெய் மற்றும் அக்னி அஸ்திரம் தயாரிக்கும் முறை' : language === 'hi' ? 'नीम तेल और अग्निअस्त्र बनाने की विधि' : language === 'te' ? 'వేప నూనె మరియు అగ్నిఅస్త్రం' : language === 'es' ? 'Insecticidas y biofungicidas orgánicos' : 'Natural pest control and neem oil spray method', icon: Bug },
-    { label: t('ai.pillSchemes'), query: language === 'ta' ? 'PM KISAN மற்றும் சொட்டு நீர் பாசன அரசு மானியங்கள்' : language === 'hi' ? 'पीएम किसान और ड्रिप सब्सिडी' : language === 'te' ? 'పీఎం కిసాన్ మరియు సబ్సిడీలు' : language === 'es' ? 'Subsidios y créditos agrícolas' : 'PM KISAN and drip irrigation government subsidies', icon: Landmark },
-    { label: t('ai.pillMandi'), query: language === 'ta' ? 'விவசாய விளைபொருட்களை அதிக விலைக்கு விற்பது எப்படி' : language === 'hi' ? 'मंडी में फसल का अच्छा भाव कैसे पाएं' : language === 'te' ? 'మార్కెట్ ధరలు మరియు లాభాలు' : language === 'es' ? 'Mejores precios de venta en mercado' : 'How to get best mandi prices and e-NAM trading', icon: TrendingUp },
-  ];
-
-  // Initialize Speech Recognition
   useEffect(() => {
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-
-      const langMap: Record<string, string> = {
-        en: 'en-IN',
-        ta: 'ta-IN',
-        hi: 'hi-IN',
-        te: 'te-IN',
-        es: 'es-ES',
-      };
-      recognition.lang = langMap[language] || 'en-IN';
-
-      recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setInput(transcript);
-        setIsListening(false);
-      };
-
-      recognition.onerror = () => {
-        setIsListening(false);
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-
-      recognitionRef.current = recognition;
-    }
-  }, [language]);
-
-  // Auto-scroll on new message
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: 'smooth',
-      });
-    }
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, typing]);
 
-  const toggleVoiceInput = () => {
-    if (!recognitionRef.current) {
-      showToast(t('ai.voiceError'), 'error');
-      return;
-    }
-    if (isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
-    } else {
-      try {
-        recognitionRef.current.start();
-        setIsListening(true);
-        showToast(t('ai.listening'), 'info');
-      } catch (err) {
-        setIsListening(false);
-      }
-    }
-  };
-
-  const handleSpeak = (text: string, msgId: string) => {
-    if (!('speechSynthesis' in window)) {
-      showToast('Text-to-speech not supported', 'error');
-      return;
-    }
-
-    if (speakingId === msgId) {
-      window.speechSynthesis.cancel();
-      setSpeakingId(null);
-      return;
-    }
-
-    window.speechSynthesis.cancel();
-    const cleanText = text.replace(/[*#_`]/g, '');
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-
-    const langVoiceMap: Record<string, string> = {
-      en: 'en-IN',
-      ta: 'ta-IN',
-      hi: 'hi-IN',
-      te: 'te-IN',
-      es: 'es-ES',
-    };
-    utterance.lang = langVoiceMap[language] || 'en-IN';
-
-    utterance.onend = () => setSpeakingId(null);
-    utterance.onerror = () => setSpeakingId(null);
-
-    setSpeakingId(msgId);
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const handleCopy = (text: string, msgId: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedId(msgId);
-    showToast(t('common.copied'), 'success');
-    setTimeout(() => setCopiedId(null), 2000);
-  };
-
-  const handleSend = async (customQuery?: string) => {
-    const query = (customQuery || input).trim();
-    if (!query || typing) return;
-
-    const userMsg: ChatMessage = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: query,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-
+  const handleSend = (text?: string) => {
+    const query = text || input.trim();
+    if (!query) return;
+    const userMsg: Message = { role: 'user', content: query, timestamp: new Date().toISOString() };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setTyping(true);
 
-    try {
-      const response = await getAIResponse(query, language, messages);
-      const assistantMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: response.reply,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        suggestedFollowUps: response.followUps,
-      };
-
-      setMessages((prev) => [...prev, assistantMsg]);
-    } catch {
-      showToast(t('common.error'), 'error');
-    } finally {
+    setTimeout(() => {
+      const response = getResponse(query);
+      const aiMsg: Message = { role: 'assistant', content: response, timestamp: new Date().toISOString() };
+      setMessages((prev) => [...prev, aiMsg]);
       setTyping(false);
-    }
+    }, 1200);
   };
 
   const handleClear = () => {
-    if (speakingId) {
-      window.speechSynthesis?.cancel();
-      setSpeakingId(null);
-    }
     setMessages([]);
-    showToast(t('common.clearChat'), 'info');
-  };
-
-  const openApiModal = () => {
-    setApiKeyInput('');
-    setShowApiKey(false);
-    setShowApiModal(true);
-  };
-
-  const saveApiKey = () => {
-    const key = apiKeyInput.trim();
-    setStoredApiKey(key);
-    setHasApiKey(!!key);
-    setShowApiModal(false);
-    setApiKeyInput('');
-    showToast(key ? '✅ API key saved! AI is now connected.' : '🗑️ API key cleared.', key ? 'success' : 'info');
-  };
-
-  const clearApiKey = () => {
-    setStoredApiKey('');
-    setHasApiKey(false);
-    setApiKeyInput('');
-    setShowApiModal(false);
-    showToast('🗑️ API key removed.', 'info');
+    showToast('Conversation cleared', 'info');
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-4">
+    <div>
       <PageHeader
-        title={t('ai.title')}
-        subtitle={t('ai.subtitle')}
-        icon={<Bot className="w-6 h-6 text-primary-500" />}
-        action={
-          <div className="flex items-center gap-2">
-            {/* API Key Button */}
-            <button
-              onClick={openApiModal}
-              title="Configure Gemini API Key"
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
-                hasApiKey
-                  ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300'
-                  : 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 animate-pulse'
-              }`}
-            >
-              {hasApiKey ? <ShieldCheck className="w-3.5 h-3.5" /> : <Key className="w-3.5 h-3.5" />}
-              {hasApiKey ? 'AI Connected' : 'Set API Key'}
-            </button>
-
-            {messages.length > 0 && (
-              <Button
-                variant="ghost"
-                onClick={handleClear}
-                icon={<Trash2 className="w-4 h-4 text-red-500" />}
-                className="hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600 font-medium"
-              >
-                {t('common.clearChat')}
-              </Button>
-            )}
-          </div>
-        }
+        title="AI Farming Assistant"
+        subtitle="Get instant answers to your farming questions"
+        icon={<Bot className="w-6 h-6" />}
+        action={messages.length > 0 ? <Button variant="ghost" onClick={handleClear} icon={<Trash2 className="w-4 h-4" />}>Clear</Button> : undefined}
       />
 
-      {/* API Key Modal */}
-      <AnimatePresence>
-        {showApiModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
-            onClick={(e) => e.target === e.currentTarget && setShowApiModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 w-full max-w-md p-6"
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary-600 to-emerald-500 flex items-center justify-center text-white shadow-lg">
-                    <Settings className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-800 dark:text-white text-base">AI Configuration</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Connect your Gemini API key</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowApiModal(false)}
-                  className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Status Banner */}
-              <div className={`flex items-center gap-2 px-3 py-2.5 rounded-xl mb-5 text-sm font-medium ${
-                hasApiKey
-                  ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
-                  : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
-              }`}>
-                {hasApiKey ? <ShieldCheck className="w-4 h-4" /> : <Key className="w-4 h-4" />}
-                {hasApiKey ? '✅ API key is active — AI is fully connected!' : '⚠️ No API key set — AI running in offline mode'}
-              </div>
-
-              {/* Instructions */}
-              <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 mb-5 text-xs text-slate-600 dark:text-slate-400 space-y-1.5">
-                <p className="font-semibold text-slate-700 dark:text-slate-300">How to get your free Gemini API key:</p>
-                <p>1. Go to <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="text-primary-600 dark:text-primary-400 underline">aistudio.google.com/apikey</a></p>
-                <p>2. Sign in with your Google account</p>
-                <p>3. Click <strong>"Create API Key"</strong> and copy it</p>
-                <p>4. Paste it below and click Save</p>
-              </div>
-
-              {/* API Key Input */}
-              <div className="relative mb-4">
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Gemini API Key</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type={showApiKey ? 'text' : 'password'}
-                    value={apiKeyInput}
-                    onChange={(e) => setApiKeyInput(e.target.value)}
-                    placeholder="AIzaSy..."
-                    className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 font-mono"
-                    onKeyDown={(e) => e.key === 'Enter' && saveApiKey()}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowApiKey(!showApiKey)}
-                    className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary-600 transition-colors"
-                  >
-                    {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-                <p className="text-[10px] text-slate-400 mt-1.5">Your key is stored locally in your browser only — never sent to our servers.</p>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={saveApiKey}
-                  disabled={!apiKeyInput.trim()}
-                  icon={<ShieldCheck className="w-4 h-4" />}
-                  className="flex-1"
-                >
-                  Save & Connect
-                </Button>
-                {hasApiKey && (
-                  <button
-                    onClick={clearApiKey}
-                    className="px-4 py-2.5 rounded-xl border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
-                  >
-                    Clear Key
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Quick Topic Chips */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-thin">
-        {topicPills.map((pill, idx) => {
-          const Icon = pill.icon;
-          return (
-            <button
-              key={idx}
-              onClick={() => handleSend(pill.query)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-primary-500 dark:hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-950/30 text-slate-700 dark:text-slate-300 transition-all shrink-0 shadow-sm hover:scale-[1.02]"
-            >
-              <Icon className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
-              <span>{pill.label}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      <Card className="flex flex-col h-[650px] shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
-        {/* Messages Body */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
+      <Card className="flex flex-col h-[600px]">
+        {/* Messages */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4">
           {messages.length === 0 && (
-            <div className="h-full flex flex-col items-center justify-center text-center px-4 py-8">
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-primary-600 via-primary-500 to-emerald-400 flex items-center justify-center text-white mb-4 shadow-xl shadow-primary-500/20"
-              >
+            <div className="h-full flex flex-col items-center justify-center text-center">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white mb-4">
                 <Sparkles className="w-10 h-10" />
-              </motion.div>
-              <h3 className="text-xl font-bold text-slate-800 dark:text-white">
-                {t('ai.title')}
-              </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-lg">
-                {t('ai.subtitle')}
+              </div>
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-white">Ask me anything about farming!</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-md">
+                I can help with crop suggestions, fertilizer advice, pest control, watering, harvesting, and government schemes.
               </p>
-
-              {/* API Key Not Set Banner */}
-              {!hasApiKey && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="mt-5 flex items-center gap-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 rounded-2xl px-5 py-3.5 max-w-sm w-full"
-                >
-                  <Key className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
-                  <div className="text-left">
-                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">No API Key Connected</p>
-                    <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
-                      Connect your free Gemini API key to unlock live AI responses.{' '}
-                      <button onClick={openApiModal} className="underline font-semibold hover:text-amber-800 dark:hover:text-amber-200 transition-colors">
-                        Set API Key →
-                      </button>
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* API Key Connected confirmation */}
-              {hasApiKey && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="mt-5 flex items-center gap-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700 rounded-2xl px-5 py-3.5 max-w-sm w-full"
-                >
-                  <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                  <div className="text-left">
-                    <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">🤖 KrishiBot AI is Ready!</p>
-                    <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-0.5">
-                      Powered by Google Gemini. Ask me anything about farming or any topic!
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Starter suggested questions */}
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-8 max-w-3xl w-full text-left">
-                {suggestedQuestions.map((q, i) => (
-                  <motion.button
-                    key={i}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+              <div className="grid sm:grid-cols-2 gap-3 mt-8 max-w-2xl w-full">
+                {suggestedQuestions.map((q) => (
+                  <button
+                    key={q}
                     onClick={() => handleSend(q)}
-                    className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/50 hover:bg-primary-50/80 dark:hover:bg-primary-950/40 hover:border-primary-400 dark:hover:border-primary-600 transition-all text-xs md:text-sm text-slate-700 dark:text-slate-300 font-medium flex items-start gap-2.5 shadow-sm"
+                    className="text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-300 dark:hover:border-primary-700 transition-all text-sm text-slate-700 dark:text-slate-300"
                   >
-                    <span className="text-base">💡</span>
-                    <span className="flex-1">{q}</span>
-                  </motion.button>
+                    {q}
+                  </button>
                 ))}
               </div>
             </div>
           )}
 
-          <AnimatePresence initial={false}>
-            {messages.map((msg) => (
+          <AnimatePresence>
+            {messages.map((msg, i) => (
               <motion.div
-                key={msg.id}
-                initial={{ opacity: 0, y: 12, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.2 }}
-                className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
               >
-                {msg.role === 'assistant' && (
-                  <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-primary-600 to-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-primary-600/20 mt-1">
-                    <Bot className="w-5 h-5" />
-                  </div>
-                )}
-
-                <div
-                  className={`max-w-[85%] md:max-w-[78%] rounded-3xl px-4 md:px-5 py-3.5 shadow-sm ${
-                    msg.role === 'user'
-                      ? 'bg-gradient-to-r from-primary-600 to-emerald-600 text-white rounded-br-none'
-                      : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-slate-800 dark:text-slate-100 rounded-bl-none'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-4 mb-1">
-                    <span
-                      className={`text-[10px] font-medium tracking-wide uppercase ${
-                        msg.role === 'user' ? 'text-primary-100' : 'text-primary-600 dark:text-primary-400'
-                      }`}
-                    >
-                      {msg.role === 'user' ? t('header.myProfile') : t('ai.title')}
-                    </span>
-                    <span
-                      className={`text-[10px] ${
-                        msg.role === 'user' ? 'text-primary-200' : 'text-slate-400'
-                      }`}
-                    >
-                      {msg.timestamp}
-                    </span>
-                  </div>
-
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap font-normal">
-                    {msg.content}
-                  </p>
-
-                  {/* Actions for Assistant replies */}
-                  {msg.role === 'assistant' && (
-                    <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-700/60 mt-3 pt-2">
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => handleSpeak(msg.content, msg.id)}
-                          title={t('ai.readAloud')}
-                          className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors"
-                        >
-                          {speakingId === msg.id ? (
-                            <VolumeX className="w-4 h-4 text-primary-500 animate-pulse" />
-                          ) : (
-                            <Volume2 className="w-4 h-4" />
-                          )}
-                        </button>
-                        <button
-                          onClick={() => handleCopy(msg.content, msg.id)}
-                          title={t('ai.copyAnswer')}
-                          className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors"
-                        >
-                          {copiedId === msg.id ? (
-                            <Check className="w-4 h-4 text-green-500" />
-                          ) : (
-                            <Copy className="w-4 h-4" />
-                          )}
-                        </button>
-                      </div>
-
-                      {/* Follow-up suggestions */}
-                      {msg.suggestedFollowUps && msg.suggestedFollowUps.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 justify-end">
-                          {msg.suggestedFollowUps.slice(0, 2).map((followUp, fIdx) => (
-                            <button
-                              key={fIdx}
-                              onClick={() => handleSend(followUp)}
-                              className="text-[11px] px-2.5 py-1 rounded-full bg-primary-50 dark:bg-primary-950/40 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-800/60 hover:bg-primary-100 transition-colors font-medium"
-                            >
-                              💬 {followUp}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                  msg.role === 'user'
+                    ? 'bg-secondary-100 dark:bg-secondary-900/30 text-secondary-600'
+                    : 'bg-gradient-to-br from-primary-500 to-primary-700 text-white'
+                }`}>
+                  {msg.role === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
                 </div>
-
-                {msg.role === 'user' && (
-                  <div className="w-9 h-9 rounded-2xl bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-200 flex items-center justify-center shrink-0 mt-1">
-                    <User className="w-5 h-5" />
-                  </div>
-                )}
+                <div className={`max-w-[75%] rounded-2xl px-4 py-3 ${
+                  msg.role === 'user'
+                    ? 'bg-secondary-600 text-white'
+                    : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200'
+                }`}>
+                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                </div>
               </motion.div>
             ))}
           </AnimatePresence>
 
-          {/* Typing Indicator */}
           {typing && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex gap-3 items-center"
-            >
-              <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-primary-600 to-emerald-600 text-white flex items-center justify-center shrink-0">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 text-white flex items-center justify-center shrink-0">
                 <Bot className="w-5 h-5" />
               </div>
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl px-4 py-3 shadow-sm flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-primary-500 animate-bounce" />
-                <span className="w-2 h-2 rounded-full bg-primary-500 animate-bounce [animation-delay:0.2s]" />
-                <span className="w-2 h-2 rounded-full bg-primary-500 animate-bounce [animation-delay:0.4s]" />
-                <span className="text-xs text-slate-400 ml-1">{t('ai.analyzing')}</span>
+              <div className="bg-slate-100 dark:bg-slate-700 rounded-2xl px-4 py-3 flex gap-1.5">
+                {[0, 0.2, 0.4].map((delay) => (
+                  <motion.div
+                    key={delay}
+                    animate={{ y: [0, -6, 0] }}
+                    transition={{ duration: 0.6, repeat: Infinity, delay }}
+                    className="w-2 h-2 rounded-full bg-slate-400"
+                  />
+                ))}
               </div>
             </motion.div>
           )}
         </div>
 
-        {/* Input Bar */}
-        <div className="p-3 md:p-4 bg-slate-50/70 dark:bg-slate-800/70 border-t border-slate-200 dark:border-slate-700">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
-            className="flex items-center gap-2"
-          >
-            {/* Voice Input Button */}
-            <button
-              type="button"
-              onClick={toggleVoiceInput}
-              title={isListening ? t('common.cancel') : t('ai.listening')}
-              className={`p-2.5 rounded-2xl transition-all ${
-                isListening
-                  ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/30'
-                  : 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:text-primary-600'
-              }`}
-            >
-              {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-            </button>
-
+        {/* Input */}
+        <div className="border-t border-slate-200 dark:border-slate-700 p-4">
+          <div className="flex gap-3">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={
-                isListening
-                  ? 'Listening now... Speak your farming question'
-                  : t('ai.inputPlaceholder')
-              }
-              className="flex-1 px-4 py-2.5 rounded-2xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm"
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Ask a farming question..."
+              className="input-field flex-1"
             />
-
-            <Button
-              type="submit"
-              disabled={!input.trim() || typing}
-              icon={<Send className="w-4 h-4" />}
-              className="rounded-2xl px-5"
-            >
-              {t('ai.send')}
+            <Button onClick={() => handleSend()} disabled={!input.trim()} icon={<Send className="w-4 h-4" />}>
+              Send
             </Button>
-          </form>
-
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 text-center mt-2">
-            {t('ai.disclaimer')}
-          </p>
+          </div>
         </div>
       </Card>
     </div>

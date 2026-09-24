@@ -8,12 +8,9 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json",
-    "auto-push": "powershell -ExecutionPolicy Bypass -File ./scripts/auto_push.ps1"
+    "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
-    "@react-google-maps/api": "^2.20.8",
     "@supabase/supabase-js": "^2.57.4",
     "chart.js": "^4.5.1",
     "date-fns": "^4.4.0",
@@ -30,7 +27,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
-    "@types/google.maps": "^3.66.2",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",

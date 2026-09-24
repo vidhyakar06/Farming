@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Upload, MapPin, Phone, Mail, Save, Sprout } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { User, Upload, MapPin, Phone, Mail, Save, Sprout, FlaskConical, Droplets, ArrowRight } from 'lucide-react';
+import { supabase, type FarmDetail } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { useLanguage } from '../context/LanguageContext';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -17,10 +17,10 @@ const irrigationMethods = ['Drip', 'Sprinkler', 'Flood', 'Canal', 'Rainfed', 'Tu
 export default function Profile() {
   const { profile, session, refreshProfile } = useAuth();
   const { showToast } = useToast();
-  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [farmDetails, setFarmDetails] = useState<FarmDetail | null>(null);
   const [form, setForm] = useState({
     full_name: '', mobile_number: '', village: '', district: '', state: '',
     farm_size: '', soil_type: '', irrigation_method: '', profile_photo_url: '',
@@ -42,6 +42,35 @@ export default function Profile() {
       setLoading(false);
     }
   }, [profile]);
+
+  useEffect(() => {
+    const fetchFarm = async () => {
+      if (!session?.user?.id) return;
+      try {
+        const { data } = await supabase
+          .from('farm_details')
+          .select('*')
+          .eq('farmer_id', session.user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        let record = data as FarmDetail | null;
+        if (!record) {
+          try {
+            const cached = localStorage.getItem(`farm_details_${session.user.id}`);
+            if (cached) record = JSON.parse(cached);
+          } catch {
+            // ignore
+          }
+        }
+        setFarmDetails(record);
+      } catch (e) {
+        console.error('Profile farm fetch error:', e);
+      }
+    };
+    fetchFarm();
+  }, [session?.user?.id]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -79,7 +108,6 @@ export default function Profile() {
           soil_type: form.soil_type,
           irrigation_method: form.irrigation_method,
           profile_photo_url: form.profile_photo_url,
-          updated_at: new Date().toISOString(),
         })
         .eq('id', session?.user?.id);
       if (error) throw error;
@@ -102,7 +130,7 @@ export default function Profile() {
 
   return (
     <div>
-      <PageHeader title={t('profile.title')} subtitle={t('profile.subtitle')} icon={<User className="w-6 h-6" />} />
+      <PageHeader title="My Profile" subtitle="Manage your personal and farm information" icon={<User className="w-6 h-6" />} />
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Profile Card */}
@@ -140,6 +168,16 @@ export default function Profile() {
               {form.farm_size && (
                 <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
                   <Sprout className="w-4 h-4 text-slate-400" /> {form.farm_size} acres
+                </div>
+              )}
+              {form.soil_type && (
+                <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+                  <FlaskConical className="w-4 h-4 text-slate-400" /> {form.soil_type} Soil
+                </div>
+              )}
+              {form.irrigation_method && (
+                <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+                  <Droplets className="w-4 h-4 text-slate-400" /> {form.irrigation_method} Irrigation
                 </div>
               )}
             </div>
@@ -205,6 +243,68 @@ export default function Profile() {
                 {saving ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
+          </Card>
+
+          {/* Farm Details Card */}
+          <Card className="p-6 mt-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                  <Sprout className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-slate-800 dark:text-white text-base">Farm Soil & Weather Details</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Parameters used by recommendations engine</p>
+                </div>
+              </div>
+              <Link
+                to="/farm-details"
+                className="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:underline flex items-center gap-1"
+              >
+                {farmDetails ? 'Manage Farm Details' : 'Add Farm Details'} <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            {farmDetails ? (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40">
+                  <span className="text-[10px] font-semibold text-slate-400 block uppercase tracking-wider">Soil Type & pH</span>
+                  <p className="font-bold text-slate-800 dark:text-white text-sm mt-0.5">{farmDetails.soil_type || 'N/A'}</p>
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                    pH {farmDetails.soil_ph != null ? farmDetails.soil_ph : 'N/A'}
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40">
+                  <span className="text-[10px] font-semibold text-slate-400 block uppercase tracking-wider">Nutrients (N-P-K)</span>
+                  <p className="font-bold text-slate-800 dark:text-white text-sm mt-0.5">
+                    {farmDetails.nitrogen ?? '-'} : {farmDetails.phosphorus ?? '-'} : {farmDetails.potassium ?? '-'}
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">kg / acre</p>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40">
+                  <span className="text-[10px] font-semibold text-slate-400 block uppercase tracking-wider">Climate</span>
+                  <p className="font-bold text-slate-800 dark:text-white text-sm mt-0.5">{farmDetails.temperature ?? '-'}°C • {farmDetails.humidity ?? '-'}%</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{farmDetails.rainfall ?? '-'} mm rain</p>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40">
+                  <span className="text-[10px] font-semibold text-slate-400 block uppercase tracking-wider">Season & Water</span>
+                  <p className="font-bold text-slate-800 dark:text-white text-sm mt-0.5">{farmDetails.current_season || 'N/A'}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{farmDetails.water_availability || 'N/A'} Water</p>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/30 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-3">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  You haven't added your farm details (soil pH, nutrients, weather) yet.
+                </p>
+                <Link
+                  to="/farm-details"
+                  className="px-3.5 py-1.5 rounded-lg bg-primary-600 hover:bg-primary-700 text-white text-xs font-semibold shrink-0 transition-colors"
+                >
+                  Add Now
+                </Link>
+              </div>
+            )}
           </Card>
         </motion.div>
       </div>

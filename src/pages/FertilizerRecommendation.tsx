@@ -5,24 +5,15 @@ import { FlaskConical, Search, AlertTriangle, Beaker, Info } from 'lucide-react'
 import { supabase, type Fertilizer, type FarmDetail } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { useLanguage } from '../context/LanguageContext';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import { Select } from '../components/ui/Input';
 import { EmptyState, LoadingSpinner } from '../components/ui/Loading';
-
-const DEFAULT_FERTILIZERS: Fertilizer[] = [
-  { id: 'f1', fertilizer_name: 'Urea (46% N)', soil_condition: 'Nitrogen deficient soils, all soil types', quantity: '50-100 kg/acre in 2-3 split doses', application_method: 'Broadcast or side dressing near root zone', precautions: 'Do not apply in direct water logging; mix with neem cake for slow release' },
-  { id: 'f2', fertilizer_name: 'DAP (Di-Ammonium Phosphate 18:46:0)', soil_condition: 'Phosphorus deficient, neutral to alkaline soils', quantity: '40-50 kg/acre as basal dose', application_method: 'Soil placement at sowing or transplanting', precautions: 'Always apply before sowing directly into furrow near seeds' },
-  { id: 'f3', fertilizer_name: 'MOP (Muriate of Potash 60% K2O)', soil_condition: 'Sandy and light textured soils, Potassium deficient', quantity: '25-40 kg/acre in split doses', application_method: 'Basal and top dressing at flowering', precautions: 'Avoid excess in saline soils; use SOP for chlorine-sensitive crops' },
-  { id: 'f4', fertilizer_name: 'Single Super Phosphate (SSP 16% P, 11% S)', soil_condition: 'Sulphur & Phosphorus deficient soils', quantity: '100-150 kg/acre basal', application_method: 'Soil incorporation during field preparation', precautions: 'Best suited for oilseeds (Groundnut, Mustard) and pulses' },
-  { id: 'f5', fertilizer_name: 'Vermicompost (Organic)', soil_condition: 'Low organic carbon soils (< 0.5% OC)', quantity: '2-3 tons/acre', application_method: 'Broadcast and mix during primary ploughing', precautions: 'Keep moist and protect from direct harsh sunlight' }
-];
 
 export default function FertilizerRecommendation() {
   const { session } = useAuth();
   const { showToast } = useToast();
-  const { t } = useLanguage();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [farmData, setFarmData] = useState<FarmDetail | null>(null);
@@ -34,13 +25,35 @@ export default function FertilizerRecommendation() {
   useEffect(() => {
     const fetchData = async () => {
       if (!session?.user?.id) return;
-      const [farm, ferts] = await Promise.all([
-        supabase.from('farm_details').select('*').eq('farmer_id', session.user.id).order('created_at', { ascending: false }).maybeSingle(),
-        supabase.from('fertilizers').select('*'),
-      ]);
-      setFarmData(farm.data as FarmDetail | null);
-      setFertilizers(ferts.data?.length ? ferts.data : DEFAULT_FERTILIZERS);
-      setLoading(false);
+      try {
+        const [farm, ferts] = await Promise.all([
+          supabase
+            .from('farm_details')
+            .select('*')
+            .eq('farmer_id', session.user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle(),
+          supabase.from('fertilizers').select('*'),
+        ]);
+
+        let farmRecord = farm.data as FarmDetail | null;
+        if (!farmRecord) {
+          try {
+            const cached = localStorage.getItem(`farm_details_${session.user.id}`);
+            if (cached) farmRecord = JSON.parse(cached);
+          } catch {
+            // ignore
+          }
+        }
+
+        setFarmData(farmRecord);
+        setFertilizers(ferts.data || []);
+      } catch (err) {
+        console.error('Error fetching farm or fertilizer data:', err);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, [session?.user?.id]);
@@ -69,13 +82,11 @@ export default function FertilizerRecommendation() {
     const result = matched.length > 0 ? matched : fertilizers.filter((f) => f.soil_condition?.includes('All'));
     setRecommended(result);
     setSoilCondition(conditions.join(', '));
-    showToast(`Found ${result.length} fertilizer suggestions`, 'success');
+    showToast(`Found ${result.length} fertilizer recommendations`, 'success');
   };
 
-  const filtered = recommended.filter(
-    (f) =>
-      f.fertilizer_name.toLowerCase().includes(search.toLowerCase()) ||
-      f.soil_condition?.toLowerCase().includes(search.toLowerCase())
+  const filtered = recommended.filter((f) =>
+    f.fertilizer_name.toLowerCase().includes(search.toLowerCase())
   );
 
   if (loading) {
@@ -89,10 +100,10 @@ export default function FertilizerRecommendation() {
   return (
     <div>
       <PageHeader
-        title={t('fertilizer.title')}
-        subtitle={t('fertilizer.subtitle')}
+        title="Fertilizer Suggestion"
+        subtitle="Get the right fertilizer for your soil nutrients"
         icon={<FlaskConical className="w-6 h-6" />}
-        action={<Button onClick={analyzeSoil} icon={<Search className="w-4 h-4" />}>{t('fertilizer.calculate')}</Button>}
+        action={<Button onClick={analyzeSoil} icon={<Search className="w-4 h-4" />}>Find Fertilizer</Button>}
       />
 
       {!farmData && (
@@ -108,29 +119,29 @@ export default function FertilizerRecommendation() {
 
       {farmData && (
         <Card className="p-6 mb-6">
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">{t('reports.soilHealth')}</h3>
+          <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Your Soil Details</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="rounded-xl bg-amber-50 dark:bg-amber-900/20 p-4">
-              <p className="text-xs text-amber-600 font-medium">{t('crop.ph')}</p>
+              <p className="text-xs text-amber-600 font-medium">Soil pH</p>
               <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">{farmData.soil_ph || 'N/A'}</p>
             </div>
             <div className="rounded-xl bg-green-50 dark:bg-green-900/20 p-4">
-              <p className="text-xs text-green-600 font-medium">{t('crop.nitrogen')}</p>
+              <p className="text-xs text-green-600 font-medium">Nitrogen</p>
               <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">{farmData.nitrogen || 'N/A'}</p>
             </div>
             <div className="rounded-xl bg-blue-50 dark:bg-blue-900/20 p-4">
-              <p className="text-xs text-blue-600 font-medium">{t('crop.phosphorus')}</p>
+              <p className="text-xs text-blue-600 font-medium">Phosphorus</p>
               <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">{farmData.phosphorus || 'N/A'}</p>
             </div>
             <div className="rounded-xl bg-purple-50 dark:bg-purple-900/20 p-4">
-              <p className="text-xs text-purple-600 font-medium">{t('crop.potassium')}</p>
+              <p className="text-xs text-purple-600 font-medium">Potassium</p>
               <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">{farmData.potassium || 'N/A'}</p>
             </div>
           </div>
           {soilCondition && (
             <div className="mt-4 p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50">
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                <span className="font-medium">{t('common.details')}:</span> {soilCondition}
+                <span className="font-medium">Soil conditions:</span> {soilCondition}
               </p>
             </div>
           )}

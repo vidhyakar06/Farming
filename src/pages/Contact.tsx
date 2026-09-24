@@ -6,10 +6,8 @@ import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { useToast } from '../context/ToastContext';
-import { useLanguage } from '../context/LanguageContext';
 
 export default function Contact() {
-  const { t } = useLanguage();
   const { showToast } = useToast();
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [sending, setSending] = useState(false);
@@ -18,7 +16,7 @@ export default function Contact() {
     e.preventDefault();
     setSending(true);
     setTimeout(() => {
-      showToast(t('contact.sentSuccess'), 'success');
+      showToast('Message sent! We will get back to you soon.', 'success');
       setForm({ name: '', email: '', message: '' });
       setSending(false);
     }, 1000);
@@ -32,7 +30,7 @@ export default function Contact() {
 
   return (
     <div>
-      <PageHeader title={t('contact.title')} subtitle={t('contact.subtitle')} icon={<MessageSquare className="w-6 h-6" />} />
+      <PageHeader title="Contact Us" subtitle="Get in touch with our support team" icon={<MessageSquare className="w-6 h-6" />} />
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Contact Info */}
@@ -56,10 +54,11 @@ export default function Contact() {
           <Card className="p-6 bg-gradient-to-br from-primary-500 to-primary-700 text-white">
             <div className="flex items-center gap-3 mb-3">
               <Sprout className="w-8 h-8" />
-              <h3 className="text-lg font-bold">{t('nav.needHelp')}</h3>
+              <h3 className="text-lg font-bold">Need Help?</h3>
             </div>
             <p className="text-sm text-primary-100">
-              {t('nav.helpSubtitle')}
+              Our team of agricultural experts is available to help you with any questions about crop selection,
+              fertilizer usage, pest control, or any other farming-related queries.
             </p>
           </Card>
         </motion.div>
@@ -67,36 +66,36 @@ export default function Contact() {
         {/* Contact Form */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <Card className="p-6">
-            <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-6">{t('contact.title')}</h3>
+            <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-6">Send a Message</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
-                label={t('contact.name')}
+                label="Your Name"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder={t('contact.name')}
+                placeholder="Enter your name"
                 required
               />
               <Input
-                label={t('contact.email')}
+                label="Email"
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                placeholder={t('contact.email')}
+                placeholder="Enter your email"
                 required
               />
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{t('contact.message')}</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Message</label>
                 <textarea
                   value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
                   rows={5}
                   required
                   className="input-field resize-none"
-                  placeholder={t('contact.message')}
+                  placeholder="How can we help you?"
                 />
               </div>
               <Button type="submit" disabled={sending} icon={sending ? undefined : <Send className="w-4 h-4" />} className="w-full">
-                {sending ? t('common.loading') : t('contact.sendMsg')}
+                {sending ? 'Sending...' : 'Send Message'}
               </Button>
             </form>
           </Card>

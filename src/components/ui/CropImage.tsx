@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Sprout } from 'lucide-react';
 
 const gradients = [
@@ -13,72 +13,8 @@ const gradients = [
 ];
 
 const DEFAULT_CROP_IMAGES: Record<string, string> = {
-  paddy: '/images/crops/paddy.png',
-  rice: '/images/crops/paddy.png',
-  wheat: '/images/crops/wheat.jpg',
-  tomato: '/images/crops/tomato.jpg',
-  cotton: '/images/crops/cotton_amvac.jpg',
-  sugarcane: '/images/crops/sugarcane.jpg',
-  maize: '/images/crops/maize.jpg',
-  corn: '/images/crops/maize.jpg',
-  onion: '/images/crops/onion.jpg',
-  chilli: '/images/crops/chilli.jpg',
-  banana: '/images/crops/banana.jpg',
-  mango: '/images/crops/mango.jpg',
-  coconut: '/images/crops/coconut.jpg',
-  soybean: '/images/crops/soybean.jpg',
-  potato: '/images/crops/potato.jpg',
-  groundnut: '/images/crops/groundnut.jpg',
-  peanut: '/images/crops/groundnut.jpg',
-  brinjal: '/images/crops/brinjal.JPG',
-  eggplant: '/images/crops/brinjal.JPG',
-  turmeric: '/images/crops/turmeric.jpg',
-  ginger: '/images/crops/ginger.jpg',
-  garlic: '/images/crops/garlic.jpg',
-  mustard: '/images/crops/mustard.jpg',
-  cucumber: '/images/crops/cucumber.jpg',
-  papaya: '/images/crops/papaya.jpg',
-  watermelon: '/images/crops/watermelon.jpg',
-  variegated: '/images/crops/plantly_var.webp',
-  ornamental: '/images/crops/plantly_var.webp',
-  // Diseases
-  blast: '/images/diseases/paddy_blast.jpg',
-  'stem borer': '/images/diseases/stem_borer.jpg',
-  'leaf curl': '/images/diseases/tomato_leaf_curl.jpg',
-  'early blight': '/images/diseases/tomato_early_blight_lucid.jpg',
-  'late blight': '/images/diseases/potato_late_blight_spudsmart.jpg',
-  'pink bollworm': 'https://www.multiplexgroup.com/uploads/products/1709286012_364775.jpg',
-  'yellow rust': '/images/diseases/yellow_rust.jpg',
-  'red rot': '/images/diseases/sugarcane_red_rot.jpg',
-  'armyworm': '/images/diseases/fall_armyworm.jpg',
-  'purple blotch': '/images/diseases/onion_purple_blotch.jpg',
-  'anthracnose': '/images/diseases/chilli_anthracnose.jpg',
-  'tikka': '/images/diseases/groundnut_tikka.jpg',
-  'panama wilt': '/images/diseases/banana_panama_wilt.jpg',
-  'sigatoka': '/images/diseases/banana_sigatoka.jpg',
-  'powdery mildew': '/images/diseases/mango_powdery_mildew_greenlife.jpg',
-  'hopper': '/images/diseases/mango_hopper_2.webp',
-  'shoot and fruit borer': '/images/diseases/brinjal_borer_trap.jpg',
-  'borer': '/images/diseases/brinjal_borer_trap.jpg',
-  'yellow mosaic': '/images/diseases/bugwood_5598938.jpg',
-  'downy mildew': '/images/diseases/cucumber_downy_mildew_5628815.jpg',
-  'planthopper': '/images/diseases/paddy_bph_irri.jpg',
-  'alternaria': '/images/diseases/bing_oip_ge7gg.jpg',
-  'cabbage': '/images/diseases/cabbage_fusarium_yellows.jpg',
-  'fusarium': '/images/diseases/cabbage_fusarium_yellows.jpg',
-  'chickpea': '/images/diseases/chickpea_dry_root_rot.webp',
-  'dry root rot': '/images/diseases/chickpea_dry_root_rot.webp',
-  'lettuce': '/images/diseases/lettuce_pythium_wilt.jpg',
-  'pythium': '/images/diseases/lettuce_pythium_wilt.jpg',
+  papaya: '/images/papaya.png',
 };
-
-function getCropFallback(altText: string): string | undefined {
-  const clean = altText.toLowerCase().replace(/[^a-z0-9]/g, ' ');
-  for (const [key, path] of Object.entries(DEFAULT_CROP_IMAGES)) {
-    if (clean.includes(key)) return path;
-  }
-  return undefined;
-}
 
 function hashString(s: string): number {
   let h = 0;
@@ -93,27 +29,15 @@ type CropImageProps = {
 };
 
 export default function CropImage({ src, alt, className = '' }: CropImageProps) {
-  const fallbackImg = getCropFallback(alt);
-  const [imgSrc, setImgSrc] = useState<string | null>(src || fallbackImg || null);
   const [failed, setFailed] = useState(false);
 
-  useEffect(() => {
-    setImgSrc(src || fallbackImg || null);
-    setFailed(false);
-  }, [src, alt]);
+  const defaultImg = DEFAULT_CROP_IMAGES[alt.toLowerCase().trim()];
+  const effectiveSrc = src || defaultImg;
 
-  const handleError = () => {
-    if (imgSrc && fallbackImg && imgSrc !== fallbackImg) {
-      // Fallback from failed remote URL to local static asset
-      setImgSrc(fallbackImg);
-    } else {
-      setFailed(true);
-    }
-  };
-
+  const showFallback = !effectiveSrc || failed;
   const gradient = gradients[hashString(alt) % gradients.length];
 
-  if (!imgSrc || failed) {
+  if (showFallback) {
     return (
       <div className={`flex items-center justify-center bg-gradient-to-br ${gradient} ${className}`}>
         <div className="flex flex-col items-center gap-1 text-white/90">
@@ -126,10 +50,10 @@ export default function CropImage({ src, alt, className = '' }: CropImageProps) 
 
   return (
     <img
-      src={imgSrc}
+      src={effectiveSrc}
       alt={alt}
       loading="lazy"
-      onError={handleError}
+      onError={() => setFailed(true)}
       className={className}
     />
   );
