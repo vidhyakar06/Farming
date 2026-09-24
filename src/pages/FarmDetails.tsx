@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sprout, Save, FlaskConical, Cloud, Droplets, Thermometer, RotateCcw, CheckCircle2, Info } from 'lucide-react';
+import { Sprout, Save, FlaskConical, Cloud, Droplets, Thermometer, RotateCcw, CheckCircle2, Info, ArrowRight } from 'lucide-react';
 import { supabase, type FarmDetail } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -186,6 +187,7 @@ export default function FarmDetails() {
         setExisting(savedRecord);
         try {
           localStorage.setItem(`farm_details_${session.user.id}`, JSON.stringify(savedRecord));
+          localStorage.setItem('active_farm_details', JSON.stringify(savedRecord));
         } catch {
           // ignore
         }
@@ -288,6 +290,21 @@ export default function FarmDetails() {
               <p className="font-bold text-slate-800 dark:text-white text-sm mt-0.5">{existing.current_season || 'N/A'}</p>
               <p className="text-xs text-slate-500 dark:text-slate-400">{existing.water_availability || 'N/A'} Water</p>
             </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/50">
+            <Link
+              to="/crops"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors"
+            >
+              <Sprout className="w-3.5 h-3.5" /> View Recommended Crops <ArrowRight className="w-3 h-3" />
+            </Link>
+            <Link
+              to="/fertilizer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-semibold hover:bg-amber-100 dark:hover:bg-amber-900/50 transition-colors"
+            >
+              <FlaskConical className="w-3.5 h-3.5" /> View Fertilizer Recommendations <ArrowRight className="w-3 h-3" />
+            </Link>
           </div>
         </Card>
       )}
