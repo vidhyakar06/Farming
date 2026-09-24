@@ -5,6 +5,8 @@ import { supabase } from '../lib/supabase';
 import PageHeader from '../components/ui/PageHeader';
 import CropImage from '../components/ui/CropImage';
 import { LoadingSpinner } from '../components/ui/Loading';
+import { defaultCrops } from '../data/defaultCrops';
+import { defaultDiseases } from '../data/defaultDiseases';
 
 type Crop = {
   id: string;
@@ -35,30 +37,51 @@ export default function Gallery() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const [cropRes, diseaseRes] = await Promise.all([
-        supabase.from('crops').select('id, crop_name, scientific_name, image_url, suitable_season').order('crop_name'),
-        supabase.from('diseases').select('id, disease_name, crop_name, image_url, symptoms').order('crop_name'),
-      ]);
-      
-      const defaultCrops: Crop[] = [
-        {
-          id: 'papaya-crop',
-          crop_name: 'Papaya',
-          scientific_name: 'Carica papaya',
-          image_url: '/images/papaya.png',
-          suitable_season: 'All',
-        },
-      ];
+      try {
+        const [cropRes, diseaseRes] = await Promise.all([
+          supabase.from('crops').select('id, crop_name, scientific_name, image_url, suitable_season').order('crop_name'),
+          supabase.from('diseases').select('id, disease_name, crop_name, image_url, symptoms').order('crop_name'),
+        ]);
 
-      const loadedCrops = cropRes.data && cropRes.data.length > 0 ? cropRes.data : defaultCrops;
-      const hasPapaya = loadedCrops.some(c => c.crop_name.toLowerCase() === 'papaya');
-      if (!hasPapaya) {
-        loadedCrops.unshift(defaultCrops[0]);
+        const combinedCrops: Crop[] = [...(cropRes.data || [])];
+        const seenCrops = new Set(combinedCrops.map((c) => c.crop_name.toLowerCase().trim()));
+        defaultCrops.forEach((dc) => {
+          if (!seenCrops.has(dc.crop_name.toLowerCase().trim())) {
+            combinedCrops.push({
+              id: dc.id,
+              crop_name: dc.crop_name,
+              scientific_name: dc.scientific_name,
+              image_url: dc.image_url,
+              suitable_season: dc.suitable_season,
+            });
+            seenCrops.add(dc.crop_name.toLowerCase().trim());
+          }
+        });
+
+        const combinedDiseases: Disease[] = [...(diseaseRes.data || [])];
+        const seenDiseases = new Set(combinedDiseases.map((d) => d.disease_name.toLowerCase().trim()));
+        defaultDiseases.forEach((dd) => {
+          if (!seenDiseases.has(dd.disease_name.toLowerCase().trim())) {
+            combinedDiseases.push({
+              id: dd.id,
+              disease_name: dd.disease_name,
+              crop_name: dd.crop_name,
+              image_url: dd.image_url,
+              symptoms: dd.symptoms,
+            });
+            seenDiseases.add(dd.disease_name.toLowerCase().trim());
+          }
+        });
+
+        setCrops(combinedCrops);
+        setDiseases(combinedDiseases);
+      } catch (err) {
+        console.error('Gallery load error:', err);
+        setCrops(defaultCrops);
+        setDiseases(defaultDiseases);
+      } finally {
+        setLoading(false);
       }
-
-      setCrops(loadedCrops);
-      setDiseases(diseaseRes.data || []);
-      setLoading(false);
     }
     load();
   }, []);

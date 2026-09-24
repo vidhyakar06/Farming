@@ -7,6 +7,8 @@ import Card from '../components/ui/Card';
 import { EmptyState, LoadingSpinner } from '../components/ui/Loading';
 import CropImage from '../components/ui/CropImage';
 
+import { defaultDiseases } from '../data/defaultDiseases';
+
 export default function Diseases() {
   const [loading, setLoading] = useState(true);
   const [diseases, setDiseases] = useState<Disease[]>([]);
@@ -15,9 +17,23 @@ export default function Diseases() {
 
   useEffect(() => {
     const fetchDiseases = async () => {
-      const { data } = await supabase.from('diseases').select('*').order('crop_name');
-      setDiseases(data || []);
-      setLoading(false);
+      try {
+        const { data } = await supabase.from('diseases').select('*').order('crop_name');
+        const combined = [...(data || [])];
+        const seenNames = new Set(combined.map((d) => d.disease_name.toLowerCase().trim()));
+        defaultDiseases.forEach((dd) => {
+          if (!seenNames.has(dd.disease_name.toLowerCase().trim())) {
+            combined.push(dd);
+            seenNames.add(dd.disease_name.toLowerCase().trim());
+          }
+        });
+        setDiseases(combined);
+      } catch (err) {
+        console.error('Error fetching diseases:', err);
+        setDiseases(defaultDiseases);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchDiseases();
   }, []);

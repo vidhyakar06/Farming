@@ -13,7 +13,36 @@ const gradients = [
 ];
 
 const DEFAULT_CROP_IMAGES: Record<string, string> = {
-  papaya: '/images/papaya.png',
+  papaya: '/images/crops/papaya.jpg',
+  paddy: '/images/crops/paddy.jpg',
+  rice: '/images/crops/paddy.jpg',
+  'paddy (rice)': '/images/crops/paddy.jpg',
+  wheat: '/images/crops/wheat.jpg',
+  cotton: '/images/crops/cotton.JPG',
+  tomato: '/images/crops/tomato.jpg',
+  onion: '/images/crops/onion.jpg',
+  sugarcane: '/images/crops/sugarcane.jpg',
+  maize: '/images/crops/maize.jpg',
+  'maize (corn)': '/images/crops/maize.jpg',
+  corn: '/images/crops/maize.jpg',
+  chilli: '/images/crops/chilli.jpg',
+  potato: '/images/crops/potato.jpg',
+  groundnut: '/images/crops/groundnut.jpg',
+  'groundnut (peanut)': '/images/crops/groundnut.jpg',
+  peanut: '/images/crops/groundnut.jpg',
+  soybean: '/images/crops/soybean.jpg',
+  turmeric: '/images/crops/turmeric.jpg',
+  banana: '/images/crops/banana.jpg',
+  ginger: '/images/crops/ginger.jpg',
+  mustard: '/images/crops/mustard.jpg',
+  garlic: '/images/crops/garlic.jpg',
+  brinjal: '/images/crops/brinjal.JPG',
+  'brinjal (eggplant)': '/images/crops/brinjal.JPG',
+  eggplant: '/images/crops/brinjal.JPG',
+  cucumber: '/images/crops/cucumber.jpg',
+  watermelon: '/images/crops/watermelon.jpg',
+  mango: '/images/crops/mango.jpg',
+  coconut: '/images/crops/coconut.jpg',
 };
 
 function hashString(s: string): number {
